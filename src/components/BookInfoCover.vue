@@ -24,7 +24,7 @@ const props = defineProps({
   },
 })
 
-const cover = props.book.cover === '' ? 'generic_cover.png' : props.book.cover
+const cover = props.book.cover === '' ? 'generic_cover.jpg' : props.book.cover
 </script>
 
 <style scoped>

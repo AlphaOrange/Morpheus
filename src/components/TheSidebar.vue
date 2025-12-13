@@ -1,5 +1,5 @@
 <template>
-  <img src="@/assets/images/logo.png" class="logo" @click="toHome" />
+  <img src="@/assets/images/logo.jpg" class="logo" @click="toHome" />
   <div class="main"></div>
   <h3>Book Info (e.g. World)</h3>
   <h3>Options</h3>

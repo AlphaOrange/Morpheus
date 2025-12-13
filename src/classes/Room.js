@@ -10,7 +10,7 @@ export default class Room {
   // Getter: Image or Placeholder
   get image() {
     if (this._image === '') {
-      return `generic_room.png`
+      return `generic_room.jpg`
     } else {
       return this._image
     }

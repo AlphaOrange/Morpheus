@@ -64,7 +64,7 @@ export const useBookStore = defineStore('book', {
     },
 
     // Cover using fallback
-    cover: (state) => (state._cover === '' ? 'generic_cover.png' : state._cover),
+    cover: (state) => (state._cover === '' ? 'generic_cover.jpg' : state._cover),
 
     // Playable characters only
     playableCharacters: (state) => {

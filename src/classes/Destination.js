@@ -19,7 +19,7 @@ export default class Destination {
   // Getter: Image or Placeholder
   get image() {
     if (this._image === '') {
-      return `generic_destination.png`
+      return `generic_destination.jpg`
     } else {
       return this._image
     }

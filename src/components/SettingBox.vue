@@ -51,7 +51,7 @@ const toggle = () => {
   cursor: pointer;
 }
 .setting-box.collapsed {
-  grid-template-columns: 4rem 1fr;
+  grid-template-columns: 5.1rem 1fr; /* TODO: das sollte eher über eine natürliche Höhe gehen */
   grid-template-rows: auto;
   grid-template-areas: 'image header';
 }

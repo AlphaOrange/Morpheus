@@ -20,7 +20,7 @@ export default class Location {
   // Getter: Image or Placeholder
   get image() {
     if (this._image === '') {
-      return `generic_location.png`
+      return `generic_location.jpg`
     } else {
       return this._image
     }

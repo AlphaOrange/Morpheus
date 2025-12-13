@@ -46,4 +46,4 @@ dev/
 # Parsed Content
 public/books.json
 public/books/
-public/images/
+public/images/books/
