@@ -128,7 +128,7 @@ const debug_addTime = () => {
 }
 .room-button {
   position: relative;
-  height: 3rem;
+  height: 2rem;
   border-radius: 0.5rem;
   background-size: cover !important;
   background-position: center center !important;

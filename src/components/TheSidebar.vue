@@ -6,9 +6,12 @@
   hide other locations ins dialog<br />
   hide type hints
   <footer v-if="loaded">
-    <small>Du spielst gerade:</small>
-    <br />
-    {{ title }}
+    <img :src="'images/' + cover" class="cover" />
+    <div>
+      <small>Du spielst gerade:</small>
+      <br />
+      {{ title }}
+    </div>
   </footer>
 </template>
 
@@ -16,7 +19,7 @@
 import { storeToRefs } from 'pinia'
 import { useBookStore } from '@/stores/book'
 const bookStore = useBookStore()
-const { title, loaded } = storeToRefs(bookStore)
+const { title, cover, loaded } = storeToRefs(bookStore)
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
@@ -40,6 +43,21 @@ footer {
   bottom: 0;
   width: 100%;
   padding: 0.5rem;
-  background: var(--bg-highlight);
+}
+footer img.cover {
+  position: absolute;
+  width: 8rem;
+  height: auto;
+  bottom: -2rem;
+  left: calc(50% - 4rem);
+  box-shadow: var(--drop-shadow);
+  transform: rotate(-4deg);
+  z-index: 1000;
+}
+footer div {
+  position: relative;
+  text-align: center;
+  z-index: 2001;
+  text-shadow: var(--text-shadow);
 }
 </style>

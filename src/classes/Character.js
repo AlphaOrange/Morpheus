@@ -24,7 +24,11 @@ export default class Character {
   // Getter: Image or Placeholder
   get image() {
     if (this._image === '') {
-      return `generic_${this.gender}.jpg`
+      if (['male', 'female'].includes(this.gender)) {
+        return `generic_${this.gender}.jpg`
+      } else {
+        return `generic_diverse.jpg`
+      }
     } else {
       return this._image
     }

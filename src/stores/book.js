@@ -39,7 +39,7 @@ export const useBookStore = defineStore('book', {
     locationId: '',
     roomId: '',
     time: 0,
-    activePlayerID: '',
+    recentPlayerIDs: [],
   }),
 
   // TODO: konsequent roomID vs room, destinationID vs. destination etc. verwenden
@@ -65,6 +65,10 @@ export const useBookStore = defineStore('book', {
 
     // Cover using fallback
     cover: (state) => (state._cover === '' ? 'generic_cover.jpg' : state._cover),
+
+    activePlayerID: (state) => {
+      return state.recentPlayerIDs[0]
+    },
 
     // Playable characters only
     playableCharacters: (state) => {
@@ -121,11 +125,18 @@ export const useBookStore = defineStore('book', {
       }
     },
 
-    updateActivePlayerID() {
+    updateRecentPlayerIDs() {
       const presentIDs = Object.values(this.room.presentPlayerCharacters).map((char) => char.id)
-      if (!presentIDs.includes(this.activePlayerID)) {
-        this.activePlayerID = presentIDs[0]
+      const presentRecentPlayerIDs = this.recentPlayerIDs.filter((id) => presentIDs.includes(id))
+      if (presentRecentPlayerIDs.length > 0) {
+        const newActivePlayerID = presentRecentPlayerIDs[0]
+        const newRecentPlayerIDs = this.recentPlayerIDs.filter((id) => id !== newActivePlayerID)
+        this.recentPlayerIDs = [newActivePlayerID, ...newRecentPlayerIDs]
       }
+      if (!presentIDs.includes(this.activePlayerID)) {
+        this.recentPlayerIDs = [presentIDs[0], ...this.recentPlayerIDs]
+      }
+      console.log(this.recentPlayerIDs)
     },
 
     getMoveSpecs(target, spec) {
@@ -192,6 +203,7 @@ export const useBookStore = defineStore('book', {
       this.roomId = room.id
       this.locationId = room.location.id
       this.destinationId = room.location.destination.id
+      this.updateRecentPlayerIDs()
     },
 
     // load book content
@@ -271,7 +283,7 @@ export const useBookStore = defineStore('book', {
         this.moveChar(id, startRoom, 0)
       }
       this.addTime(0) // triggering arrivals and timed events at 0
-      this.updateActivePlayerID() // set initial active player
+      this.updateRecentPlayerIDs() // set initial active player
       this.started = true
     },
 
@@ -370,7 +382,7 @@ export const useBookStore = defineStore('book', {
             this.jumpToArrival()
           }
         }
-        this.updateActivePlayerID() // if active player is no longer in active room
+        this.updateRecentPlayerIDs() // if active player is no longer in active room
       }
     },
 
