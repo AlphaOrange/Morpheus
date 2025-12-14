@@ -13,13 +13,6 @@ export default class Protocol {
         text: 'This is a system message. It can never be seen by any character',
         subtype: 'debug',
       },
-      {
-        type: 'talk',
-        text: 'Another test message for everyone',
-        present: [],
-        from: 'alice',
-        to: 'bob',
-      },
     ]
     // this.showTypes = ['talk', 'info']
     this.activeTypes = ['talk'] // TEST MODE

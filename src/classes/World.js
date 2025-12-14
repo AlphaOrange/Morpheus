@@ -7,7 +7,7 @@ export default class World {
   // Getter: Image or Placeholder
   get image() {
     if (this._image === '') {
-      return `generic_world.png`
+      return `generic_world.jpg`
     } else {
       return this._image
     }
