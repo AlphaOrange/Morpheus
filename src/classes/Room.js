@@ -46,4 +46,9 @@ export default class Room {
   removeCharacter(character) {
     delete this.characters[character.id]
   }
+  isInRoom(charID) {
+    return Object.values(this.characters)
+      .map((char) => char.id)
+      .includes(charID)
+  }
 }

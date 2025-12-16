@@ -35,4 +35,21 @@ export default class Protocol {
   pushMessage(message) {
     this.messages.push(message)
   }
+
+  // Who has character charID last spoken to
+  lastSpokenTo(charID) {
+    const LOOKBACK_LASTSPOKEN = 30 // TODO: move to config file
+    for (
+      let i = this.messages.length - 1;
+      i > Math.max(0, this.messages.length - LOOKBACK_LASTSPOKEN);
+      i--
+    ) {
+      if (this.messages[i].type === 'talk') {
+        if (this.messages[i].from === charID) {
+          return this.messages[i].to
+        }
+      }
+    }
+    return null
+  }
 }

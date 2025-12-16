@@ -70,9 +70,12 @@ const rx = {
   move2_room: /^([a-z0-9_]+)? ?(>) ?([a-z0-9_]+)(?::(.*))?$/,
   move2_location: /^([a-z0-9_]+)? ?(>>) ?([a-z0-9_]+)(?::(.*))?$/,
   move2_destination: /^([a-z0-9_]+)? ?(>>>) ?([a-z0-9_]+)(?::(.*))?$/,
-  talk1: /^(?:([a-z0-9_]+) )?(talk |talk to )(?:([a-z0-9_]+)):(.+)$/, // alice talk to bob: text / talk to bob: text
+  talk1all: /^(?:([a-z0-9_]+) )?(talk|talk to) ?::(.+)$/, // alice talk to:: text / talk:: text
+  talk1: /^(?:([a-z0-9_]+) )?(talk|talk to) ?(?:([a-z0-9_]+))?:(.+)$/, // alice talk to bob: text / talk to bob: text / talk: / talk to:
   talk2: /^([a-z0-9_]+)? ?(-) ?([a-z0-9_]+):(.+)$/, // alice-bob: text / -bob: text
+  talk3all: /^([a-z0-9_]+)::(.+)$/, // alice:: text
   talk3: /^([a-z0-9_]+):(.+)$/, // alice: text
+  talk4all: /^:: ?([^:]+)$/, // :: text
   talk4: /^:? ?([^:]+)$/, // text / : text
 }
 
@@ -116,26 +119,43 @@ export function messageToCommand(message) {
     return command
   }
 
+  // Talk to :all
+  res = rx.talk1all.exec(message)
+  if (res) {
+    command = { action: 'talk', actor: res[1], target: ':all', message: res[3].trim() }
+    return command
+  }
+  res = rx.talk3all.exec(message)
+  if (res) {
+    command = { action: 'talk', actor: res[1], target: ':all', message: res[2].trim() }
+    return command
+  }
+  res = rx.talk4all.exec(message)
+  if (res) {
+    command = { action: 'talk', actor: ':active', target: ':all', message: res[1].trim() }
+    return command
+  }
+
   // Talk
   res = rx.talk1.exec(message) || rx.talk2.exec(message)
   if (res) {
     let actor = res[1] || ':active'
-    let target = res[3] || ':all'
+    let target = res[3] || ':resume'
     command = { action: 'talk', actor: actor, target: target, message: res[4].trim() }
     return command
   }
 
-  // Talk To All
+  // Resume Talk
   res = rx.talk3.exec(message)
   if (res) {
-    command = { action: 'talk', actor: res[1], target: ':all', message: res[2].trim() }
+    command = { action: 'talk', actor: res[1], target: ':resume', message: res[2].trim() }
     return command
   }
 
   // Talk: Message only
   res = rx.talk4.exec(message)
   if (res) {
-    command = { action: 'talk', actor: ':active', target: ':all', message: res[1].trim() }
+    command = { action: 'talk', actor: ':active', target: ':resume', message: res[1].trim() }
     return command
   }
 

@@ -125,18 +125,20 @@ export const useBookStore = defineStore('book', {
       }
     },
 
+    setActivePlayerID(activeID) {
+      const newRecentPlayerIDs = this.recentPlayerIDs.filter((id) => id !== activeID)
+      this.recentPlayerIDs = [activeID, ...newRecentPlayerIDs]
+      console.log(this.recentPlayerIDs)
+    },
+
     updateRecentPlayerIDs() {
       const presentIDs = Object.values(this.room.presentPlayerCharacters).map((char) => char.id)
       const presentRecentPlayerIDs = this.recentPlayerIDs.filter((id) => presentIDs.includes(id))
       if (presentRecentPlayerIDs.length > 0) {
-        const newActivePlayerID = presentRecentPlayerIDs[0]
-        const newRecentPlayerIDs = this.recentPlayerIDs.filter((id) => id !== newActivePlayerID)
-        this.recentPlayerIDs = [newActivePlayerID, ...newRecentPlayerIDs]
+        this.setActivePlayerID(presentRecentPlayerIDs[0])
+      } else {
+        this.setActivePlayerID(presentIDs[0])
       }
-      if (!presentIDs.includes(this.activePlayerID)) {
-        this.recentPlayerIDs = [presentIDs[0], ...this.recentPlayerIDs]
-      }
-      console.log(this.recentPlayerIDs)
     },
 
     getMoveSpecs(target, spec) {
@@ -297,8 +299,19 @@ export const useBookStore = defineStore('book', {
         if (command.actor === ':active') {
           command.actor = this.activePlayerID
         } else {
-          this.activePlayerID = command.actor
+          this.setActivePlayerID(command.actor)
         }
+
+        // Process :resume if used
+        if (command.target === ':resume') {
+          const lastSpokenToID = this.protocol.lastSpokenTo(command.actor)
+          if (lastSpokenToID && this.room.isInRoom(lastSpokenToID)) {
+            command.target = lastSpokenToID
+          } else {
+            command.target = ':all'
+          }
+        }
+
         // Send TALK message
         this.protocol.pushMessage({
           type: 'talk',
@@ -352,7 +365,7 @@ export const useBookStore = defineStore('book', {
             this.moveChar(char.id, targetRoom, moveDuration)
           }
         } else {
-          this.activePlayerID = command.actor
+          this.setActivePlayerID(command.actor)
           this.moveChar(command.actor, targetRoom, moveDuration)
         }
 
