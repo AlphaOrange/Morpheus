@@ -8,7 +8,7 @@
   <footer v-if="loaded">
     <img :src="'images/' + cover" class="cover" />
     <div>
-      <small>Du spielst gerade:</small>
+      <small>Currently playing:</small>
       <br />
       {{ title }}
     </div>

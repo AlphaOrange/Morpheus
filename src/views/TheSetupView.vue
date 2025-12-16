@@ -1,18 +1,18 @@
 <template>
   <TheThirdsLayout>
     <template #leftSlot>
-      <h3>Buch-Settings</h3>
-      Noch keine Einstellungen verfügbar.
+      <h3>Book Settings</h3>
+      Currently no settings available.
       <br /><br />
-      <button @click="startBook" :disabled="!checkConditions">Buch starten</button>
+      <button @click="startBook" :disabled="!checkConditions">Start Book</button>
     </template>
     <template #middleSlot>
       <div class="page-header">
-        <h1>Auf ins Abenteuer</h1>
+        <h1>One more step</h1>
         <h2>{{ title }}</h2>
       </div>
       <div class="page-content">
-        <h3>Mindestens 1 Spielerfigur auswählen:</h3>
+        <h3>Choose at least 1 player character:</h3>
         <div class="horizontal-flex item-selection">
           <CharacterInfoBox
             v-for="char in playableCharacters"

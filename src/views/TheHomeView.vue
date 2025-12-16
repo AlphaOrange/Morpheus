@@ -2,7 +2,7 @@
   <TheMainLayout>
     <template #default>
       <div class="page-header">
-        <h1>Bücherregal</h1>
+        <h1>Book Shelf</h1>
       </div>
       <div class="shelf horizontal-flex item-selection">
         <BookInfoCover
