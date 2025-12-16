@@ -10,8 +10,7 @@ export default class Protocol {
     this.messages = [
       {
         type: 'system',
-        text: 'This is a system message. It can never be seen by any character',
-        subtype: 'debug',
+        text: 'This is the start of the game protocol.',
       },
     ]
     // this.showTypes = ['talk', 'info']

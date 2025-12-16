@@ -85,7 +85,7 @@ button {
   border: none;
   border-radius: 0.5rem;
   background: var(--bg-box);
-  text-align: left;
+  text-align: center;
   color: var(--col-font);
   cursor: pointer;
 }

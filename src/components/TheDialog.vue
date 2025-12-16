@@ -47,7 +47,7 @@ const headerText = (message) => {
   } else if (message.type === 'move') {
     return `Movement (message not yet implemented)`
   } else if (message.type === 'system') {
-    return `Info:`
+    return `System:`
   } else if (message.type === 'error') {
     return `Error:`
   }

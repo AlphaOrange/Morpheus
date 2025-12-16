@@ -13,6 +13,7 @@ export const useBookStore = defineStore('book', {
     description: null,
     tags: [],
     startTime: null,
+    introduction: null,
     _cover: '',
 
     // Book State
@@ -244,6 +245,7 @@ export const useBookStore = defineStore('book', {
         this.locationId = data.start.location
         this.roomId = data.start.room
         this.startTime = new Date(data.start.datetime)
+        this.introduction = data.start.introduction || 'The Game Begins'
 
         // Initial book state settings
         this.started = false
@@ -263,6 +265,11 @@ export const useBookStore = defineStore('book', {
     async startBook() {
       // start fresh protocol
       this.protocol = new Protocol()
+      this.protocol.pushMessage({
+        type: 'info',
+        text: this.introduction,
+        to: ':all',
+      })
       // build set of AI characters
       const playerIds = Object.keys(this.playerCharacters)
       this.aiCharacters = {}

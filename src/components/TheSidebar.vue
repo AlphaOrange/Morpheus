@@ -5,7 +5,7 @@
   <h3>Options</h3>
   hide other locations ins dialog<br />
   hide type hints
-  <footer v-if="loaded">
+  <footer v-if="started">
     <img :src="'images/' + cover" class="cover" />
     <div>
       <small>Currently playing:</small>
@@ -19,7 +19,7 @@
 import { storeToRefs } from 'pinia'
 import { useBookStore } from '@/stores/book'
 const bookStore = useBookStore()
-const { title, cover, loaded } = storeToRefs(bookStore)
+const { title, cover, started } = storeToRefs(bookStore)
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
