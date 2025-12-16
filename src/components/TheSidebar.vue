@@ -1,11 +1,17 @@
 <template>
-  <img src="@/assets/images/logo.jpg" class="logo" @click="toHome" />
+  <img src="@/assets/images/logo.jpg" class="logo" @click="router.push('/')" />
   <div class="main"></div>
-  <h3>Book Info (e.g. World)</h3>
-  <h3>Options</h3>
-  hide other locations ins dialog<br />
-  hide type hints
-  <footer v-if="started">
+  <div class="bar-option" @click="router.push('/')">Shelf</div>
+  <!-- book shelf -->
+  <div class="bar-option" @click="router.push('/options')">Options</div>
+  <!-- hide other locations ins dialog / hide type hints -->
+  <div class="bar-option" @click="router.push('/help')">Help</div>
+  <!-- type hints -->
+  <div class="bar-option" @click="router.push('/book')">Play</div>
+  <!-- back to book -->
+  <div class="bar-option" @click="router.push('/about')">About</div>
+  <!-- about Morpheus -->
+  <footer v-if="started" @click="router.push('/info')">
     <img :src="'images/' + cover" class="cover" />
     <div>
       <small>Currently playing:</small>
@@ -22,10 +28,6 @@ const bookStore = useBookStore()
 const { title, cover, started } = storeToRefs(bookStore)
 import { useRouter } from 'vue-router'
 const router = useRouter()
-
-const toHome = function () {
-  router.push('/')
-}
 </script>
 
 <style scoped>
@@ -37,12 +39,23 @@ const toHome = function () {
 .main {
   padding: 0.5rem;
 }
+.bar-option {
+  padding: 0.5rem;
+  margin: 0 0 0.5rem;
+  background: var(--bg-boxlight);
+  cursor: pointer;
+}
+.bar-option:hover {
+  background: var(--bg-highlight);
+}
+
 footer {
   position: absolute;
   left: 0;
   bottom: 0;
   width: 100%;
   padding: 0.5rem;
+  cursor: pointer;
 }
 footer img.cover {
   position: absolute;

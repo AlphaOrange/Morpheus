@@ -39,6 +39,32 @@ const router = createRouter({
         }
       },
     },
+    {
+      path: '/options',
+      name: 'options',
+      component: () => import('@/views/TheOptionsView.vue'),
+    },
+    {
+      path: '/help',
+      name: 'help',
+      component: () => import('@/views/TheHelpView.vue'),
+    },
+    {
+      path: '/about',
+      name: 'about',
+      component: () => import('@/views/TheAboutView.vue'),
+    },
+    {
+      path: '/info',
+      name: 'info',
+      component: () => import('@/views/TheInfoView.vue'),
+      beforeEnter: () => {
+        const book = useBookStore()
+        if (!book.started) {
+          return '/'
+        }
+      },
+    },
     { path: '/:pathMatch(.*)*', redirect: '/' },
   ],
 })
