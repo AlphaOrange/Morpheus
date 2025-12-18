@@ -37,9 +37,9 @@
       />
     </div>
     <div v-for="char in room.presentPlayerCharacters" :key="char.id" class="box action-box">
-      <h3>
+      <h3 class="hint-anchor">
         <span v-if="activePlayerID === char.id"><font-awesome-icon icon="fa-star" /></span>
-        {{ char.name }}
+        {{ char.name }}<span class="hint">{{ char.id }}</span>
       </h3>
       <ActionButton @click="talkToAll(char)" :text="'Talk to all'" :icon="'comment'" />
       <br v-if="room.presentAiCharacters" />

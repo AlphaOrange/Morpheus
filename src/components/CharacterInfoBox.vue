@@ -2,7 +2,9 @@
   <div class="box character-box" :class="collapsedClass" @click="toggle">
     <img :src="'images/' + props.character.image" />
     <div class="info-box">
-      <h3>{{ props.character.name }}</h3>
+      <h3 class="hint-anchor">
+        {{ props.character.name }}<span class="hint">{{ props.character.id }}</span>
+      </h3>
       <div class="profession">{{ props.character.profession }}</div>
       <div class="socio">{{ props.character.gender }} / {{ props.character.age }} years old</div>
       <div class="description">{{ shortDescription }}</div>

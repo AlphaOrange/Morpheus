@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,700;1,400&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Teko:wght@300..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sono:MONO@1&display=swap');
 
 :root {
   --font-text: 'Barlow';
@@ -152,6 +153,31 @@ button:hover .pill {
 }
 .box button:hover {
   background: var(--bg-highlight);
+}
+
+/* Hints */
+
+.hint-anchor {
+  position: relative;
+}
+
+.hint {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: 1rem;
+  font-weight: normal;
+  font-family: 'Sono';
+  border-radius: 0.25rem;
+  padding: 0 0.25rem;
+  border: 1px solid var(--bg-light);
+  box-shadow: 0 0 0.25rem 0 var(--bg-light);
+  background: var(--bg-box);
+}
+
+.flag-show-hints .hint {
+  display: block;
 }
 
 /* Selections */

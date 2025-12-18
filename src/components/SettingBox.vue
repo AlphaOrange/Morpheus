@@ -2,7 +2,9 @@
   <div class="box setting-box" :class="collapsedClass" @click="toggle">
     <header>
       <small>{{ props.hint }}</small>
-      <h3>{{ props.setting.name }}</h3>
+      <h3 class="hint-anchor">
+        {{ props.setting.name }}<span class="hint">{{ props.setting.id }}</span>
+      </h3>
     </header>
     <img :src="'images/' + props.setting.image" />
     <main>
@@ -47,7 +49,6 @@ const toggle = () => {
     'header'
     'image'
     'description';
-  column-gap: 0.5rem;
   cursor: pointer;
 }
 .setting-box.collapsed {
@@ -59,6 +60,7 @@ const toggle = () => {
 /* The setting-box header */
 .setting-box header {
   text-align: center;
+  padding: 0 0.5rem;
 }
 .setting-box header small {
   margin: 0;

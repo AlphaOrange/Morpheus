@@ -14,6 +14,8 @@
             v-model="message"
             placeholder="Next Message"
             class="next-message"
+            @focus="showHints"
+            @blur="hideHints"
           >
           </textarea>
           <div>
@@ -38,7 +40,7 @@ import TheSettingBar from '@/components/TheSettingBar.vue'
 import { useBookStore } from '@/stores/book'
 const book = useBookStore()
 
-const message = defineModel('message')
+const message = ref('')
 const messageInput = ref(null)
 
 // send on triple enter
@@ -46,7 +48,26 @@ watch(message, (newVal, oldVal) => {
   if (newVal.endsWith('\n\n\n') && newVal.length > oldVal.length) {
     sendMessage()
   }
+  if (newVal.includes(':')) {
+    hideHints()
+  } else {
+    showHints()
+  }
 })
+
+const flagShowHints = ref(false)
+const showHints = () => {
+  if (!flagShowHints.value) {
+    flagShowHints.value = true
+    document.body.classList.add('flag-show-hints')
+  }
+}
+const hideHints = () => {
+  if (flagShowHints.value) {
+    flagShowHints.value = false
+    document.body.classList.remove('flag-show-hints')
+  }
+}
 
 const command = (text) => {
   message.value = text
