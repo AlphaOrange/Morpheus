@@ -91,7 +91,7 @@ const switchTo = (room) => {
 
 // Emit actions
 const talkToAll = (char) => {
-  emits('talk', { fromChar: char })
+  emits('talk', { fromChar: char, toChar: ':all' })
 }
 const talkTo = (char, partner) => {
   emits('talk', { fromChar: char, toChar: partner })

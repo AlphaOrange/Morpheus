@@ -88,8 +88,8 @@ const sendMessage = () => {
 // Characters talk
 const talk = function ({ fromChar, toChar = null } = {}) {
   let text
-  if (toChar === null) {
-    text = fromChar.id + ': '
+  if (toChar === ':all') {
+    text = fromChar.id + ':: '
   } else {
     text = fromChar.id + ' talk to ' + toChar.id + ': '
   }
