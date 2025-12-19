@@ -86,9 +86,12 @@ button {
   border: none;
   border-radius: 0.5rem;
   background: var(--bg-box);
-  text-align: center;
   color: var(--col-font);
+  text-align: left;
   cursor: pointer;
+}
+button.centered {
+  text-align: center;
 }
 button:disabled {
   color: var(--col-font-fade);

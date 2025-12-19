@@ -19,7 +19,7 @@
           >
           </textarea>
           <div>
-            <button @click="sendMessage">Send</button>
+            <button class="centered" @click="sendMessage">Send</button>
           </div>
         </div>
       </div>
