@@ -14,8 +14,8 @@
             v-model="message"
             placeholder="Next Message"
             class="next-message"
-            @focus="showHints"
-            @blur="hideHints"
+            @focus="options.idHintsActive = true"
+            @blur="options.idHintsActive = false"
           >
           </textarea>
           <div>
@@ -40,6 +40,9 @@ import TheSettingBar from '@/components/TheSettingBar.vue'
 import { useBookStore } from '@/stores/book'
 const book = useBookStore()
 
+import { useOptionsStore } from '@/stores/options'
+const options = useOptionsStore()
+
 const message = ref('')
 const messageInput = ref(null)
 
@@ -49,25 +52,11 @@ watch(message, (newVal, oldVal) => {
     sendMessage()
   }
   if (newVal.includes(':')) {
-    hideHints()
+    options.idHintsActive = false
   } else {
-    showHints()
+    options.idHintsActive = true
   }
 })
-
-const flagShowHints = ref(false)
-const showHints = () => {
-  if (!flagShowHints.value) {
-    flagShowHints.value = true
-    document.body.classList.add('flag-show-hints')
-  }
-}
-const hideHints = () => {
-  if (flagShowHints.value) {
-    flagShowHints.value = false
-    document.body.classList.remove('flag-show-hints')
-  }
-}
 
 const command = (text) => {
   message.value = text
