@@ -4,6 +4,16 @@ export default class Protocol {
   //            present: [] <- names of players present
   //            options: {} <- depends on type
   //           }
+  // TALK: somebody talks to one or all characters
+  // {type: "talk", text, from, to}
+  // HINT: ingame hint visible to one or all characters
+  // {type: "hint", text, to}
+  // INFO: additional information only visible to user, not to ai
+  // {type: "info", text}
+  // SYSTEM: a message describing a program process // debug mode only
+  // {type: "system", text}
+  // ERROR: a program error occurred // debug mode only
+  // {type: "error", text}
 
   constructor() {
     // this.messages = []
@@ -14,8 +24,8 @@ export default class Protocol {
       },
     ]
     // this.showTypes = ['talk', 'info']
-    this.activeTypes = ['talk'] // TEST MODE
-    this.showTypes = ['talk', 'info', 'error', 'system'] // TEST MODE
+    this.showTypes = ['talk', 'hint', 'info', 'error', 'system'] // TEST MODE
+    this.activeTypes = ['talk'] // these action make a character active
   }
 
   // Getter: Image or Placeholder
@@ -30,9 +40,43 @@ export default class Protocol {
     return filtered[filtered.length - 1].from
   }
 
-  // Actions
-  pushMessage(message) {
-    this.messages.push(message)
+  // Actions: add entries
+  pushTalk({ text, present, from, to = ':all' }) {
+    this.messages.push({
+      type: 'talk',
+      text: text,
+      present: present,
+      from: from,
+      to: to,
+    })
+    // TODO: hier fehlt der present Parameter
+  }
+  pushHint({ text, present, to = ':all' }) {
+    this.messages.push({
+      type: 'hint',
+      text: text,
+      present: present,
+      to: to,
+    })
+    // TODO: hier fehlt der present Parameter
+  }
+  pushInfo({ text }) {
+    this.messages.push({
+      type: 'info',
+      text: text,
+    })
+  }
+  pushSystem({ text }) {
+    this.messages.push({
+      type: 'system',
+      text: text,
+    })
+  }
+  pushError({ text }) {
+    this.messages.push({
+      type: 'error',
+      text: text,
+    })
   }
 
   // Who has character charID last spoken to

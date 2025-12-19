@@ -41,11 +41,11 @@ const headerText = (message) => {
     let charFrom = characters.value[message.from].name
     let charTo = message.to === ':all' ? 'all' : characters.value[message.to].name
     return `${charFrom} to ${charTo}:`
-  } else if (message.type === 'info') {
+  } else if (message.type === 'hint') {
     let charTo = message.to === ':all' ? 'all' : characters.value[message.to].name
-    return `Info for ${charTo}:`
-  } else if (message.type === 'move') {
-    return `Movement (message not yet implemented)`
+    return `Hint for ${charTo}:`
+  } else if (message.type === 'info') {
+    return `Info:`
   } else if (message.type === 'system') {
     return `System:`
   } else if (message.type === 'error') {
@@ -65,6 +65,10 @@ const headerText = (message) => {
 
 .message-talk {
   background: var(--bg-highlight);
+}
+
+.message-hint {
+  background: var(--bg-box);
 }
 
 .message-info {

@@ -265,11 +265,7 @@ export const useBookStore = defineStore('book', {
     async startBook() {
       // start fresh protocol
       this.protocol = new Protocol()
-      this.protocol.pushMessage({
-        type: 'info',
-        text: this.introduction,
-        to: ':all',
-      })
+      this.protocol.pushInfo({ text: this.introduction })
       // build set of AI characters
       const playerIds = Object.keys(this.playerCharacters)
       this.aiCharacters = {}
@@ -320,8 +316,7 @@ export const useBookStore = defineStore('book', {
         }
 
         // Send TALK message
-        this.protocol.pushMessage({
-          type: 'talk',
+        this.protocol.pushTalk({
           text: command.message,
           present: present,
           from: command.actor,
@@ -332,8 +327,7 @@ export const useBookStore = defineStore('book', {
       // Action MOVE
       if (command.action === 'move') {
         if ((command.message !== null) & (command.actor === ':group')) {
-          this.protocol.pushMessage({
-            type: 'error',
+          this.protocol.pushError({
             text: 'You cannot send an exit message if the group moves together',
           })
           return
@@ -348,10 +342,7 @@ export const useBookStore = defineStore('book', {
           } else if (this.availableDestinations.map((dest) => dest.id).includes(command.target)) {
             command.spec = 'destinations'
           } else {
-            this.protocol.pushMessage({
-              type: 'error',
-              text: 'Could not identify move target',
-            })
+            this.protocol.pushError({ text: 'Could not identify move target' })
             return
           }
         }
@@ -378,21 +369,10 @@ export const useBookStore = defineStore('book', {
 
         // Send TALK message
         if (command.message !== null) {
-          this.protocol.pushMessage({
-            type: 'talk',
-            text: command.message,
-            present: present,
-            from: command.actor,
-            to: ':all',
-          })
+          this.protocol.pushTalk({ text: command.message, present: present, from: command.actor })
         }
         // Send INFO message
-        this.protocol.pushMessage({
-          type: 'info',
-          text: infoMessage,
-          present: present,
-          to: ':all',
-        })
+        this.protocol.pushHint({ text: infoMessage, present: present })
 
         // If current room now empty move to next room with players
         if (this.room.numberOfPlayers === 0) {
@@ -415,10 +395,7 @@ export const useBookStore = defineStore('book', {
         ':group',
       ]
       if (!possibleActors.includes(command.actor)) {
-        this.protocol.pushMessage({
-          type: 'error',
-          text: `${command.actor} is no viable actor`,
-        })
+        this.protocol.pushError({ text: `${command.actor} is no viable actor` })
         return
       }
       this.executeCommand(command)
