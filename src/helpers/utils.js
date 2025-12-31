@@ -12,7 +12,7 @@ export function truncateString(str, num) {
 
 // Calculate distance to target and return as text
 function distanceRooms(currentRoom, targetRoom) {
-  return 60
+  return 60 // TODO: all of this needs to be (optional) book parameters
 }
 function distanceLocations(currentLocation, targetLocation) {
   return (
@@ -62,6 +62,7 @@ export function distancePeriodText(currentRoom, target) {
 // ----- Interprete User Commands -----
 
 const rx = {
+  help: /^--([a-z]+)/,
   move_room: /^(?:([a-z0-9_]+) )?(move room |move to room )([a-z0-9_]+)(?::(.*))?$/,
   move_location: /^(?:([a-z0-9_]+) )?(move location |move to location )([a-z0-9_]+)(?::(.*))?$/,
   move_destination:
@@ -82,6 +83,13 @@ const rx = {
 export function messageToCommand(message) {
   let res
   let command = null
+
+  // Help commands
+  res = rx.help.exec(message)
+  if (res) {
+    command = { action: 'help', topic: res[1] }
+    return command
+  }
 
   // Move to room
   res = rx.move_room.exec(message) || rx.move2_room.exec(message)
@@ -160,4 +168,11 @@ export function messageToCommand(message) {
   }
 
   return { action: 'error', message: 'Invalid Command' }
+}
+
+// ----- Help Texts -----
+
+import helpData from '@/data/help.yaml'
+export function getHelpData(topic) {
+  return helpData[topic] || 'No help text available.'
 }

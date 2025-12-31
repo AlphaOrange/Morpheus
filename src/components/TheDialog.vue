@@ -16,9 +16,7 @@
           {{ headerText(message) }}
         </div>
       </header>
-      <main class="message-box">
-        {{ message.text }}
-      </main>
+      <main class="message-box" v-html="renderMarkdown(message.text)"></main>
     </div>
   </div>
 </template>
@@ -28,6 +26,13 @@ import { storeToRefs } from 'pinia'
 import { useBookStore } from '@/stores/book'
 const bookStore = useBookStore()
 const { characters, protocol } = storeToRefs(bookStore)
+import MarkdownIt from 'markdown-it'
+const md = new MarkdownIt({
+  html: true,
+  breaks: true,
+  linkify: false,
+  typographer: false,
+})
 
 const showIcon = (message) => {
   return message.type === 'talk'
@@ -52,6 +57,12 @@ const headerText = (message) => {
     return `Error:`
   }
   return 'X'
+}
+
+// Render conversation texts from Markdown to HTML
+const renderMarkdown = (text) => {
+  console.log(text)
+  return md.render(text || '')
 }
 </script>
 

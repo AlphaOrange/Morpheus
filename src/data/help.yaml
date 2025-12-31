@@ -1,0 +1,135 @@
+# Help Topics
+---
+help:
+  title: Help Commands
+  text: |-
+    Show help contests by typing one of the following commands in the message field:
+
+    **--help**
+    Overview of available help commands
+
+    **--commands**
+    Show all dialog and action commands you can use in the game
+
+    **--ids**
+    IDs of all characters, places and items that you can interact with currently
+
+    **--tasks**
+    **--state**
+    **--situation**
+    Not yet implemented commands
+commands:
+  title: Game Commands
+  text: |-
+    You can use the following commands in the message box:
+
+    **TALK TO ALL**
+
+    `[talking char id] talk to:: [message]`
+    [talking char id] talk:: [messag€]
+    [talking char id]:: [messag€]
+
+    **⭐ CHARACTER TALKS TO ALL**
+
+    talk to:: [message]
+    talk:: [message]
+    :: [message]
+
+    **TALK TO SOMEONE**
+
+    [talking char id] talk to [talked to char id]: [message]
+    [talking char id] talk [talked to char id]: [message]
+    [talking char id]-[talked to char id]: [message]
+
+    **⭐ CHARACTER TALKS TO SOMEONE**
+
+    talk to [talked to char id]: [message]
+    talk [talked to char id]: [message]
+    -[talked to char id]: [message]
+
+    **TALK TO SAME CHARACTER AGAIN**
+
+    [talking char id] talk to: [message]
+    [talking char id] talk: [message]
+    [talking char id]: [message]
+
+    **⭐ CHARACTER TALKS TO SAME CHARACTER AGAIN**
+
+    talk to: [message]
+    talk: [message]
+    : [message]
+    [message]
+
+    **MOVE TO ANOTHER ROOM**
+
+    [acting char id] move to room [room id]
+    [acting char id] move room [room id]
+    [acting char id]>[room id]
+
+    **MOVE WHOLE GROUP TO ANOTHER ROOM**
+
+    move to room [room id]
+    move room [room id]
+    &gt;[room id]
+
+    **TALK TO ALL THEN MOVE TO ANOTHER ROOM**
+
+    [acting char id] move to room [room id]:: [message]
+    [acting char id] move room [room id]:: [message]
+    [acting char id]>[room id]:: [message]
+
+    **MOVE TO ANOTHER LOCATION**
+
+    [acting char id] move to location [location id]
+    [acting char id] move location [location id]
+    [acting char id]>>[location id]
+
+    **MOVE WHOLE GROUP TO ANOTHER LOCATION**
+
+    move to location [location id]
+    move location [location id]
+    &gt;&gt;[location id]
+
+    **TALK TO ALL THEN MOVE TO ANOTHER LOCATION**
+
+    [acting char id] move to location [location id]: [message]
+    [acting char id] move location [location id]: [message]
+    [acting char id]>>[location id]: [message]
+
+    **TRAVEL TO ANOTHER DESTINATION**
+
+    [acting char id] move to destination [destination id]
+    [acting char id] move destination [destination id]
+    [acting char id]>>>[destination id]
+
+    **TRAVEL WHOLE GROUP TO ANOTHER DESTINATION**
+
+    move to destination [destination id]
+    move destination [destination id]
+    &gt;&gt;&gt;[destination id]
+
+    **TALK TO ALL THEN TRAVEL TO ANOTHER DESTINATION**
+
+    [acting char id] move to destination [destination id]: [message]
+    [acting char id] move destination [destination id]: [message]
+    [acting char id]>>>[destination id]: [message]
+
+    **MOVE TO ANOTHER ROOM/LOCATION/DESTINATION**
+
+    (only use if id is currently unambigious)
+    [acting char id] move to [room/location/destination id]
+    [acting char id] move [room/location/destination id]
+
+    **MOVE WHOLE GROUP TO ANOTHER ROOM/LOCATION/DESTINATION**
+
+    (only use if id is currently unambigious)
+    move to [room/location/destination id]
+    move [room/location/destination id]
+
+    **TALK TO ALL THEN MOVE TO ANOTHER ROOM/LOCATION/DESTINATION**
+
+    (only use if id is currently unambigious)
+    [acting char id] move to [room/location/destination id]: [message]
+    [acting char id] move [room/location/destination id]: [message]
+
+    **--help**: show additional help commands"

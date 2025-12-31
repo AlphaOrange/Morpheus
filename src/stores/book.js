@@ -3,7 +3,7 @@ import World from '@/classes/World'
 import Character from '@/classes/Character'
 import Destination from '@/classes/Destination'
 import Protocol from '@/classes/Protocol'
-import { messageToCommand, distancePeriod } from '@/helpers/utils'
+import { messageToCommand, distancePeriod, getHelpData } from '@/helpers/utils'
 
 export const useBookStore = defineStore('book', {
   state: () => ({
@@ -369,7 +369,7 @@ export const useBookStore = defineStore('book', {
 
         // Send TALK message
         if (command.message !== null) {
-          this.protocol.pushTalk({ text: command.message, present: present, from: command.actor })
+          this.protocol.pushTalk({ text: command.message, present: present, from: command.actor }) // TODO: WHAT IF ACTOR IS GROUP?
         }
         // Send INFO message
         this.protocol.pushHint({ text: infoMessage, present: present })
@@ -389,6 +389,14 @@ export const useBookStore = defineStore('book', {
     // Process message (send from user)
     async sendMessage(message) {
       const command = messageToCommand(message)
+
+      // Meta commands
+      if (command.action === 'help') {
+        const help = getHelpData(command.topic)
+        this.protocol.pushInfo({ title: help.title, text: help.text })
+        return
+      }
+
       const possibleActors = [
         ...this.room.presentPlayerCharacters.map((char) => char.id),
         ':active',
