@@ -5,6 +5,7 @@ import vue from '@vitejs/plugin-vue'
 import yaml from '@rollup/plugin-yaml'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import prepareBooksPlugin from './vite-plugin-prepare-books.js'
+import prepareImagesPlugin from './vite-plugin-prepare-images.js'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -16,6 +17,10 @@ export default defineConfig({
       inputDir: '../Morpheus_Books',
       outputDir: 'public',
       watch: true, // watch changes in dev mode
+    }),
+    prepareImagesPlugin({
+      genericsDir: 'public/images',
+      booksDir: 'public/images/books',
     }),
   ],
   resolve: {

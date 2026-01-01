@@ -1,4 +1,4 @@
-// vite-plugin-merge-json.js
+// vite-plugin-prepare-books.js
 import { readdirSync, readFileSync, writeFileSync, mkdirSync, copyFileSync } from 'fs'
 import { resolve, join, extname, basename } from 'path'
 import { fileURLToPath } from 'url'
@@ -171,10 +171,10 @@ export default function prepareBooksPlugin(options = {}) {
 
   return {
     name: 'prepare-books-plugin',
-    apply: 'serve',
     enforce: 'post',
 
     configureServer() {
+      // --- only called in dev ---
       if (!hasProcessedOnce) {
         runPrepareBooks()
         runPrepareBookImages()
@@ -200,11 +200,9 @@ export default function prepareBooksPlugin(options = {}) {
     },
 
     buildStart() {
-      // Only run merge in production build
-      if (process.env.NODE_ENV === 'production') {
-        runPrepareBooks()
-        runPrepareBookImages()
-      }
+      // --- only called in build ---
+      runPrepareBooks()
+      runPrepareBookImages()
     },
   }
 }
