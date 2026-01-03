@@ -265,7 +265,7 @@ export const useBookStore = defineStore('book', {
     async startBook() {
       // start fresh protocol
       this.protocol = new Protocol()
-      this.protocol.pushInfo({ text: this.introduction })
+      this.protocol.pushInfo({ text: this.introduction, title: 'Introduction' })
       // build set of AI characters
       const playerIds = Object.keys(this.playerCharacters)
       this.aiCharacters = {}
@@ -393,7 +393,7 @@ export const useBookStore = defineStore('book', {
       // Meta commands
       if (command.action === 'help') {
         const help = getHelpData(command.topic)
-        this.protocol.pushInfo({ title: help.title, text: help.text })
+        this.protocol.pushInfo({ text: help.text, title: help.title })
         return
       }
 

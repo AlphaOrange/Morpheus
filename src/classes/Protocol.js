@@ -9,7 +9,7 @@ export default class Protocol {
   // HINT: ingame hint visible to one or all characters
   // {type: "hint", text, to}
   // INFO: additional information only visible to user, not to ai
-  // {type: "info", text}
+  // {type: "info", text, title}
   // SYSTEM: a message describing a program process // debug mode only
   // {type: "system", text}
   // ERROR: a program error occurred // debug mode only
@@ -60,10 +60,11 @@ export default class Protocol {
     })
     // TODO: hier fehlt der present Parameter
   }
-  pushInfo({ text }) {
+  pushInfo({ text, title = 'Info' }) {
     this.messages.push({
       type: 'info',
       text: text,
+      title: title,
     })
   }
   pushSystem({ text }) {

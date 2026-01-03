@@ -50,7 +50,7 @@ const headerText = (message) => {
     let charTo = message.to === ':all' ? 'all' : characters.value[message.to].name
     return `Hint for ${charTo}:`
   } else if (message.type === 'info') {
-    return `Info:`
+    return message.title
   } else if (message.type === 'system') {
     return `System:`
   } else if (message.type === 'error') {
