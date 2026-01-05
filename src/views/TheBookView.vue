@@ -58,8 +58,6 @@ const move = function ({ location = null, room = null, chars = [] } = {}) {
 .dialog-box {
   height: calc(100% - 9rem);
   margin-bottom: 1rem;
-  padding-right: 1rem;
   width: 100%;
-  overflow: auto;
 }
 </style>

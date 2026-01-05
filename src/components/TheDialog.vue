@@ -3,6 +3,7 @@
     <div
       v-for="(message, index) in protocol.dialog"
       :key="index"
+      ref="messageEls"
       class="message"
       :class="'message-' + message.type"
     >
@@ -22,6 +23,7 @@
 </template>
 
 <script setup>
+import { watch, nextTick, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useBookStore } from '@/stores/book'
 const bookStore = useBookStore()
@@ -61,17 +63,44 @@ const headerText = (message) => {
 
 // Render conversation texts from Markdown to HTML
 const renderMarkdown = (text) => {
-  console.log(text)
   return md.render(text || '')
 }
+
+// Watcher: scroll to start of new message when added
+const messageEls = ref([])
+watch(
+  () => protocol.value.dialog.length,
+  async () => {
+    await nextTick()
+    const messages = messageEls.value
+    if (!messages.length) return
+    const lastMessage = messages[messages.length - 1]
+    lastMessage.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    })
+  },
+  { flush: 'post' },
+)
 </script>
 
 <style scoped>
+.dialog {
+  height: 100%;
+  padding-right: 1rem;
+  overflow-y: auto;
+  scrollbar-color: var(--bg-highlight) var(--bg-page);
+  scrollbar-width: thin;
+}
+
 .message {
   width: 100%;
   margin: 0 0 1rem;
   border-radius: 0.5rem;
   overflow: hidden;
+}
+.message:last-child {
+  margin: 0;
 }
 
 .message-talk {
