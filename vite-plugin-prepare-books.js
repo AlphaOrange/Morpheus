@@ -36,7 +36,9 @@ function _readDeepJson(inputPath, nesting) {
   const content = {}
 
   // Load folder content
-  const entries = readdirSync(join(inputPath, ...nesting), { withFileTypes: true })
+  const entries = readdirSync(join(inputPath, ...nesting), { withFileTypes: true }).filter(
+    (entry) => !entry.name.startsWith('.'),
+  )
 
   // Loop through content
   entries.forEach((entry) => {
@@ -92,7 +94,9 @@ function _buildBook(inputPath, book) {
 // Copy images from books to public folder
 function _collectImages(inputBookDir, trace, outputImageDir) {
   const inputDir = join(inputBookDir, ...trace)
-  const entries = readdirSync(inputDir, { withFileTypes: true })
+  const entries = readdirSync(inputDir, { withFileTypes: true }).filter(
+    (entry) => !entry.name.startsWith('.'),
+  )
 
   entries.forEach((entry) => {
     if (entry.isDirectory()) {
@@ -130,6 +134,7 @@ export default function prepareBooksPlugin(options = {}) {
 
     // Find all directories
     const books = readdirSync(inputPath, { withFileTypes: true })
+      .filter((entry) => !entry.name.startsWith('.'))
       .filter((entry) => entry.isDirectory())
       .map((entry) => entry.name)
 
@@ -160,6 +165,7 @@ export default function prepareBooksPlugin(options = {}) {
 
     // Find all directories
     const books = readdirSync(inputPath, { withFileTypes: true })
+      .filter((entry) => !entry.name.startsWith('.'))
       .filter((entry) => entry.isDirectory())
       .map((entry) => entry.name)
 

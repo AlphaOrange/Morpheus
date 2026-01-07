@@ -76,7 +76,9 @@ export default function prepareImagesPlugin(options = {}) {
   // Loop through all folders, images and sizes
   async function runPrepareImages() {
     for (const inputPath of [genericsPath, booksPath]) {
-      const files = readdirSync(inputPath, { withFileTypes: true, recursive: false })
+      const files = readdirSync(inputPath, { withFileTypes: true, recursive: false }).filter(
+        (entry) => !entry.name.startsWith('.'),
+      )
       for (const size of ['L', 'M', 'S']) {
         mkdirSync(join(inputPath, size), { recursive: true })
       }
