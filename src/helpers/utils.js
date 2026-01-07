@@ -62,22 +62,22 @@ export function distancePeriodText(currentRoom, target) {
 // ----- Interprete User Commands -----
 
 const rx = {
-  help: /^--([a-z]+)/,
-  move_room: /^(?:([a-z0-9_]+) )?(move room |move to room )([a-z0-9_]+)(?::(.*))?$/,
-  move_location: /^(?:([a-z0-9_]+) )?(move location |move to location )([a-z0-9_]+)(?::(.*))?$/,
+  help: /^--([a-z]+)/i,
+  move_room: /^(?:([a-z0-9_]+) )?(move room |move to room )([a-z0-9_]+)(?::(.*))?$/i,
+  move_location: /^(?:([a-z0-9_]+) )?(move location |move to location )([a-z0-9_]+)(?::(.*))?$/i,
   move_destination:
-    /^(?:([a-z0-9_]+) )?(move destination |move to destination )([a-z0-9_]+)(?::(.*))?$/,
-  move_undefined: /^(?:([a-z0-9_]+) )?(move |move to )([a-z0-9_]+)(?::(.*))?$/,
-  move2_room: /^([a-z0-9_]+)? ?(>) ?([a-z0-9_]+)(?::(.*))?$/,
-  move2_location: /^([a-z0-9_]+)? ?(>>) ?([a-z0-9_]+)(?::(.*))?$/,
-  move2_destination: /^([a-z0-9_]+)? ?(>>>) ?([a-z0-9_]+)(?::(.*))?$/,
-  talk1all: /^(?:([a-z0-9_]+) )?(talk|talk to) ?::(.+)$/, // alice talk to:: text / talk:: text
-  talk1: /^(?:([a-z0-9_]+) )?(talk|talk to) ?(?:([a-z0-9_]+))?:(.+)$/, // alice talk to bob: text / talk to bob: text / talk: / talk to:
-  talk2: /^([a-z0-9_]+)? ?(-) ?([a-z0-9_]+):(.+)$/, // alice-bob: text / -bob: text
-  talk3all: /^([a-z0-9_]+)::(.+)$/, // alice:: text
-  talk3: /^([a-z0-9_]+):(.+)$/, // alice: text
-  talk4all: /^:: ?([^:]+)$/, // :: text
-  talk4: /^:? ?([^:]+)$/, // text / : text
+    /^(?:([a-z0-9_]+) )?(move destination |move to destination )([a-z0-9_]+)(?::(.*))?$/i,
+  move_undefined: /^(?:([a-z0-9_]+) )?(move |move to )([a-z0-9_]+)(?::(.*))?$/i,
+  move2_room: /^([a-z0-9_]+)? ?(>) ?([a-z0-9_]+)(?::(.*))?$/i,
+  move2_location: /^([a-z0-9_]+)? ?(>>) ?([a-z0-9_]+)(?::(.*))?$/i,
+  move2_destination: /^([a-z0-9_]+)? ?(>>>) ?([a-z0-9_]+)(?::(.*))?$/i,
+  talk1all: /^(?:([a-z0-9_]+) )?(talk|talk to) ?::(.+)$/i, // alice talk to:: text / talk:: text
+  talk1: /^(?:([a-z0-9_]+) )?(talk|talk to) ?(?:([a-z0-9_]+))?:(.+)$/i, // alice talk to bob: text / talk to bob: text / talk: / talk to:
+  talk2: /^([a-z0-9_]+)? ?(-) ?([a-z0-9_]+):(.+)$/i, // alice-bob: text / -bob: text
+  talk3all: /^([a-z0-9_]+)::(.+)$/i, // alice:: text
+  talk3: /^([a-z0-9_]+):(.+)$/i, // alice: text
+  talk4all: /^:: ?([^:]+)$/i, // :: text
+  talk4: /^:? ?([^:]+)$/i, // text / : text
 }
 
 export function messageToCommand(message) {
@@ -87,7 +87,7 @@ export function messageToCommand(message) {
   // Help commands
   res = rx.help.exec(message)
   if (res) {
-    command = { action: 'help', topic: res[1] }
+    command = { action: 'help', topic: res[1].toLowerCase() }
     return command
   }
 
@@ -96,7 +96,13 @@ export function messageToCommand(message) {
   if (res) {
     let actor = res[1] || ':group'
     let msg = res[4] ? res[4].trim() : null
-    command = { action: 'move', actor: actor, target: res[3], spec: 'room', message: msg }
+    command = {
+      action: 'move',
+      actor: actor.toLowerCase(),
+      target: res[3].toLowerCase(),
+      spec: 'room',
+      message: msg,
+    }
     return command
   }
 
@@ -105,7 +111,13 @@ export function messageToCommand(message) {
   if (res) {
     let actor = res[1] || ':group'
     let msg = res[4] ? res[4].trim() : null
-    command = { action: 'move', actor: actor, target: res[3], spec: 'location', message: msg }
+    command = {
+      action: 'move',
+      actor: actor.toLowerCase(),
+      target: res[3].toLowerCase(),
+      spec: 'location',
+      message: msg,
+    }
     return command
   }
 
@@ -114,7 +126,13 @@ export function messageToCommand(message) {
   if (res) {
     let actor = res[1] || ':group'
     let msg = res[4] ? res[4].trim() : null
-    command = { action: 'move', actor: actor, target: res[3], spec: 'destination', message: msg }
+    command = {
+      action: 'move',
+      actor: actor.toLowerCase(),
+      target: res[3].toLowerCase(),
+      spec: 'destination',
+      message: msg,
+    }
     return command
   }
 
@@ -123,19 +141,35 @@ export function messageToCommand(message) {
   if (res) {
     let actor = res[1] || ':group'
     let msg = res[4] ? res[4].trim() : null
-    command = { action: 'move', actor: actor, target: res[3], spec: ':undefined', message: msg }
+    command = {
+      action: 'move',
+      actor: actor.toLowerCase(),
+      target: res[3].toLowerCase(),
+      spec: ':undefined',
+      message: msg,
+    }
     return command
   }
 
   // Talk to :all
   res = rx.talk1all.exec(message)
   if (res) {
-    command = { action: 'talk', actor: res[1], target: ':all', message: res[3].trim() }
+    command = {
+      action: 'talk',
+      actor: res[1].toLowerCase(),
+      target: ':all',
+      message: res[3].trim(),
+    }
     return command
   }
   res = rx.talk3all.exec(message)
   if (res) {
-    command = { action: 'talk', actor: res[1], target: ':all', message: res[2].trim() }
+    command = {
+      action: 'talk',
+      actor: res[1].toLowerCase(),
+      target: ':all',
+      message: res[2].trim(),
+    }
     return command
   }
   res = rx.talk4all.exec(message)
@@ -149,14 +183,24 @@ export function messageToCommand(message) {
   if (res) {
     let actor = res[1] || ':active'
     let target = res[3] || ':resume'
-    command = { action: 'talk', actor: actor, target: target, message: res[4].trim() }
+    command = {
+      action: 'talk',
+      actor: actor.toLowerCase(),
+      target: target.toLowerCase(),
+      message: res[4].trim(),
+    }
     return command
   }
 
   // Resume Talk
   res = rx.talk3.exec(message)
   if (res) {
-    command = { action: 'talk', actor: res[1], target: ':resume', message: res[2].trim() }
+    command = {
+      action: 'talk',
+      actor: res[1].toLowerCase(),
+      target: ':resume',
+      message: res[2].trim(),
+    }
     return command
   }
 
