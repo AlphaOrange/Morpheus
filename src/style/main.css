@@ -118,7 +118,7 @@ button:disabled:hover {
   background: var(--bg-highlight);
 }
 button:hover .pill {
-  background: var(--bg-box);
+  background: var(--bg-light);
 }
 
 /* Layout Elements */
