@@ -4,6 +4,7 @@ import Character from '@/classes/Character'
 import Destination from '@/classes/Destination'
 import Protocol from '@/classes/Protocol'
 import { messageToCommand, distancePeriod, getHelpData } from '@/helpers/utils'
+import { useOptionsStore } from '@/stores/options'
 
 export const useBookStore = defineStore('book', {
   state: () => ({
@@ -46,6 +47,10 @@ export const useBookStore = defineStore('book', {
   // TODO: konsequent roomID vs room, destinationID vs. destination etc. verwenden
 
   getters: {
+    // The options store
+    options() {
+      return useOptionsStore()
+    },
     // Destination, Location, Room objects
     destination(state) {
       return state.destinations[state.destinationId]
@@ -264,7 +269,7 @@ export const useBookStore = defineStore('book', {
     // Last setup steps before start
     async startBook() {
       // start fresh protocol
-      this.protocol = new Protocol()
+      this.protocol = new Protocol(this.options)
       this.protocol.pushInfo({ text: this.introduction, title: 'Introduction' })
       // build set of AI characters
       const playerIds = Object.keys(this.playerCharacters)

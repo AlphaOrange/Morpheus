@@ -15,7 +15,8 @@ export default class Protocol {
   // ERROR: a program error occurred // debug mode only
   // {type: "error", text}
 
-  constructor() {
+  constructor(optionsStore) {
+    this.options = optionsStore
     // this.messages = []
     this.messages = [
       {
@@ -28,10 +29,32 @@ export default class Protocol {
     this.activeTypes = ['talk'] // these action make a character active
   }
 
-  // Getter: Image or Placeholder
+  // Getter: Dialog messages to show on screen
   get dialog() {
-    let filtered = this.messages.filter((message) => this.showTypes.includes(message.type))
-    return filtered
+    // Filter by message type
+    const filtered = this.messages.filter((message) => this.showTypes.includes(message.type))
+
+    // Filter by message age
+    const len = filtered.length
+    let dialog = []
+    for (let i = 0; i < filtered.length; i++) {
+      if (filtered[i].type === 'info') {
+        if (i >= len - this.options.lookbackInfo) {
+          dialog.push(filtered[i])
+        }
+      } else if (filtered[i].type === 'system') {
+        if (i >= len - this.options.lookbackSystem) {
+          dialog.push(filtered[i])
+        }
+      } else if (filtered[i].type === 'error') {
+        if (i >= len - this.options.lookbackError) {
+          dialog.push(filtered[i])
+        }
+      } else {
+        dialog.push(filtered[i])
+      }
+    }
+    return dialog
   }
 
   // Getter: Last active player
