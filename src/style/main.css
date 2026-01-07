@@ -17,6 +17,7 @@
   --bg-light: #c0c0f0;
   --bg-shade: rgba(0, 0, 0, 0.3);
   --bg-error: #c02000;
+  --bg-code: rgba(255, 255, 255, 0.2);
   --shadow-black: #000;
   --width-navbar: 12rem;
   --width-page: 100%;
@@ -71,6 +72,10 @@ h5:first-child {
 
 small {
   font-size: 0.75rem;
+}
+
+code {
+  background: var(--bg-code);
 }
 
 .tag {

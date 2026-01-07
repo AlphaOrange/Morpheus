@@ -5,131 +5,255 @@ help:
   text: |-
     Show help contests by typing one of the following commands in the message field:
 
-    **--help**
-    Overview of available help commands
+    **TOPICS**
 
-    **--commands**
-    Show all dialog and action commands you can use in the game
+    `--help`
+    Overview of available help commands.
 
-    **--ids**
-    IDs of all characters, places and items that you can interact with currently
+    **COMMANDS**
 
-    **--tasks**
-    **--state**
-    **--situation**
-    Not yet implemented commands
+    `--natural`
+    All natural language commands you can use in the game's message box.
+
+    `--short`
+    All short commands you can use in the game's message box. These cover the same functionalities as natural language commands.
+
+    `--alternative`
+    Alternative commands you can use in the game's message box. These cover the same functionalities as some natural language commands.
+
+    `--commands`
+    All message box commands you can use in the game in one overview.
+
+    **GAME INFO**
+
+    `--ids`
+    IDs of all characters, places and items that you currently can interact with.
+
+    `--tasks`
+    Overview of your characters' current tasks (if chosen book supports this feature).
+
+    `--states`
+    Overview of your characters' current states.
+
+    `--situation`
+    Description of the current game situation.
 commands:
   title: Game Commands
   text: |-
-    You can use the following commands in the message box:
+    For most actions there are different ways to write a command in the game's message box. All variants listed under an action mean the same, so you can choose freely between the natural language and symbolic short commands. This list also contains some unusual alternative commands that are not listed under `--short` and `--natural`.
+    ⭐ means the currently active character, marked with a star in front of their name.
 
     **TALK TO ALL**
 
     `[talking char id] talk to:: [message]`
-    [talking char id] talk:: [messag€]
-    [talking char id]:: [messag€]
+    `[talking char id] talk:: [message]`
+    `[talking char id]:: [message]`
 
     **⭐ CHARACTER TALKS TO ALL**
 
-    talk to:: [message]
-    talk:: [message]
-    :: [message]
+    `talk to:: [message]`
+    `talk:: [message]`
+    `:: [message]`
 
     **TALK TO SOMEONE**
 
-    [talking char id] talk to [talked to char id]: [message]
-    [talking char id] talk [talked to char id]: [message]
-    [talking char id]-[talked to char id]: [message]
+    `[talking char id] talk to [talked to char id]: [message]`
+    `[talking char id] talk [talked to char id]: [message]`
+    `[talking char id]-[talked to char id]: [message]`
 
     **⭐ CHARACTER TALKS TO SOMEONE**
 
-    talk to [talked to char id]: [message]
-    talk [talked to char id]: [message]
-    -[talked to char id]: [message]
+    `talk to [talked to char id]: [message]`
+    `talk [talked to char id]: [message]`
+    `-[talked to char id]: [message]`
 
     **TALK TO SAME CHARACTER AGAIN**
 
-    [talking char id] talk to: [message]
-    [talking char id] talk: [message]
-    [talking char id]: [message]
+    `[talking char id] talk to: [message]`
+    `[talking char id] talk: [message]`
+    `[talking char id]: [message]`
 
     **⭐ CHARACTER TALKS TO SAME CHARACTER AGAIN**
 
-    talk to: [message]
-    talk: [message]
-    : [message]
-    [message]
+    `talk to: [message]`
+    `talk: [message]`
+    `: [message]`
+    `[message]`
 
     **MOVE TO ANOTHER ROOM**
 
-    [acting char id] move to room [room id]
-    [acting char id] move room [room id]
-    [acting char id]>[room id]
+    `[acting char id] move to room [room id]`
+    `[acting char id] move room [room id]`
+    `[acting char id]>[room id]`
 
     **MOVE WHOLE GROUP TO ANOTHER ROOM**
 
-    move to room [room id]
-    move room [room id]
-    &gt;[room id]
+    `move to room [room id]`
+    `move room [room id]`
+    `>[room id]`
 
     **TALK TO ALL THEN MOVE TO ANOTHER ROOM**
 
-    [acting char id] move to room [room id]:: [message]
-    [acting char id] move room [room id]:: [message]
-    [acting char id]>[room id]:: [message]
+    `[acting char id] move to room [room id]:: [message]`
+    `[acting char id] move room [room id]:: [message]`
+    `[acting char id]>[room id]:: [message]`
 
     **MOVE TO ANOTHER LOCATION**
 
-    [acting char id] move to location [location id]
-    [acting char id] move location [location id]
-    [acting char id]>>[location id]
+    `[acting char id] move to location [location id]`
+    `[acting char id] move location [location id]`
+    `[acting char id]>>[location id]`
 
     **MOVE WHOLE GROUP TO ANOTHER LOCATION**
 
-    move to location [location id]
-    move location [location id]
-    &gt;&gt;[location id]
+    `move to location [location id]`
+    `move location [location id]`
+    `>>[location id]`
 
     **TALK TO ALL THEN MOVE TO ANOTHER LOCATION**
 
-    [acting char id] move to location [location id]: [message]
-    [acting char id] move location [location id]: [message]
-    [acting char id]>>[location id]: [message]
+    `[acting char id] move to location [location id]: [message]`
+    `[acting char id] move location [location id]: [message]`
+    `[acting char id]>>[location id]: [message]`
 
     **TRAVEL TO ANOTHER DESTINATION**
 
-    [acting char id] move to destination [destination id]
-    [acting char id] move destination [destination id]
-    [acting char id]>>>[destination id]
+    `[acting char id] move to destination [destination id]`
+    `[acting char id] move destination [destination id]`
+    `[acting char id]>>>[destination id]`
 
     **TRAVEL WHOLE GROUP TO ANOTHER DESTINATION**
 
-    move to destination [destination id]
-    move destination [destination id]
-    &gt;&gt;&gt;[destination id]
+    `move to destination [destination id]`
+    `move destination [destination id]`
+    `>>>[destination id]`
 
     **TALK TO ALL THEN TRAVEL TO ANOTHER DESTINATION**
 
-    [acting char id] move to destination [destination id]: [message]
-    [acting char id] move destination [destination id]: [message]
-    [acting char id]>>>[destination id]: [message]
+    `[acting char id] move to destination [destination id]: [message]`
+    `[acting char id] move destination [destination id]: [message]`
+    `[acting char id]>>>[destination id]: [message]`
 
     **MOVE TO ANOTHER ROOM/LOCATION/DESTINATION**
+    _(only use if id is currently unambigious)_
 
-    (only use if id is currently unambigious)
-    [acting char id] move to [room/location/destination id]
-    [acting char id] move [room/location/destination id]
+    `[acting char id] move to [room/location/destination id]`
+    `[acting char id] move [room/location/destination id]`
 
     **MOVE WHOLE GROUP TO ANOTHER ROOM/LOCATION/DESTINATION**
+    _(only use if id is currently unambigious)_
 
-    (only use if id is currently unambigious)
-    move to [room/location/destination id]
-    move [room/location/destination id]
+    `move to [room/location/destination id]`
+    `move [room/location/destination id]`
 
     **TALK TO ALL THEN MOVE TO ANOTHER ROOM/LOCATION/DESTINATION**
+    _(only use if id is currently unambigious)_
 
-    (only use if id is currently unambigious)
-    [acting char id] move to [room/location/destination id]: [message]
-    [acting char id] move [room/location/destination id]: [message]
+    `[acting char id] move to [room/location/destination id]: [message]`
+    `[acting char id] move [room/location/destination id]: [message]`
+natural:
+  title: Natural Language Commands
+  text: |-
+    You can use the following natural language commands in the message box:
 
-    **--help**: show additional help commands"
+    **TALK COMMANDS** 
+
+    `[talking char id] talk:: [message]`
+    Talk to all
+
+    `talk:: [message]`
+    ⭐ character talk to all
+
+    `[talking char id] talk to [talked to char id]: [message]`
+    Talk to specific character
+
+    `talk to [talked to char id]: [message]`
+    ⭐ character talk to specific character
+
+    `[talking char id] talk: [message]`
+    Talk to same character again
+
+    `talk: [message]`
+    ⭐ character talk to same character again
+
+    **MOVE COMMANDS** 
+
+    `[acting char id] move to room [room id]`
+    Move to another room
+
+    `move to room [room id]`
+    Move whole group to another room
+
+    `[acting char id] move to room [room id]:: [message]`
+    Talk to all, then move to another room
+
+    `[acting char id] move to location [location id]`
+    Move to another location
+
+    `move to location [location id]`
+    Move whole group to another location
+
+    `[acting char id] move to location [location id]: [message]`
+    Talk to all, then move to another location
+
+    `[acting char id] move to destination [destination id]`
+    Travel to another destination
+
+    `move to destination [destination id]`
+    Whole group travel to another location
+
+    `[acting char id] move to destination [destination id]: [message]`
+    Talk to all, then whole group travel to another location
+short:
+  title: Short Commands
+  text: |-
+    You can use the following short symbolic commands in the message box:
+
+    **TALK COMMANDS**
+
+    `[talking char id]:: [message]`
+    Talk to all
+
+    `:: [message]`
+    ⭐ character talk to all
+
+    `: [message]` or just the `[message]`
+    ⭐ character talk to same character again
+
+    `[talking char id]-[talked to char id]: [message]`
+    Talk to specific character
+
+    `-[talked to char id]: [message]`
+    ⭐ character talk to specific character
+
+    `[talking char id]: [message]`
+    Talk to same character again
+
+    **MOVE COMMANDS**
+
+    `[acting char id]>[room id]`
+    Move to another room
+
+    `>[room id]`
+    Move whole group to another room
+
+    `[acting char id]>[room id]:: [message]`
+    Talk to all, then move to another room
+
+    `[acting char id]>>[location id]`
+    Move to another location
+
+    `>>[location id]`
+    Move whole group to another location
+
+    `[acting char id]>>[location id]: [message]`
+    Talk to all, then move to another location
+
+    `[acting char id]>>>[destination id]`
+    Travel to another destination
+
+    `>>>[destination id]`
+    Whole group travel to another location
+
+    `[acting char id]>>>[destination id]: [message]`
+    Talk to all, then whole group travel to another location
