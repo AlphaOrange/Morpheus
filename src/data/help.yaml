@@ -18,24 +18,21 @@ help:
     `--short`
     All short commands you can use in the game's message box. These cover the same functionalities as natural language commands.
 
-    `--alternative`
-    Alternative commands you can use in the game's message box. These cover the same functionalities as some natural language commands.
-
     `--commands`
-    All message box commands you can use in the game in one overview.
+    All message box commands you can use in the game in one overview, also some alternative commands not mentioned in `--natural` or `--short`.
 
     **GAME INFO**
 
-    `--ids`
+    `--ids` 🛠️
     IDs of all characters, places and items that you currently can interact with.
 
-    `--tasks`
+    `--tasks` 🛠️
     Overview of your characters' current tasks (if chosen book supports this feature).
 
-    `--states`
+    `--states` 🛠️
     Overview of your characters' current states.
 
-    `--situation`
+    `--situation` 🛠️
     Description of the current game situation.
 commands:
   title: Game Commands
