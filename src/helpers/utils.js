@@ -15,20 +15,20 @@ function distanceRooms(currentRoom, targetRoom) {
   return 60 // TODO: all of this needs to be (optional) book parameters
 }
 function distanceLocations(currentLocation, targetLocation) {
-  return (
-    Math.sqrt(
-      (currentLocation.position[0] - targetLocation.position[0]) ** 2 +
-        (currentLocation.position[1] - targetLocation.position[1]) ** 2,
-    ) * 60
+  const route = Math.sqrt(
+    (currentLocation.position[0] - targetLocation.position[0]) ** 2 +
+      (currentLocation.position[1] - targetLocation.position[1]) ** 2,
   )
+  const detour = currentLocation.detour + targetLocation.detour
+  return (route + detour) * 60
 }
 function distanceDestinations(currentDestination, targetDestination) {
-  return (
-    Math.sqrt(
-      (currentDestination.position[0] - targetDestination.position[0]) ** 2 +
-        (currentDestination.position[1] - targetDestination.position[1]) ** 2,
-    ) * 3600
+  const route = Math.sqrt(
+    (currentDestination.position[0] - targetDestination.position[0]) ** 2 +
+      (currentDestination.position[1] - targetDestination.position[1]) ** 2,
   )
+  const detour = currentDestination.detour + targetDestination.detour
+  return (route + detour) * 3600
 }
 export function distancePeriod(currentRoom, target) {
   if (target instanceof Room) {
