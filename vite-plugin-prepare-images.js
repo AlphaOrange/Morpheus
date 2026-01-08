@@ -79,7 +79,7 @@ export default function prepareImagesPlugin(options = {}) {
       const files = readdirSync(inputPath, { withFileTypes: true, recursive: false }).filter(
         (entry) => !entry.name.startsWith('.'),
       )
-      for (const size of ['L', 'M', 'S']) {
+      for (const size of ['L', 'M', 'S', 'full']) {
         mkdirSync(join(inputPath, size), { recursive: true })
       }
       for (const file of files) {
@@ -111,6 +111,10 @@ export default function prepareImagesPlugin(options = {}) {
               .jpeg({ quality: 80 })
               .toFile(outputFilePath)
           }
+
+          // Store original as 80% quality .jpg
+          const outputFilePath = join(inputPath, 'full', outName)
+          await sharp(filePath).jpeg({ quality: 80 }).toFile(outputFilePath)
         }
       }
     }
