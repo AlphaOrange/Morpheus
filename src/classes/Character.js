@@ -21,6 +21,26 @@ export default class Character {
     // data.load_agendas
   }
 
+  // Save object state to JSON
+  toJSON() {
+    return {
+      id: this.id,
+      name: this.name,
+      isPlayable: this.isPlayable,
+      isNSC: this.isNSC,
+      description: this.description,
+      gender: this.gender,
+      age: this.age,
+      profession: this.profession,
+      start: this.start, // do we need to store this?
+      _image: this._image,
+      room: this.room.id, // only store id
+      controlledBy: this.controlledBy,
+      arrivalTime: this.arrivalTime,
+      arrivalTarget: this.arrivalTarget === null ? null : this.arrivalTarget.id, // only store id
+    }
+  }
+
   // Getter: Image or Placeholder
   get image() {
     if (this._image === '') {

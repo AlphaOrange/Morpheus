@@ -2,15 +2,18 @@ import { defineStore } from 'pinia'
 
 export const useOptionsStore = defineStore('options', {
   state: () => ({
-    // Engine Parameters (not to be changed during execution)
+    // Engine Parameters (cannot be changed, e.g. ui settings)
     lookbackInfo: 20, // how many messages until an Info message disappears?
     lookbackSystem: 20, // how many messages until a System message disappears?
     lookbackError: 5, // how many messages until an Error message disappears?
-    // Game Settings (e.g. display options)
+
+    // Game Settings (can be changed by user, e.g. display options)
     idHintsMode: 'auto', // can be "never", "auto", "always"
-    // Book Settings (e.g. ai settings)
+
+    // Book Settings (can be overwritten by book, e.g. ai settings)
     // ..
-    // Functional Settings/Flags (used by game engine)
+
+    // Special Variables (e.g. user activity flags)
     idHintsActive: false,
   }),
 
@@ -20,6 +23,15 @@ export const useOptionsStore = defineStore('options', {
       return (
         (state.idHintsMode === 'always') | ((state.idHintsMode === 'auto') & state.idHintsActive)
       )
+    },
+  },
+
+  actions: {
+    toJSON() {
+      // only save game settings and book settings
+      return {
+        idHintsMode: this.idHintsMode,
+      }
     },
   },
 })

@@ -7,6 +7,20 @@ export default class Room {
     this._image = data.image
   }
 
+  // Save object state to JSON
+  toJSON() {
+    return {
+      id: this.id,
+      name: this.name,
+      description: this.description,
+      location: this.location.id,
+      _image: this._image,
+      characters: Object.fromEntries(
+        Object.entries(this.characters).map(([key, obj]) => [key, obj.id]),
+      ), // only store ids
+    }
+  }
+
   // Getter: Image or Placeholder
   get image() {
     if (this._image === '') {

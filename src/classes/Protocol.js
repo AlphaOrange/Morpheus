@@ -29,6 +29,13 @@ export default class Protocol {
     this.activeTypes = ['talk'] // these action make a character active
   }
 
+  // Save object state to JSON
+  toJSON() {
+    return {
+      messages: this.messages,
+    }
+  }
+
   // Getter: Dialog messages to show on screen
   get dialog() {
     // Filter by message type

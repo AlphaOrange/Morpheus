@@ -70,6 +70,7 @@
     <div class="box action-box">
       <h3>Debug / Test</h3>
       <ActionButton @click="debug_addTime()" :text="`+1min`" />
+      <ActionButton @click="debug_save()" :text="`Save`" />
     </div>
   </div>
 </template>
@@ -80,8 +81,12 @@ import { storeToRefs } from 'pinia'
 import { periodText, distancePeriodText } from '@/helpers/utils'
 import CharacterMarker from '@/components/CharacterMarker.vue'
 import ActionButton from '@/components/ActionButton.vue'
+
 import { useBookStore } from '@/stores/book'
 const book = useBookStore()
+import { useOptionsStore } from '@/stores/options'
+const options = useOptionsStore()
+
 const { activeRooms, movingPlayerCharacters, activePlayerID, time, room } = storeToRefs(book)
 const emits = defineEmits(['talk', 'move'])
 
@@ -116,6 +121,12 @@ const showTopBox = computed(() => multiroom.value || movingchars.value)
 // DEBUG
 const debug_addTime = () => {
   book.addTime(60)
+}
+const debug_save = () => {
+  console.log('OPTIONS')
+  console.log(JSON.stringify(options))
+  console.log('BOOK')
+  console.log(JSON.stringify(book))
 }
 </script>
 

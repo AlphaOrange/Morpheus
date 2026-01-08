@@ -102,6 +102,37 @@ export const useBookStore = defineStore('book', {
   },
 
   actions: {
+    toJSON() {
+      // don't save loaded/started states
+      return {
+        id: this.id,
+        title: this.title,
+        description: this.description,
+        tags: this.tags,
+        startTime: this.startTime,
+        introduction: this.introduction,
+        _cover: this._cover,
+        world: this.world, // stringify will convert world object
+        destinations: this.destinations, // stringify will convert destination objects
+        characters: this.characters, // stringify will convert character objects
+        playerCharacters: Object.fromEntries(
+          Object.entries(this.playerCharacters).map(([key, obj]) => [key, obj.id]),
+        ), // only store ids
+        aiCharacters: Object.fromEntries(
+          Object.entries(this.aiCharacters).map(([key, obj]) => [key, obj.id]),
+        ), // only store ids
+        states: this.states, // Do we need to save these?
+        agendas: this.agendas, // Do we need to save these?
+        protocol: this.protocol, // stringify will convert character objects
+        movingCharacterIDs: this.movingCharacterIDs,
+        destinationId: this.destinationId,
+        locationId: this.locationId,
+        roomId: this.roomId,
+        time: this.time,
+        recentPlayerIDs: this.recentPlayerIDs,
+      }
+    },
+
     getSetupCharacterNames() {
       return this.characters_names.filter((name) => this.characters[name].type === 'player')
     },

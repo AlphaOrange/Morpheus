@@ -4,6 +4,16 @@ export default class World {
     this._image = data.image
   }
 
+  // Save object state to JSON
+  toJSON() {
+    return {
+      id: this.id,
+      name: this.name,
+      description: this.description,
+      _image: this._image,
+    }
+  }
+
   // Getter: Image or Placeholder
   get image() {
     if (this._image === '') {
