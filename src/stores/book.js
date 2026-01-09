@@ -246,6 +246,7 @@ export const useBookStore = defineStore('book', {
 
     // load book content
     async loadBook(id) {
+      this.$reset() // reset book to blank
       try {
         this.loaded = false // in case sth goes wrong the book is inactive
 
@@ -287,6 +288,17 @@ export const useBookStore = defineStore('book', {
         this.loaded = true
       } catch (error) {
         console.error('Error fetching book data with id ' + id, error)
+      }
+    },
+
+    // restore book from savegame
+    async restoreBook(jsonSaveStr) {
+      this.$reset() // reset book to blank
+      try {
+        this.loaded = false // in case sth goes wrong the book is inactive
+        const data = JSON.parse(jsonSaveStr)
+      } catch (error) {
+        console.error('Error loading book savefile', error)
       }
     },
 

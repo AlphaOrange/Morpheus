@@ -123,10 +123,10 @@ const debug_addTime = () => {
   book.addTime(60)
 }
 const debug_save = () => {
-  console.log('OPTIONS')
-  console.log(JSON.stringify(options))
-  console.log('BOOK')
-  console.log(JSON.stringify(book))
+  // Create savefile
+  const saveString = JSON.stringify({ options: options, book: book })
+  // Store in LocalStorage
+  localStorage.setItem('savegame', saveString)
 }
 </script>
 
