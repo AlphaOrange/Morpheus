@@ -2,10 +2,14 @@ import { defineStore } from 'pinia'
 import { useOptionsStore } from '@/stores/options'
 import { useBookStore } from '@/stores/book'
 
+// Initial load of saveData
+const saveString = localStorage.getItem('savegame')
+const saveData = saveString === null ? null : JSON.parse(saveString)
+
 export const useShelfStore = defineStore('shelf', {
   state: () => ({
     books: [],
-    savegame: null,
+    saveData: saveData,
   }),
 
   getters: {
@@ -14,6 +18,9 @@ export const useShelfStore = defineStore('shelf', {
     },
     book() {
       return useBookStore()
+    },
+    hasSaveData() {
+      return saveData !== null
     },
   },
 
@@ -29,6 +36,7 @@ export const useShelfStore = defineStore('shelf', {
     saveBook() {
       const saveString = JSON.stringify({ options: this.options, book: this.book })
       localStorage.setItem('savegame', saveString)
+      this.saveData = JSON.parse(saveString)
     },
     loadBook() {
       const saveString = localStorage.getItem('savegame')

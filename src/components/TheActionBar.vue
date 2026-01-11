@@ -71,7 +71,6 @@
       <h3>Debug / Test</h3>
       <ActionButton @click="debug_addTime()" :text="`+1min`" />
       <ActionButton @click="debug_save()" :text="`Save`" />
-      <ActionButton @click="debug_load()" :text="`Load`" />
     </div>
   </div>
 </template>
@@ -126,10 +125,6 @@ const debug_addTime = () => {
 // DEBUG: SAVE GAME
 const debug_save = () => {
   shelf.saveBook()
-}
-// DEBUG: LOAD GAME
-const debug_load = () => {
-  shelf.loadBook()
 }
 </script>
 
