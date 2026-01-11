@@ -83,10 +83,10 @@ import { periodText, distancePeriodText } from '@/helpers/utils'
 import CharacterMarker from '@/components/CharacterMarker.vue'
 import ActionButton from '@/components/ActionButton.vue'
 
+import { useShelfStore } from '@/stores/shelf'
+const shelf = useShelfStore()
 import { useBookStore } from '@/stores/book'
 const book = useBookStore()
-import { useOptionsStore } from '@/stores/options'
-const options = useOptionsStore()
 
 const { activeRooms, movingPlayerCharacters, activePlayerID, time, room } = storeToRefs(book)
 const emits = defineEmits(['talk', 'move'])
@@ -125,15 +125,11 @@ const debug_addTime = () => {
 }
 // DEBUG: SAVE GAME
 const debug_save = () => {
-  const saveString = JSON.stringify({ options: options, book: book })
-  localStorage.setItem('savegame', saveString)
+  shelf.saveBook()
 }
 // DEBUG: LOAD GAME
 const debug_load = () => {
-  const saveString = localStorage.getItem('savegame')
-  const saveData = JSON.parse(saveString)
-  options.restoreOptions(saveData.options)
-  book.restoreBook(saveData.book)
+  shelf.loadBook()
 }
 </script>
 
