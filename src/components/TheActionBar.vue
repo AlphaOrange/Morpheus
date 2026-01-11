@@ -71,6 +71,7 @@
       <h3>Debug / Test</h3>
       <ActionButton @click="debug_addTime()" :text="`+1min`" />
       <ActionButton @click="debug_save()" :text="`Save`" />
+      <ActionButton @click="debug_load()" :text="`Load`" />
     </div>
   </div>
 </template>
@@ -118,15 +119,21 @@ const multiroom = computed(() => activeRooms.value.length > 1)
 const movingchars = computed(() => movingPlayerCharacters.value.length > 0)
 const showTopBox = computed(() => multiroom.value || movingchars.value)
 
-// DEBUG
+// DEBUG: ADD 1 MINUTE
 const debug_addTime = () => {
   book.addTime(60)
 }
+// DEBUG: SAVE GAME
 const debug_save = () => {
-  // Create savefile
   const saveString = JSON.stringify({ options: options, book: book })
-  // Store in LocalStorage
   localStorage.setItem('savegame', saveString)
+}
+// DEBUG: LOAD GAME
+const debug_load = () => {
+  const saveString = localStorage.getItem('savegame')
+  const saveData = JSON.parse(saveString)
+  options.restoreOptions(saveData.options)
+  book.restoreBook(saveData.book)
 }
 </script>
 

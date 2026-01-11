@@ -20,6 +20,15 @@ export default class Character {
     // data.load_states
     // data.load_agendas
   }
+  static fromJSON(data) {
+    data.image = data._image
+    const proto = new Character(data)
+    proto.room = data.room // TODO: replace on the outside !! ID is not enough !!
+    proto.controlledBy = data.controlledBy
+    proto.arrivalTime = data.arrivalTime
+    proto.arrivalTarget = data.arrivalTarget // TODO this.arrivalTarget = foo(data.arrivalTarget) // id/null->ref/null
+    return proto
+  }
 
   // Save object state to JSON
   toJSON() {
@@ -32,12 +41,26 @@ export default class Character {
       gender: this.gender,
       age: this.age,
       profession: this.profession,
-      start: this.start, // do we need to store this?
+      start: this.start,
       _image: this._image,
-      room: this.room.id, // only store id
+      room:
+        this.room === null
+          ? null
+          : {
+              room: this.room.id,
+              location: this.room.location.id,
+              destination: this.room.location.destination.id,
+            }, // store unique id combination for room
       controlledBy: this.controlledBy,
       arrivalTime: this.arrivalTime,
-      arrivalTarget: this.arrivalTarget === null ? null : this.arrivalTarget.id, // only store id
+      arrivalTarget:
+        this.arrivalTarget === null
+          ? null
+          : {
+              room: this.arrivalTarget.id,
+              location: this.arrivalTarget.location.id,
+              destination: this.arrivalTarget.location.destination.id,
+            }, // store unique id combination for room
     }
   }
 

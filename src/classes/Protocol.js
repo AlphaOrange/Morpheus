@@ -28,6 +28,11 @@ export default class Protocol {
     this.showTypes = ['talk', 'hint', 'info', 'error', 'system'] // TEST MODE
     this.activeTypes = ['talk'] // these action make a character active
   }
+  static fromJSON(data, optionsStore) {
+    const proto = new Protocol(optionsStore)
+    proto.messages = data.messages
+    return proto
+  }
 
   // Save object state to JSON
   toJSON() {

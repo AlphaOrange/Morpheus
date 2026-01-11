@@ -292,11 +292,72 @@ export const useBookStore = defineStore('book', {
     },
 
     // restore book from savegame
-    async restoreBook(jsonSaveStr) {
+    async restoreBook(data) {
       this.$reset() // reset book to blank
       try {
-        this.loaded = false // in case sth goes wrong the book is inactive
-        const data = JSON.parse(jsonSaveStr)
+        // In case something goes wrong make book inactive
+        this.loaded = false
+        this.started = false
+
+        // restore book data
+        this.id = data.id
+        this.title = data.title
+        this.description = data.description
+        this.tags = data.tags
+        this.startTime = new Date(data.startTime)
+        this.introduction = data.introduction
+        this._cover = data._cover
+        this.world = World.fromJSON(data.world)
+
+        // Create destinations/locations/rooms and characters
+        for (let id in data.destinations) {
+          this.destinations[id] = Destination.fromJSON(data.destinations[id])
+        }
+        for (let id in data.characters) {
+          this.characters[id] = Character.fromJSON(data.characters[id])
+        }
+
+        // fix references in characters (current room) and rooms (present characters)
+        for (let char of Object.values(this.characters)) {
+          const currentRoomID = char.room
+          if (currentRoomID !== null) {
+            char.room =
+              this.destinations[char.room.destination].locations[char.room.location].rooms[
+                char.room.room
+              ]
+            char.room.characters[char.id] = char
+          }
+          const targetRoomID = char.arrivalTarget
+          if (targetRoomID !== null) {
+            char.arrivalTarget =
+              this.destinations[char.arrivalTarget.destination].locations[
+                char.arrivalTarget.location
+              ].rooms[char.arrivalTarget.room]
+          }
+        }
+
+        // create list of player and ai characters
+        for (let id in data.playerCharacters) {
+          this.playerCharacters[id] = this.characters[id]
+        }
+        for (let id in data.aiCharacters) {
+          this.aiCharacters[id] = this.characters[id]
+        }
+
+        // more book data
+        this.states = data.states
+        this.agendas = data.agendas
+        this.protocol = Protocol.fromJSON(data.protocol, this.options)
+        this.movingCharacterIDs = data.movingCharacterIDs
+        this.destinationId = data.destinationId
+        this.locationId = data.locationId
+        this.roomId = data.roomId
+        this.time = data.time
+        this.recentPlayerIDs = data.recentPlayerIDs
+
+        // now activate book for play
+        this.loaded = true
+        this.started = true
       } catch (error) {
         console.error('Error loading book savefile', error)
       }

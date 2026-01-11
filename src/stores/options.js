@@ -27,6 +27,11 @@ export const useOptionsStore = defineStore('options', {
   },
 
   actions: {
+    // restore from savefile json
+    restoreOptions(data) {
+      this.idHintsMode = data.idHintsMode
+    },
+    // write to json for savefile
     toJSON() {
       // only save game settings and book settings
       return {

@@ -17,6 +17,16 @@ export default class Location {
     }
     this._image = data.image
   }
+  static fromJSON(data, destination) {
+    data.image = data._image
+    const proto = new Location(data)
+    proto.destination = destination
+    for (let id in data.rooms) {
+      proto.rooms[id] = Room.fromJSON(data.rooms[id], proto)
+    }
+    proto.entry = proto.rooms[data.entry]
+    return proto
+  }
 
   // Save object state to JSON
   toJSON() {
