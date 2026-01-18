@@ -23,6 +23,7 @@ export default defineConfig({
       booksDir: 'public/images/books',
     }),
   ],
+  base: '/test/morpheus/',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
