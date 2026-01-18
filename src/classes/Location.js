@@ -2,6 +2,7 @@ import Room from '@/classes/Room'
 
 export default class Location {
   rooms = {}
+  entry = null
 
   constructor(data, destination) {
     ;['id', 'name', 'description', 'position', 'detour'].forEach((key) => (this[key] = data[key]))
@@ -9,12 +10,37 @@ export default class Location {
     for (let id in data.rooms) {
       this.rooms[id] = new Room(data.rooms[id], this)
     }
-    if (data.entry) {
-      this.entry = this.rooms[data.entry]
-    } else {
+    if (data.entry === '') {
       this.entry = Object.values(this.rooms)[0]
+    } else {
+      this.entry = this.rooms[data.entry]
     }
     this._image = data.image
+  }
+  static fromJSON(data, destination) {
+    data.image = data._image
+    const proto = new Location(data)
+    proto.destination = destination
+    for (let id in data.rooms) {
+      proto.rooms[id] = Room.fromJSON(data.rooms[id], proto)
+    }
+    proto.entry = proto.rooms[data.entry]
+    return proto
+  }
+
+  // Save object state to JSON
+  toJSON() {
+    return {
+      id: this.id,
+      name: this.name,
+      description: this.description,
+      position: this.position,
+      detour: this.detour,
+      destination: this.destination.id, // only store id
+      rooms: this.rooms, // stringify will convert room objects
+      entry: this.entry.id, // only store id
+      _image: this._image,
+    }
   }
 
   // Getter: Image or Placeholder

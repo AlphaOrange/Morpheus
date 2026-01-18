@@ -102,6 +102,37 @@ export const useBookStore = defineStore('book', {
   },
 
   actions: {
+    toJSON() {
+      // don't save loaded/started states
+      return {
+        id: this.id,
+        title: this.title,
+        description: this.description,
+        tags: this.tags,
+        startTime: this.startTime,
+        introduction: this.introduction,
+        _cover: this._cover,
+        world: this.world, // stringify will convert world object
+        destinations: this.destinations, // stringify will convert destination objects
+        characters: this.characters, // stringify will convert character objects
+        playerCharacters: Object.fromEntries(
+          Object.entries(this.playerCharacters).map(([key, obj]) => [key, obj.id]),
+        ), // only store ids
+        aiCharacters: Object.fromEntries(
+          Object.entries(this.aiCharacters).map(([key, obj]) => [key, obj.id]),
+        ), // only store ids
+        states: this.states, // Do we need to save these?
+        agendas: this.agendas, // Do we need to save these?
+        protocol: this.protocol, // stringify will convert character objects
+        movingCharacterIDs: this.movingCharacterIDs,
+        destinationId: this.destinationId,
+        locationId: this.locationId,
+        roomId: this.roomId,
+        time: this.time,
+        recentPlayerIDs: this.recentPlayerIDs,
+      }
+    },
+
     getSetupCharacterNames() {
       return this.characters_names.filter((name) => this.characters[name].type === 'player')
     },
@@ -215,6 +246,7 @@ export const useBookStore = defineStore('book', {
 
     // load book content
     async loadBook(id) {
+      this.$reset() // reset book to blank
       try {
         this.loaded = false // in case sth goes wrong the book is inactive
 
@@ -256,6 +288,78 @@ export const useBookStore = defineStore('book', {
         this.loaded = true
       } catch (error) {
         console.error('Error fetching book data with id ' + id, error)
+      }
+    },
+
+    // restore book from savegame
+    async restoreBook(data) {
+      this.$reset() // reset book to blank
+      try {
+        // In case something goes wrong make book inactive
+        this.loaded = false
+        this.started = false
+
+        // restore book data
+        this.id = data.id
+        this.title = data.title
+        this.description = data.description
+        this.tags = data.tags
+        this.startTime = new Date(data.startTime)
+        this.introduction = data.introduction
+        this._cover = data._cover
+        this.world = World.fromJSON(data.world)
+
+        // Create destinations/locations/rooms and characters
+        for (let id in data.destinations) {
+          this.destinations[id] = Destination.fromJSON(data.destinations[id])
+        }
+        for (let id in data.characters) {
+          this.characters[id] = Character.fromJSON(data.characters[id])
+        }
+
+        // fix references in characters (current room) and rooms (present characters)
+        for (let char of Object.values(this.characters)) {
+          const currentRoomID = char.room
+          if (currentRoomID !== null) {
+            char.room =
+              this.destinations[char.room.destination].locations[char.room.location].rooms[
+                char.room.room
+              ]
+            char.room.characters[char.id] = char
+          }
+          const targetRoomID = char.arrivalTarget
+          if (targetRoomID !== null) {
+            char.arrivalTarget =
+              this.destinations[char.arrivalTarget.destination].locations[
+                char.arrivalTarget.location
+              ].rooms[char.arrivalTarget.room]
+          }
+        }
+
+        // create list of player and ai characters
+        for (let id in data.playerCharacters) {
+          this.playerCharacters[id] = this.characters[id]
+        }
+        for (let id in data.aiCharacters) {
+          this.aiCharacters[id] = this.characters[id]
+        }
+
+        // more book data
+        this.states = data.states
+        this.agendas = data.agendas
+        this.protocol = Protocol.fromJSON(data.protocol, this.options)
+        this.movingCharacterIDs = data.movingCharacterIDs
+        this.destinationId = data.destinationId
+        this.locationId = data.locationId
+        this.roomId = data.roomId
+        this.time = data.time
+        this.recentPlayerIDs = data.recentPlayerIDs
+
+        // now activate book for play
+        this.loaded = true
+        this.started = true
+      } catch (error) {
+        console.error('Error loading book savefile', error)
       }
     },
 
