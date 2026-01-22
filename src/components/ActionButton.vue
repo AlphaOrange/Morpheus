@@ -25,18 +25,29 @@ const props = defineProps({
     type: String,
     default: null,
   },
+  color: {
+    type: String,
+    default: null,
+  },
 })
 
 const cssClasses = computed(() => {
+  let css = []
   if (props.icon) {
-    return ['icon-button']
+    css.push('icon-button')
   }
-  return []
+  if (props.color) {
+    css.push('color-' + props.color)
+  }
+  return css
 })
 </script>
 
 <style scoped>
 .icon-button {
   padding-left: 0.5rem;
+}
+.color-dark {
+  background: var(--bg-page);
 }
 </style>
