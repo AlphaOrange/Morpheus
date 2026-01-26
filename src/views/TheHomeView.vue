@@ -9,8 +9,7 @@
           <h3>Currently In Play</h3>
           <div class="warning-message">
             The book '{{ bookStore.title }}' is currently loaded. If you choose another book now (or
-            even the same book), all unsaved progress will be lost!<br />
-            Click on "Play" in the sidebar to get back to '{{ bookStore.title }}'
+            even the same book), all unsaved progress will be lost!
           </div>
           <ActionButton :text="`Continue Playing`" :color="`dark`" @click="goToPlay" />
           <ActionButton :text="`Save and Close`" :color="`dark`" @click="saveClose" />

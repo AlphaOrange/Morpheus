@@ -1,5 +1,5 @@
 <template>
-  <div class="book" :style="{ backgroundImage: `url(images/${cover})` }">
+  <div class="book" :style="{ backgroundImage: `url(images/L/${cover})` }">
     <div class="shade">
       <div class="bookmark">BOOKMARK</div>
       <header>
@@ -7,7 +7,7 @@
         <div class="description">{{ truncateString(saveData.book.description, 108) }}</div>
       </header>
       <footer>
-        <div class="room" :style="{ backgroundImage: `url(images/${roomImage})` }">
+        <div class="room" :style="{ backgroundImage: `url(images/S/${roomImage})` }">
           {{ roomData.name }}
         </div>
         <div class="characters">
@@ -15,7 +15,7 @@
             class="character"
             v-for="char in chars"
             :key="char.id"
-            :style="{ backgroundImage: `url(images/${charImage(char)})` }"
+            :style="{ backgroundImage: `url(images/S/${charImage(char)})` }"
           >
             {{ char.name }}
           </div>

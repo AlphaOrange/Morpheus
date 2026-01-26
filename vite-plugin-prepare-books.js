@@ -119,14 +119,20 @@ function _collectImages(inputBookDir, trace, outputImageDir) {
 // ------
 export default function prepareBooksPlugin(options = {}) {
   // Fill in default options
-  const { inputDir = 'src/data/books', outputDir = 'public/data/books', watch = true } = options
+  const {
+    inputDir = 'src/data/books',
+    outputDir = 'public',
+    outputDirImages = 'tmp_images',
+    watch = true,
+  } = options
 
   // Generate absolute paths
   const __dirname = fileURLToPath(new URL('.', import.meta.url))
   const inputPath = resolve(__dirname, inputDir)
   const outputPath = resolve(__dirname, outputDir)
+  const outputPathImages = resolve(__dirname, outputDirImages)
   const outputDataDir = join(outputPath, 'books')
-  const outputImageDir = join(outputPath, 'images', 'books')
+  const outputImageDir = join(outputPathImages, 'books')
 
   // Plugin function: process book Json data
   function runPrepareBooks() {

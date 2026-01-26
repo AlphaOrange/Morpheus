@@ -12,7 +12,7 @@
   <div class="bar-option" @click="router.push('/about')">About</div>
   <!-- about Morpheus -->
   <footer v-if="started" @click="router.push('/info')">
-    <img :src="'images/' + cover" class="cover" />
+    <img :src="'images/M/' + cover" class="cover" />
     <div>
       <small>Currently playing:</small>
       <br />

@@ -6,7 +6,7 @@
         {{ props.setting.name }}<span class="hint">{{ props.setting.id }}</span>
       </h3>
     </header>
-    <img :src="'images/' + props.setting.image" />
+    <img :src="'images/L/' + props.setting.image" />
     <main>
       {{ props.setting.description }}
     </main>

@@ -12,7 +12,7 @@
       </div>
       <div v-if="multiroom" class="shelf horizontal-flex item-selection">
         <div v-for="room in activeRooms" :key="room.id" class="room-button" @click="switchTo(room)">
-          <img :src="`images/${room.image}`" alt="" />
+          <img :src="`images/S/${room.image}`" alt="" />
           <div class="player-number">{{ room.numberOfPlayers }}</div>
         </div>
       </div>

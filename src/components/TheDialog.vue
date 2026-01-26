@@ -11,7 +11,7 @@
         <div
           v-if="showIcon(message)"
           class="header-icon"
-          :style="{ backgroundImage: `url(images/${headerIcon(message)})` }"
+          :style="{ backgroundImage: `url(images/S/${headerIcon(message)})` }"
         ></div>
         <div class="header-text">
           {{ headerText(message) }}

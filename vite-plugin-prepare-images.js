@@ -66,26 +66,36 @@ const RATIOS = TYPES.map((type) => SIZES[type].ratio)
 // ------
 export default function prepareImagesPlugin(options = {}) {
   // Fill in default options
-  const { genericsDir = 'public/images', booksDir = 'public/images/books' } = options
+  const {
+    genericsDirFrom = 'src/images',
+    booksDirFrom = 'tmp_images/books',
+    genericsDir = 'public/images',
+    booksDir = 'public/images/books',
+  } = options
 
   // Generate absolute paths
   const __dirname = fileURLToPath(new URL('.', import.meta.url))
+  const genericsPathFrom = resolve(__dirname, genericsDirFrom)
+  const booksPathFrom = resolve(__dirname, booksDirFrom)
   const genericsPath = resolve(__dirname, genericsDir)
   const booksPath = resolve(__dirname, booksDir)
 
   // Loop through all folders, images and sizes
   async function runPrepareImages() {
-    for (const inputPath of [genericsPath, booksPath]) {
-      const files = readdirSync(inputPath, { withFileTypes: true, recursive: false }).filter(
+    for (const path of [
+      { from: genericsPathFrom, to: genericsPath },
+      { from: booksPathFrom, to: booksPath },
+    ]) {
+      const files = readdirSync(path.from, { withFileTypes: true, recursive: false }).filter(
         (entry) => !entry.name.startsWith('.'),
       )
       for (const size of ['L', 'M', 'S', 'full']) {
-        mkdirSync(join(inputPath, size), { recursive: true })
+        mkdirSync(join(path.to, size), { recursive: true })
       }
       for (const file of files) {
         if (!file.isFile()) continue
         const ext = extname(file.name).toLowerCase()
-        const filePath = join(inputPath, file.name)
+        const filePath = join(path.from, file.name)
         if (['.png', '.jpg', '.jpeg'].includes(ext)) {
           // Load image file
           const image = sharp(filePath)
@@ -102,7 +112,7 @@ export default function prepareImagesPlugin(options = {}) {
 
           // Generate thumbnails
           for (const size of ['L', 'M', 'S']) {
-            const outputFilePath = join(inputPath, size, outName)
+            const outputFilePath = join(path.to, size, outName)
             await sharp(filePath)
               .resize({
                 width: SIZES[type].sizes[size].width,
@@ -113,7 +123,7 @@ export default function prepareImagesPlugin(options = {}) {
           }
 
           // Store original as 80% quality .jpg
-          const outputFilePath = join(inputPath, 'full', outName)
+          const outputFilePath = join(path.to, 'full', outName)
           await sharp(filePath).jpeg({ quality: 80 }).toFile(outputFilePath)
         }
       }

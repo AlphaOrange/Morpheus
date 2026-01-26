@@ -1,5 +1,5 @@
 <template>
-  <div class="book" :style="{ backgroundImage: `url(images/${cover})` }">
+  <div class="book" :style="{ backgroundImage: `url(images/L/${cover})` }">
     <header>
       <div class="title">{{ book.title }}</div>
       <div v-if="showDescription" class="description">{{ book.description }}</div>

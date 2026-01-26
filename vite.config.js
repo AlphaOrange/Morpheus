@@ -16,9 +16,12 @@ export default defineConfig({
     prepareBooksPlugin({
       inputDir: '../Morpheus_Books',
       outputDir: 'public',
+      outputDirImages: 'tmp_images',
       watch: true, // watch changes in dev mode
     }),
     prepareImagesPlugin({
+      genericsDirFrom: 'src/images',
+      booksDirFrom: 'tmp_images/books',
       genericsDir: 'public/images',
       booksDir: 'public/images/books',
     }),
