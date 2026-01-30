@@ -21,9 +21,9 @@ export default defineConfig({
     }),
     prepareImagesPlugin({
       genericsDirFrom: 'src/images',
-      booksDirFrom: 'tmp_images/books',
+      booksDirFrom: 'tmp_images',
       genericsDir: 'public/images',
-      booksDir: 'public/images/books',
+      booksDir: 'public/images',
     }),
   ],
   base: '/test/morpheus/',

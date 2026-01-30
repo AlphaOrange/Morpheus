@@ -1,6 +1,6 @@
 // vite-plugin-prepare-images.js
 import { readdirSync, mkdirSync } from 'fs'
-import { resolve, join, extname } from 'path'
+import { resolve, join, extname, dirname } from 'path'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
@@ -58,6 +58,27 @@ const SIZES = {
   },
 }
 
+function walkDir(baseDir, currentDir = '') {
+  const fullPath = join(baseDir, currentDir)
+  const entries = readdirSync(fullPath, { withFileTypes: true })
+
+  let files = []
+
+  for (const entry of entries) {
+    if (entry.name.startsWith('.')) continue
+
+    const relPath = join(currentDir, entry.name)
+
+    if (entry.isDirectory()) {
+      files.push(...walkDir(baseDir, relPath))
+    } else if (entry.isFile()) {
+      files.push(relPath)
+    }
+  }
+
+  return files
+}
+
 const TYPES = Object.keys(SIZES)
 const RATIOS = TYPES.map((type) => SIZES[type].ratio)
 
@@ -86,46 +107,50 @@ export default function prepareImagesPlugin(options = {}) {
       { from: genericsPathFrom, to: genericsPath },
       { from: booksPathFrom, to: booksPath },
     ]) {
-      const files = readdirSync(path.from, { withFileTypes: true, recursive: false }).filter(
-        (entry) => !entry.name.startsWith('.'),
-      )
+      const files = walkDir(path.from)
       for (const size of ['L', 'M', 'S', 'full']) {
         mkdirSync(join(path.to, size), { recursive: true })
       }
       for (const file of files) {
-        if (!file.isFile()) continue
-        const ext = extname(file.name).toLowerCase()
-        const filePath = join(path.from, file.name)
-        if (['.png', '.jpg', '.jpeg'].includes(ext)) {
-          // Load image file
-          const image = sharp(filePath)
+        const ext = extname(file).toLowerCase()
+        if (!['.png', '.jpg', '.jpeg'].includes(ext)) continue
 
-          // Determine type via aspect ratio
-          const { width, height } = await image.metadata()
-          const ar = width / height
-          const fit = RATIOS.map((ratio) => Math.abs(1 - ratio / ar))
-          const ix = fit.indexOf(Math.min(...fit))
-          const type = TYPES[ix]
+        const inputFilePath = join(path.from, file)
 
-          // Create jpg filename
-          const outName = file.name.replace(ext, '.jpg')
+        // ---- determine type (cover / portrait / landscape)
+        const image = sharp(inputFilePath)
+        const { width, height } = await image.metadata()
+        if (!width || !height) continue
 
-          // Generate thumbnails
-          for (const size of ['L', 'M', 'S']) {
-            const outputFilePath = join(path.to, size, outName)
-            await sharp(filePath)
-              .resize({
-                width: SIZES[type].sizes[size].width,
-                height: SIZES[type].sizes[size].height,
-              })
-              .jpeg({ quality: 80 })
-              .toFile(outputFilePath)
-          }
+        const ar = width / height
+        const fit = RATIOS.map((ratio) => Math.abs(1 - ratio / ar))
+        const ix = fit.indexOf(Math.min(...fit))
+        const type = TYPES[ix]
 
-          // Store original as 80% quality .jpg
-          const outputFilePath = join(path.to, 'full', outName)
-          await sharp(filePath).jpeg({ quality: 80 }).toFile(outputFilePath)
+        // ---- paths
+        const subDir = dirname(file) // e.g. "sub/folder"
+        const outName = file.replace(ext, '.jpg') // keeps subDir in path
+
+        // ---- ensure directories exist
+        for (const size of ['L', 'M', 'S', 'full']) {
+          mkdirSync(join(path.to, size, subDir), { recursive: true })
         }
+
+        // ---- thumbnails
+        for (const size of ['L', 'M', 'S']) {
+          await sharp(inputFilePath)
+            .resize({
+              width: SIZES[type].sizes[size].width,
+              height: SIZES[type].sizes[size].height,
+            })
+            .jpeg({ quality: 80 })
+            .toFile(join(path.to, size, outName))
+        }
+
+        // ---- full size
+        await sharp(inputFilePath)
+          .jpeg({ quality: 80 })
+          .toFile(join(path.to, 'full', outName))
       }
     }
   }
