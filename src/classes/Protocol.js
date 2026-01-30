@@ -13,7 +13,7 @@ export default class Protocol {
   // SYSTEM: a message describing a program process // debug mode only
   // {type: "system", text}
   // ERROR: a program error occurred // debug mode only
-  // {type: "error", text}
+  // {type: "error", text, title}
 
   constructor(optionsStore) {
     this.options = optionsStore
@@ -108,10 +108,11 @@ export default class Protocol {
       text: text,
     })
   }
-  pushError({ text }) {
+  pushError({ text, title = 'Error' }) {
     this.messages.push({
       type: 'error',
       text: text,
+      title: title,
     })
   }
 

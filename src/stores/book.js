@@ -436,7 +436,8 @@ export const useBookStore = defineStore('book', {
       if (command.action === 'move') {
         if ((command.message !== null) & (command.actor === ':group')) {
           this.protocol.pushError({
-            text: 'You cannot send an exit message if the group moves together',
+            title: 'Invalid Command',
+            text: 'You cannot send an exit message if the group moves together.\n\n**Original message**\n${message}',
           })
           return
         }
@@ -450,7 +451,10 @@ export const useBookStore = defineStore('book', {
           } else if (this.availableDestinations.map((dest) => dest.id).includes(command.target)) {
             command.spec = 'destinations'
           } else {
-            this.protocol.pushError({ text: 'Could not identify move target' })
+            this.protocol.pushError({
+              title: 'Could not identify move target',
+              text: `'${command.target}' seems not to be valid place you can go to right now.`,
+            })
             return
           }
         }
@@ -498,6 +502,15 @@ export const useBookStore = defineStore('book', {
     async sendMessage(message) {
       const command = messageToCommand(message)
 
+      // Command Failure
+      if (command.action === 'error') {
+        this.protocol.pushError({
+          text: `**Original message**\n${message}`,
+          title: command.message,
+        })
+        return
+      }
+
       // Meta commands
       if (command.action === 'help') {
         const help = getHelpData(command.topic)
@@ -511,7 +524,10 @@ export const useBookStore = defineStore('book', {
         ':group',
       ]
       if (!possibleActors.includes(command.actor)) {
-        this.protocol.pushError({ text: `${command.actor} is no viable actor` })
+        this.protocol.pushError({
+          title: `${command.actor} is no viable actor`,
+          text: `**Original message**\n${message}`,
+        })
         return
       }
       this.executeCommand(command)

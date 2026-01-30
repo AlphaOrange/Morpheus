@@ -56,7 +56,7 @@ const headerText = (message) => {
   } else if (message.type === 'system') {
     return `System:`
   } else if (message.type === 'error') {
-    return `Error:`
+    return `Error: ${message.title}`
   }
   return 'X'
 }
