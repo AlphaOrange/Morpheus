@@ -17,15 +17,30 @@ import {
   faComment,
   faComments,
   faStar,
+  faBookAtlas,
+  faSliders,
+  faCircleQuestion,
+  faBookOpen,
+  faAddressCard,
 } from '@fortawesome/free-solid-svg-icons'
-library.add(faPersonWalking, faDoorOpen, faMapLocationDot, faComment, faComments, faStar)
+library.add(
+  faPersonWalking,
+  faDoorOpen,
+  faMapLocationDot,
+  faComment,
+  faComments,
+  faStar,
+  faBookAtlas,
+  faSliders,
+  faCircleQuestion,
+  faBookOpen,
+  faAddressCard,
+)
 
 const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 app.component('font-awesome-icon', FontAwesomeIcon)
-
-// app.config.globalProperties.$utils = utils;
 
 async function initApp() {
   const shelf = useShelfStore()

@@ -1,8 +1,5 @@
 <template>
-  <header>
-    <TheSidebar />
-  </header>
-  <div class="main">
+  <TheMainLayout>
     <div class="page">
       <div class="third left">
         <slot name="leftSlot">[no content]</slot>
@@ -14,32 +11,18 @@
         <slot name="rightSlot">[no content]</slot>
       </div>
     </div>
-  </div>
+  </TheMainLayout>
 </template>
 
 <script setup>
-import TheSidebar from '@/components/TheSidebar.vue'
+import TheMainLayout from '@/layouts/TheMainLayout.vue'
 </script>
 
 <style scoped>
-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: var(--width-navbar);
-  height: 100vh;
-  background: var(--bg-navbar);
-}
-.main {
-  display: flex;
-  justify-content: center;
-}
 .page {
-  width: calc(100% - var(--width-navbar));
+  width: 100%;
   height: 100vh;
-  max-width: var(--width-page);
   min-height: 100vh;
-  margin-left: var(--width-navbar);
   background: var(--bg-page);
   display: grid;
   grid-template-columns: 1fr 3fr 1fr;

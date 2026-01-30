@@ -1,15 +1,15 @@
 <template>
-  <TheMainLayout>
+  <TheSingleLayout>
     <template #default>
       <div class="page-header">
         <h1>Book Info</h1>
       </div>
     </template>
-  </TheMainLayout>
+  </TheSingleLayout>
 </template>
 
 <script setup>
-import TheMainLayout from '@/layouts/TheMainLayout.vue'
+import TheSingleLayout from '@/layouts/TheSingleLayout.vue'
 </script>
 
 <style scoped></style>
