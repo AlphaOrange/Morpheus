@@ -3,6 +3,7 @@
     <font-awesome-icon v-if="icon" :icon="`fa-${icon}`" />
     {{ props.text }}
     <span v-if="pill" class="pill">{{ pill }}</span>
+    <span v-if="hint" class="hint">{{ props.hint }}</span>
   </button>
 </template>
 
@@ -29,6 +30,10 @@ const props = defineProps({
     type: String,
     default: null,
   },
+  hint: {
+    type: String,
+    default: null,
+  },
 })
 
 const cssClasses = computed(() => {
@@ -38,6 +43,9 @@ const cssClasses = computed(() => {
   }
   if (props.color) {
     css.push('color-' + props.color)
+  }
+  if (props.hint) {
+    css.push('hint-anchor')
   }
   return css
 })
@@ -49,5 +57,8 @@ const cssClasses = computed(() => {
 }
 .color-dark {
   background: var(--bg-page);
+}
+.hint {
+  top: 0.5rem;
 }
 </style>

@@ -26,6 +26,7 @@
         :text="avRoom.name"
         :icon="'door-open'"
         :pill="distancePeriodText(room, avRoom)"
+        :hint="avRoom.id"
       />
       <ActionButton
         v-for="location in room.availableLocations"
@@ -34,6 +35,7 @@
         :text="location.name"
         :icon="'person-walking'"
         :pill="distancePeriodText(room, location)"
+        :hint="location.id"
       />
     </div>
     <div v-for="char in room.presentPlayerCharacters" :key="char.id" class="box action-box">
