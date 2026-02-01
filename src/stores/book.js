@@ -162,6 +162,24 @@ export const useBookStore = defineStore('book', {
       }
     },
 
+    classifyCharacters(playerIds) {
+      playerIds = Array.from(playerIds)
+
+      this.playerCharacters = {}
+      this.aiCharacters = {}
+
+      for (const char of Object.values(this.characters)) {
+        console.log(playerIds)
+        if (playerIds.includes(char.id)) {
+          char.controlledBy = 'player'
+          this.playerCharacters[char.id] = char
+        } else if (char.isNSC) {
+          char.controlledBy = 'ai'
+          this.aiCharacters[char.id] = char
+        }
+      }
+    },
+
     setActivePlayerID(activeID) {
       const newRecentPlayerIDs = this.recentPlayerIDs.filter((id) => id !== activeID)
       this.recentPlayerIDs = [activeID, ...newRecentPlayerIDs]
@@ -177,57 +195,34 @@ export const useBookStore = defineStore('book', {
       }
     },
 
-    getMoveSpecs(target, spec) {
-      if (spec === 'room') {
-        const targetRoom = this.room.availableRooms.filter((room) => room.id === target)[0]
-        const duration = distancePeriod(this.room, targetRoom)
-        return {
-          targetRoom: targetRoom,
-          moveDuration: duration,
-        }
-      } else if (spec === 'location') {
-        const location = this.room.availableLocations.filter((loc) => loc.id === target)[0]
-        const targetRoom = location.entry
-        const duration = distancePeriod(this.room, location)
-        return {
-          targetRoom: targetRoom,
-          moveDuration: duration,
-        }
-      } else if (spec === 'destination') {
-        const destination = this.availableDestinations.filter((dest) => dest.id === target)[0]
-        const targetRoom = destination.entry
-        const duration = distancePeriod(this.room, destination)
-        return {
-          targetRoom: targetRoom,
-          moveDuration: duration,
-        }
+    getMoveSpecs(targetId, spec) {
+      const resolvers = {
+        room: () => {
+          const targetRoom = this.room.availableRooms.find((room) => room.id === targetId)
+          return { targetRoom: targetRoom, distanceTo: targetRoom }
+        },
+        location: () => {
+          const location = this.room.availableLocations.find((location) => location.id === targetId)
+          return { targetRoom: location.entry, distanceTo: location }
+        },
+        destination: () => {
+          const destination = this.availableDestinations.find(
+            (destination) => destination.id === targetId,
+          )
+          return { targetRoom: destination.entry, distanceTo: destination }
+        },
       }
-      if (spec === 'room') {
-        return {
-          targetRoom: this.room.availableRooms.filter((room) => room.id === target)[0],
-          moveDuration: 60,
-        } // TODO: use global config instead of 60
-      } else if (spec === 'location') {
-        const location = this.room.availableLocations.filter((loc) => loc.id === target)[0]
-        const targetRoom = location.entry
-        const duration =
-          Math.sqrt(
-            (this.location.position[0] - location.position[0]) ^
-              (2 + (this.location.position[1] - location.position[1])) ^
-              2,
-          ) * 60 // TODO: use global config instead of 60
-        return { targetRoom, duration }
-      } else if (spec === 'destination') {
-        const destination = this.availableDestinations.filter((dest) => dest.id === target)[0]
-        const targetRoom = destination.entry
-        const duration =
-          Math.sqrt(
-            (this.destination.position[0] - destination.position[0]) ^
-              (2 + (this.destination.position[1] - destination.position[1])) ^
-              2,
-          ) * 3600 // TODO: use global config instead of 3600
-        return { targetRoom, duration }
+
+      const resolver = resolvers[spec]
+      const { targetRoom, distanceTo } = resolver()
+      return {
+        targetRoom,
+        moveDuration: distancePeriod(this.room, distanceTo),
       }
+    },
+
+    getRoomRef({ destination, location, room }) {
+      return this.destinations[destination].locations[location].rooms[room]
     },
 
     moveChar(charID, targetRoom, duration) {
@@ -321,28 +316,17 @@ export const useBookStore = defineStore('book', {
         for (let char of Object.values(this.characters)) {
           const currentRoomID = char.room
           if (currentRoomID !== null) {
-            char.room =
-              this.destinations[char.room.destination].locations[char.room.location].rooms[
-                char.room.room
-              ]
+            char.room = this.getRoomRef(char.room)
             char.room.characters[char.id] = char
           }
           const targetRoomID = char.arrivalTarget
           if (targetRoomID !== null) {
-            char.arrivalTarget =
-              this.destinations[char.arrivalTarget.destination].locations[
-                char.arrivalTarget.location
-              ].rooms[char.arrivalTarget.room]
+            char.arrivalTarget = this.getRoomRef(char.arrivalTarget)
           }
         }
 
         // create list of player and ai characters
-        for (let id in data.playerCharacters) {
-          this.playerCharacters[id] = this.characters[id]
-        }
-        for (let id in data.aiCharacters) {
-          this.aiCharacters[id] = this.characters[id]
-        }
+        this.classifyCharacters(data.playerCharacters)
 
         // more book data
         this.states = data.states
@@ -363,12 +347,6 @@ export const useBookStore = defineStore('book', {
       }
     },
 
-    // Set new set of players
-    setAsPlayers(ids) {
-      this.playerCharacters = {}
-      ids.forEach((id) => (this.playerCharacters[id] = this.characters[id]))
-    },
-
     // Last setup steps before start
     async startBook() {
       // start fresh protocol
@@ -376,23 +354,13 @@ export const useBookStore = defineStore('book', {
       this.protocol.pushInfo({ text: this.introduction, title: 'Introduction' })
       // build set of AI characters
       const playerIds = Object.keys(this.playerCharacters)
-      this.aiCharacters = {}
-      for (let id in this.characters) {
-        if (playerIds.includes(id)) {
-          this.characters[id].controlledBy = 'player'
-        }
-        if (!playerIds.includes(id) & this.characters[id].isNSC) {
-          this.characters[id].controlledBy = 'ai'
-          this.aiCharacters[id] = this.characters[id]
-        }
-      }
+      this.classifyCharacters(playerIds)
       // set characters to starting conditions
       for (let id in this.playerCharacters) {
         this.moveChar(id, this.room, 0)
       }
       for (let id in this.aiCharacters) {
-        const { destination, location, room } = this.characters[id].start
-        const startRoom = this.destinations[destination].locations[location].rooms[room]
+        const startRoom = this.getRoomRef(this.characters[id].start)
         this.moveChar(id, startRoom, 0)
       }
       this.addTime(0) // triggering arrivals and timed events at 0

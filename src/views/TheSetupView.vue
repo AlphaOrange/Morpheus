@@ -77,7 +77,7 @@ const checkConditions = computed(() => playerSelection.value.size > 0)
 
 // Start the book
 const startBook = async () => {
-  book.setAsPlayers(playerSelection.value)
+  book.classifyCharacters(playerSelection.value)
   await book.startBook()
   router.push('/book')
 }
