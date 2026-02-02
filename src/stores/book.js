@@ -239,33 +239,82 @@ export const useBookStore = defineStore('book', {
       this.updateRecentPlayerIDs()
     },
 
+    // ########## Loading and Construction ##########
+
+    // Build Character objects using a factory (different for loading/restoring)
+    buildCharacters(rawCharacters, factory) {
+      this.characters = {}
+      for (const id in rawCharacters) {
+        this.characters[id] = factory(rawCharacters[id])
+      }
+    },
+    // Build Destination objects using a factory (different for loading/restoring)
+    buildDestinations(rawDestinations, factory) {
+      this.destinations = {}
+      for (const id in rawDestinations) {
+        this.destinations[id] = factory(rawDestinations[id])
+      }
+    },
+
+    // Helper for load and restore
+    assignBaseBookData(data) {
+      this.id = data.id
+      this.title = data.title
+      this.description = data.description
+      this.tags = data.tags
+      this._cover = data._cover ?? data.cover
+      if (data.start) {
+        this.startTime = new Date(data.start.datetime)
+        this.introduction = data.start.introduction || 'The Game Begins'
+      } else {
+        this.startTime = new Date(data.startTime)
+        this.introduction = data.introduction
+      }
+    },
+
+    // Helper for bidirectional referencing
+    wireCharacterRoomReferences() {
+      for (const char of Object.values(this.characters)) {
+        if (char.room) {
+          char.room = this.getRoomRef(char.room)
+          char.room.characters[char.id] = char
+        }
+        if (char.arrivalTarget) {
+          char.arrivalTarget = this.getRoomRef(char.arrivalTarget)
+        }
+      }
+    },
+
+    deactivateBook() {
+      this.loaded = false
+      this.started = false
+    },
+
+    activateBook(started = true) {
+      this.loaded = true
+      this.started = started
+    },
+
     // load book content
     async loadBook(id) {
       this.$reset() // reset book to blank
       try {
-        this.loaded = false // in case sth goes wrong the book is inactive
+        // In case sth goes wrong the book is inactive
+        this.deactivateBook()
 
         // Load data
         const response = await fetch(`books/${id}.json`)
         const data = await response.json()
 
         // Store book base data
-        this.id = data.id
-        this.title = data.title
-        this.description = data.description
-        this.tags = data.tags
-        this._cover = data.cover
+        this.assignBaseBookData(data)
 
         // Store singular components
         this.world = new World(data.world)
 
         // Build and store components collections
-        for (let id in data.characters) {
-          this.characters[id] = new Character(data.characters[id])
-        }
-        for (let id in data.destinations) {
-          this.destinations[id] = new Destination(data.destinations[id])
-        }
+        this.buildCharacters(data.characters, (data) => new Character(data))
+        this.buildDestinations(data.destinations, (data) => new Destination(data))
 
         // More components // TBD as classes
         this.states = data.states
@@ -275,75 +324,12 @@ export const useBookStore = defineStore('book', {
         this.destinationId = data.start.destination
         this.locationId = data.start.location
         this.roomId = data.start.room
-        this.startTime = new Date(data.start.datetime)
-        this.introduction = data.start.introduction || 'The Game Begins'
+        this.wireCharacterRoomReferences()
 
-        // Initial book state settings
-        this.started = false
-        this.loaded = true
+        // Book is now active but not yet started
+        this.activateBook(false)
       } catch (error) {
         console.error('Error fetching book data with id ' + id, error)
-      }
-    },
-
-    // restore book from savegame
-    async restoreBook(data) {
-      this.$reset() // reset book to blank
-      try {
-        // In case something goes wrong make book inactive
-        this.loaded = false
-        this.started = false
-
-        // restore book data
-        this.id = data.id
-        this.title = data.title
-        this.description = data.description
-        this.tags = data.tags
-        this.startTime = new Date(data.startTime)
-        this.introduction = data.introduction
-        this._cover = data._cover
-        this.world = World.fromJSON(data.world)
-
-        // Create destinations/locations/rooms and characters
-        for (let id in data.destinations) {
-          this.destinations[id] = Destination.fromJSON(data.destinations[id])
-        }
-        for (let id in data.characters) {
-          this.characters[id] = Character.fromJSON(data.characters[id])
-        }
-
-        // fix references in characters (current room) and rooms (present characters)
-        for (let char of Object.values(this.characters)) {
-          const currentRoomID = char.room
-          if (currentRoomID !== null) {
-            char.room = this.getRoomRef(char.room)
-            char.room.characters[char.id] = char
-          }
-          const targetRoomID = char.arrivalTarget
-          if (targetRoomID !== null) {
-            char.arrivalTarget = this.getRoomRef(char.arrivalTarget)
-          }
-        }
-
-        // create list of player and ai characters
-        this.classifyCharacters(data.playerCharacters)
-
-        // more book data
-        this.states = data.states
-        this.agendas = data.agendas
-        this.protocol = Protocol.fromJSON(data.protocol, this.options)
-        this.movingCharacterIDs = data.movingCharacterIDs
-        this.destinationId = data.destinationId
-        this.locationId = data.locationId
-        this.roomId = data.roomId
-        this.time = data.time
-        this.recentPlayerIDs = data.recentPlayerIDs
-
-        // now activate book for play
-        this.loaded = true
-        this.started = true
-      } catch (error) {
-        console.error('Error loading book savefile', error)
       }
     },
 
@@ -365,8 +351,49 @@ export const useBookStore = defineStore('book', {
       }
       this.addTime(0) // triggering arrivals and timed events at 0
       this.updateRecentPlayerIDs() // set initial active player
-      this.started = true
+      this.activateBook()
     },
+
+    // restore book from savegame
+    async restoreBook(data) {
+      this.$reset() // reset book to blank
+      try {
+        // In case something goes wrong make book inactive
+        this.deactivateBook()
+
+        // restore book data
+        this.assignBaseBookData(data)
+        this.world = World.fromJSON(data.world)
+
+        // Create characters and destinations/locations/rooms
+        this.buildCharacters(data.characters, (data) => Character.fromJSON(data))
+        this.buildDestinations(data.destinations, (data) => Destination.fromJSON(data))
+
+        // fix bidirectional referencing of characters and rooms
+        this.wireCharacterRoomReferences()
+
+        // create list of player and ai characters
+        this.classifyCharacters(Object.keys(data.playerCharacters))
+
+        // more book data
+        this.states = data.states
+        this.agendas = data.agendas
+        this.protocol = Protocol.fromJSON(data.protocol, this.options)
+        this.movingCharacterIDs = data.movingCharacterIDs
+        this.destinationId = data.destinationId
+        this.locationId = data.locationId
+        this.roomId = data.roomId
+        this.time = data.time
+        this.recentPlayerIDs = data.recentPlayerIDs
+
+        // now activate book for play
+        this.activateBook()
+      } catch (error) {
+        console.error('Error loading book savefile', error)
+      }
+    },
+
+    // ########## Game Processing ##########
 
     // Process command (from AI or processed user message)
     async executeCommand(command) {
