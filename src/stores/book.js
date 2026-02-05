@@ -421,6 +421,7 @@ export const useBookStore = defineStore('book', {
         // Send TALK message
         this.protocol.pushTalk({
           text: command.message,
+          room: this.uniqueRoomId(),
           present: present,
           from: command.actor,
           to: command.target,
@@ -476,7 +477,12 @@ export const useBookStore = defineStore('book', {
 
         // Send TALK message
         if (command.message !== null) {
-          this.protocol.pushTalk({ text: command.message, present: present, from: command.actor }) // TODO: WHAT IF ACTOR IS GROUP?
+          this.protocol.pushTalk({
+            text: command.message,
+            room: this.uniqueRoomId(),
+            present: present,
+            from: command.actor,
+          }) // TODO: WHAT IF ACTOR IS GROUP?
         }
         // Send INFO message
         this.protocol.pushHint({ text: infoMessage, present: present })

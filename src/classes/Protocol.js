@@ -5,9 +5,9 @@ export default class Protocol {
   //            options: {} <- depends on type
   //           }
   // TALK: somebody talks to one or all characters
-  // {type: "talk", text, from, to}
+  // {type: "talk", text, room, present, from, to}
   // HINT: ingame hint visible to one or all characters
-  // {type: "hint", text, to}
+  // {type: "hint", text, room, present, to}
   // INFO: additional information only visible to user, not to ai
   // {type: "info", text, title}
   // SYSTEM: a message describing a program process // debug mode only
@@ -76,24 +76,24 @@ export default class Protocol {
   }
 
   // Actions: add entries
-  pushTalk({ text, present, from, to = ':all' }) {
+  pushTalk({ text, room, present, from, to = ':all' }) {
     this.messages.push({
       type: 'talk',
       text: text,
+      room: room,
       present: present,
       from: from,
       to: to,
     })
-    // TODO: hier fehlt der present Parameter
   }
-  pushHint({ text, present, to = ':all' }) {
+  pushHint({ text, room, present, to = ':all' }) {
     this.messages.push({
       type: 'hint',
       text: text,
+      room: room,
       present: present,
       to: to,
     })
-    // TODO: hier fehlt der present Parameter
   }
   pushInfo({ text, title = 'Info' }) {
     this.messages.push({
