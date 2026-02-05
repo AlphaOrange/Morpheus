@@ -3,7 +3,11 @@ export default class Room {
 
   constructor(data, location) {
     ;['id', 'name', 'description'].forEach((key) => (this[key] = data[key]))
+
+    // Derive unique ID from location
     this.location = location
+    this.uniqueId = this.location.uniqueId + '/' + this.id
+
     this._image = data.image
   }
   static fromJSON(data, location) {

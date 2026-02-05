@@ -316,7 +316,7 @@ export const useBookStore = defineStore('book', {
         this.buildCharacters(data.characters, (data) => new Character(data))
         this.buildDestinations(data.destinations, (data) => new Destination(data))
 
-        // More components // TBD as classes
+        // More components // TBD as classes .. maybe we don't even need these here but just pass to chars as prototype data
         this.states = data.states
         this.agendas = data.agendas
 
