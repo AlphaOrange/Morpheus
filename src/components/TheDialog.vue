@@ -5,7 +5,7 @@
       :key="index"
       ref="messageEls"
       class="message"
-      :class="'message-' + message.type"
+      :class="messageClasses(message)"
     >
       <header>
         <div
@@ -35,6 +35,18 @@ const md = new MarkdownIt({
   linkify: false,
   typographer: false,
 })
+
+const messageClasses = (message) => {
+  const classes = ['message-' + message.type]
+  if (message.room) {
+    if (message.room === bookStore.room.uniqueId) {
+      classes.push('current-room')
+    } else {
+      classes.push('different-room')
+    }
+  }
+  return classes
+}
 
 const showIcon = (message) => {
   return message.type === 'talk'
@@ -122,6 +134,10 @@ watch(
 
 .message-error {
   background: var(--bg-error);
+}
+
+.different-room {
+  opacity: 0.1;
 }
 
 header {
