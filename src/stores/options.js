@@ -11,7 +11,7 @@ export const useOptionsStore = defineStore('options', {
     idHintsMode: 'auto', // can be "never", "auto", "always"
 
     // Book Settings (can be overwritten by book, e.g. ai settings)
-    // ..
+    talkDuration: 30, // seconds that pass per talk action
 
     // Special Variables (e.g. user activity flags)
     idHintsActive: false,

@@ -1,19 +1,22 @@
 export default class Protocol {
   // messages: {type: ["talk", "hint", "info"],
+  //            time: Int
   //            text: String
   //            present: [] <- names of players present
   //            options: {} <- depends on type
   //           }
   // TALK: somebody talks to one or all characters
-  // {type: "talk", text, room, present, from, to}
+  // {type: "talk", time, text, room, present, from, to}
   // HINT: ingame hint visible to one or all characters
-  // {type: "hint", text, room, present, to}
+  // {type: "hint", time, text, room, present, to}
+  // SUMMARY: not implemented yet, summaries of TALK/HINT blocks
+  // {type: "summary", time_start, time_end, text, room, present}
   // INFO: additional information only visible to user, not to ai
-  // {type: "info", text, title}
+  // {type: "info", time, text, title}
   // SYSTEM: a message describing a program process // debug mode only
-  // {type: "system", text}
+  // {type: "system", time, text}
   // ERROR: a program error occurred // debug mode only
-  // {type: "error", text, title}
+  // {type: "error", time, text, title}
 
   constructor(optionsStore) {
     this.options = optionsStore
@@ -21,6 +24,7 @@ export default class Protocol {
     this.messages = [
       {
         type: 'system',
+        time: 0,
         text: 'This is the start of the game protocol.',
       },
     ]
@@ -76,9 +80,10 @@ export default class Protocol {
   }
 
   // Actions: add entries
-  pushTalk({ text, room, present, from, to = ':all' }) {
+  pushTalk({ time, text, room, present, from, to = ':all' }) {
     this.messages.push({
       type: 'talk',
+      time: time,
       text: text,
       room: room,
       present: present,
@@ -86,31 +91,35 @@ export default class Protocol {
       to: to,
     })
   }
-  pushHint({ text, room, present, to = ':all' }) {
+  pushHint({ time, text, room, present, to = ':all' }) {
     this.messages.push({
       type: 'hint',
+      time: time,
       text: text,
       room: room,
       present: present,
       to: to,
     })
   }
-  pushInfo({ text, title = 'Info' }) {
+  pushInfo({ time, text, title = 'Info' }) {
     this.messages.push({
       type: 'info',
+      time: time,
       text: text,
       title: title,
     })
   }
-  pushSystem({ text }) {
+  pushSystem({ time, text }) {
     this.messages.push({
       type: 'system',
+      time: time,
       text: text,
     })
   }
-  pushError({ text, title = 'Error' }) {
+  pushError({ time, text, title = 'Error' }) {
     this.messages.push({
       type: 'error',
+      time: time,
       text: text,
       title: title,
     })

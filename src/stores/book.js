@@ -337,7 +337,7 @@ export const useBookStore = defineStore('book', {
     async startBook() {
       // start fresh protocol
       this.protocol = new Protocol(this.options)
-      this.protocol.pushInfo({ text: this.introduction, title: 'Introduction' })
+      this.protocol.pushInfo({ time: this.time, text: this.introduction, title: 'Introduction' })
       // build set of AI characters
       const playerIds = Object.keys(this.playerCharacters)
       this.classifyCharacters(playerIds)
@@ -421,17 +421,22 @@ export const useBookStore = defineStore('book', {
         // Send TALK message
         this.protocol.pushTalk({
           text: command.message,
-          room: this.uniqueRoomId(),
+          time: this.time,
+          room: this.room.uniqueId,
           present: present,
           from: command.actor,
           to: command.target,
         })
+
+        // Increase time
+        this.addTime(this.options.talkDuration)
       }
 
       // Action MOVE
       if (command.action === 'move') {
         if ((command.message !== null) & (command.actor === ':group')) {
           this.protocol.pushError({
+            time: this.time,
             title: 'Invalid Command',
             text: 'You cannot send an exit message if the group moves together.\n\n**Original message**\n${message}',
           })
@@ -448,6 +453,7 @@ export const useBookStore = defineStore('book', {
             command.spec = 'destinations'
           } else {
             this.protocol.pushError({
+              time: this.time,
               title: 'Could not identify move target',
               text: `'${command.target}' seems not to be valid place you can go to right now.`,
             })
@@ -478,14 +484,20 @@ export const useBookStore = defineStore('book', {
         // Send TALK message
         if (command.message !== null) {
           this.protocol.pushTalk({
+            time: this.time,
             text: command.message,
-            room: this.uniqueRoomId(),
+            room: this.room.uniqueId,
             present: present,
             from: command.actor,
           }) // TODO: WHAT IF ACTOR IS GROUP?
         }
         // Send INFO message
-        this.protocol.pushHint({ text: infoMessage, present: present })
+        this.protocol.pushHint({
+          time: this.time,
+          text: infoMessage,
+          room: this.room.uniqueId,
+          present: present,
+        })
 
         // If current room now empty move to next room with players
         if (this.room.numberOfPlayers === 0) {
@@ -506,6 +518,7 @@ export const useBookStore = defineStore('book', {
       // Command Failure
       if (command.action === 'error') {
         this.protocol.pushError({
+          time: this.time,
           text: `**Original message**\n${message}`,
           title: command.message,
         })
@@ -515,7 +528,7 @@ export const useBookStore = defineStore('book', {
       // Meta commands
       if (command.action === 'help') {
         const help = getHelpData(command.topic)
-        this.protocol.pushInfo({ text: help.text, title: help.title })
+        this.protocol.pushInfo({ time: this.time, text: help.text, title: help.title })
         return
       }
 
@@ -526,6 +539,7 @@ export const useBookStore = defineStore('book', {
       ]
       if (!possibleActors.includes(command.actor)) {
         this.protocol.pushError({
+          time: this.time,
           title: `${command.actor} is no viable actor`,
           text: `**Original message**\n${message}`,
         })

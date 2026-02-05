@@ -57,8 +57,9 @@ const headerText = (message) => {
     return `System:`
   } else if (message.type === 'error') {
     return `Error: ${message.title}`
+  } else {
+    return 'Error: entry invalid'
   }
-  return 'X'
 }
 
 // Render conversation texts from Markdown to HTML
