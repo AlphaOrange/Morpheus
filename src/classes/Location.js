@@ -9,7 +9,7 @@ export default class Location {
 
     // Derive unique ID from destination
     this.destination = destination
-    this.id = this.destination.id + '/' + this.id
+    this.id = this.destination.id + '/' + data.id
 
     for (let roomData of Object.values(data.rooms)) {
       let room = new Room(roomData, this)

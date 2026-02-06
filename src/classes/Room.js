@@ -6,7 +6,7 @@ export default class Room {
 
     // Derive unique ID from location
     this.location = location
-    this.id = this.location.id + '/' + this.id
+    this.id = this.location.id + '/' + data.id
 
     this._image = data.image
   }

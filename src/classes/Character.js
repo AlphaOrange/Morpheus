@@ -9,7 +9,9 @@ export default class Character {
       (key) => (this[key] = data[key]),
     )
     this._image = data.image
-    this.start = this.start.destination + '/' + this.start.location + '/' + this.start.room
+    this.start = data.start
+      ? data.start.destination + '/' + data.start.location + '/' + data.start.room
+      : null
     // data.load_states
     // data.load_agendas
   }

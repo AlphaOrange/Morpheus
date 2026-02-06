@@ -168,7 +168,6 @@ export const useBookStore = defineStore('book', {
       this.aiCharacters = {}
 
       for (const char of Object.values(this.characters)) {
-        console.log(playerIds)
         if (playerIds.includes(char.id)) {
           char.controlledBy = 'player'
           this.playerCharacters[char.id] = char
@@ -353,7 +352,7 @@ export const useBookStore = defineStore('book', {
         this.moveChar(id, this.room, 0)
       }
       for (let id in this.aiCharacters) {
-        const startRoom = this.rooms(this.characters[id].start)
+        const startRoom = this.rooms[this.characters[id].start]
         this.moveChar(id, startRoom, 0)
       }
       this.addTime(0) // triggering arrivals and timed events at 0
