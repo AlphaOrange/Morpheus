@@ -5,28 +5,21 @@ export default class Character {
   arrivalTarget = null
 
   constructor(data) {
-    ;[
-      'id',
-      'name',
-      'isPlayable',
-      'isNSC',
-      'description',
-      'gender',
-      'age',
-      'profession',
-      'start',
-    ].forEach((key) => (this[key] = data[key]))
+    ;['id', 'name', 'isPlayable', 'isNSC', 'description', 'gender', 'age', 'profession'].forEach(
+      (key) => (this[key] = data[key]),
+    )
     this._image = data.image
+    this.start = this.start.destination + '/' + this.start.location + '/' + this.start.room
     // data.load_states
     // data.load_agendas
   }
   static fromJSON(data) {
     data.image = data._image
     const proto = new Character(data)
-    proto.room = data.room // TODO: replace on the outside !! ID is not enough !!
+    proto.room = data.room // Note: this gets rewired to room ref in book load/restore
     proto.controlledBy = data.controlledBy
     proto.arrivalTime = data.arrivalTime
-    proto.arrivalTarget = data.arrivalTarget // TODO this.arrivalTarget = foo(data.arrivalTarget) // id/null->ref/null
+    proto.arrivalTarget = data.arrivalTarget
     return proto
   }
 
@@ -43,24 +36,10 @@ export default class Character {
       profession: this.profession,
       start: this.start,
       _image: this._image,
-      room:
-        this.room === null
-          ? null
-          : {
-              room: this.room.id,
-              location: this.room.location.id,
-              destination: this.room.location.destination.id,
-            }, // store unique id combination for room
+      room: this.room === null ? null : this.room.id,
       controlledBy: this.controlledBy,
       arrivalTime: this.arrivalTime,
-      arrivalTarget:
-        this.arrivalTarget === null
-          ? null
-          : {
-              room: this.arrivalTarget.id,
-              location: this.arrivalTarget.location.id,
-              destination: this.arrivalTarget.location.destination.id,
-            }, // store unique id combination for room
+      arrivalTarget: this.arrivalTarget === null ? null : this.arrivalTarget.id,
     }
   }
 

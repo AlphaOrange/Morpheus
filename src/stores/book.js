@@ -220,10 +220,6 @@ export const useBookStore = defineStore('book', {
       }
     },
 
-    getRoomRef({ destination, location, room }) {
-      return this.destinations[destination].locations[location].rooms[room]
-    },
-
     moveChar(charID, targetRoom, duration) {
       duration = Math.floor(duration)
       this.characters[charID].moveToRoom(targetRoom, this.time + duration)
@@ -287,11 +283,12 @@ export const useBookStore = defineStore('book', {
     wireCharacterRoomReferences() {
       for (const char of Object.values(this.characters)) {
         if (char.room) {
-          char.room = this.getRoomRef(char.room)
+          // At this point char.room is String and gets converted to Object
+          char.room = this.rooms[char.room]
           char.room.characters[char.id] = char
         }
         if (char.arrivalTarget) {
-          char.arrivalTarget = this.getRoomRef(char.arrivalTarget)
+          char.arrivalTarget = this.rooms[char.arrivalTarget]
         }
       }
     },
@@ -356,7 +353,7 @@ export const useBookStore = defineStore('book', {
         this.moveChar(id, this.room, 0)
       }
       for (let id in this.aiCharacters) {
-        const startRoom = this.getRoomRef(this.characters[id].start)
+        const startRoom = this.rooms(this.characters[id].start)
         this.moveChar(id, startRoom, 0)
       }
       this.addTime(0) // triggering arrivals and timed events at 0
@@ -378,6 +375,7 @@ export const useBookStore = defineStore('book', {
         // Create characters and destinations/locations/rooms
         this.buildCharacters(data.characters, (data) => Character.fromJSON(data))
         this.buildDestinations(data.destinations, (data) => Destination.fromJSON(data))
+        this.collectRooms()
 
         // fix bidirectional referencing of characters and rooms
         this.wireCharacterRoomReferences()
@@ -390,8 +388,6 @@ export const useBookStore = defineStore('book', {
         this.agendas = data.agendas
         this.protocol = Protocol.fromJSON(data.protocol, this.options)
         this.movingCharacterIDs = data.movingCharacterIDs
-        this.destinationId = data.destinationId
-        this.locationId = data.locationId
         this.roomId = data.roomId
         this.time = data.time
         this.recentPlayerIDs = data.recentPlayerIDs
@@ -432,7 +428,7 @@ export const useBookStore = defineStore('book', {
         this.protocol.pushTalk({
           text: command.message,
           time: this.time,
-          room: this.room.uniqueId,
+          room: this.room.id,
           present: present,
           from: command.actor,
           to: command.target,
@@ -496,7 +492,7 @@ export const useBookStore = defineStore('book', {
           this.protocol.pushTalk({
             time: this.time,
             text: command.message,
-            room: this.room.uniqueId,
+            room: this.room.id,
             present: present,
             from: command.actor,
           }) // TODO: WHAT IF ACTOR IS GROUP?
@@ -505,7 +501,7 @@ export const useBookStore = defineStore('book', {
         this.protocol.pushHint({
           time: this.time,
           text: infoMessage,
-          room: this.room.uniqueId,
+          room: this.room.id,
           present: present,
         })
 

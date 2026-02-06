@@ -39,7 +39,7 @@ const md = new MarkdownIt({
 const messageClasses = (message) => {
   const classes = ['message-' + message.type]
   if (message.room) {
-    if (message.room === bookStore.room.uniqueId) {
+    if (message.room === bookStore.room.id) {
       classes.push('current-room')
     } else {
       classes.push('different-room')
