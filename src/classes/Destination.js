@@ -6,8 +6,9 @@ export default class Destination {
 
   constructor(data) {
     ;['id', 'name', 'description', 'position', 'detour'].forEach((key) => (this[key] = data[key]))
-    for (let id in data.locations) {
-      this.locations[id] = new Location(data.locations[id], this)
+    for (let locationData of Object.values(data.locations)) {
+      let location = new Location(locationData, this)
+      this.locations[location.id] = location
     }
     if (data.entry === '') {
       this.entry = Object.values(this.locations)[0]

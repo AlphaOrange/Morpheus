@@ -5,15 +5,17 @@ export default class Location {
   entry = null
 
   constructor(data, destination) {
-    ;['id', 'name', 'description', 'position', 'detour'].forEach((key) => (this[key] = data[key]))
+    ;['name', 'description', 'position', 'detour'].forEach((key) => (this[key] = data[key]))
 
     // Derive unique ID from destination
     this.destination = destination
-    this.uniqueId = this.destination.id + '/' + this.id
+    this.id = this.destination.id + '/' + this.id
 
-    for (let id in data.rooms) {
-      this.rooms[id] = new Room(data.rooms[id], this)
+    for (let roomData of Object.values(data.rooms)) {
+      let room = new Room(roomData, this)
+      this.rooms[room.id] = room
     }
+
     if (data.entry === '') {
       this.entry = Object.values(this.rooms)[0]
     } else {

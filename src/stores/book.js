@@ -24,6 +24,7 @@ export const useBookStore = defineStore('book', {
     // Book Components --> objects, never use as reactive references!
     world: null,
     destinations: {},
+    rooms: {},
     characters: {},
     playerCharacters: {},
     aiCharacters: {},
@@ -37,8 +38,6 @@ export const useBookStore = defineStore('book', {
     movingCharacterIDs: [],
 
     // Game State
-    destinationId: '',
-    locationId: '',
     roomId: '',
     time: 0,
     recentPlayerIDs: [],
@@ -52,14 +51,14 @@ export const useBookStore = defineStore('book', {
       return useOptionsStore()
     },
     // Destination, Location, Room objects
-    destination(state) {
-      return state.destinations[state.destinationId]
-    },
-    location(state) {
-      return this.destination.locations[state.locationId]
-    },
     room(state) {
-      return this.location.rooms[state.roomId]
+      return this.rooms[state.roomId]
+    },
+    location() {
+      return this.room.location
+    },
+    destination() {
+      return this.location.destination
     },
 
     // Current time as reactive Date object
@@ -272,6 +271,18 @@ export const useBookStore = defineStore('book', {
       }
     },
 
+    // Helper for collecting all rooms by id
+    collectRooms() {
+      this.rooms = {}
+      for (const destination of Object.values(this.destinations)) {
+        for (const location of Object.values(destination.locations)) {
+          for (const room of Object.values(location.rooms)) {
+            this.rooms[room.id] = room
+          }
+        }
+      }
+    },
+
     // Helper for bidirectional referencing
     wireCharacterRoomReferences() {
       for (const char of Object.values(this.characters)) {
@@ -315,15 +326,14 @@ export const useBookStore = defineStore('book', {
         // Build and store components collections
         this.buildCharacters(data.characters, (data) => new Character(data))
         this.buildDestinations(data.destinations, (data) => new Destination(data))
+        this.collectRooms()
 
         // More components // TBD as classes .. maybe we don't even need these here but just pass to chars as prototype data
         this.states = data.states
         this.agendas = data.agendas
 
         // Set up start conditions
-        this.destinationId = data.start.destination
-        this.locationId = data.start.location
-        this.roomId = data.start.room
+        this.roomId = data.start.destination + '/' + data.start.location + '/' + data.start.room
         this.wireCharacterRoomReferences()
 
         // Book is now active but not yet started

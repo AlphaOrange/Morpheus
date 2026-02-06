@@ -2,11 +2,11 @@ export default class Room {
   characters = {}
 
   constructor(data, location) {
-    ;['id', 'name', 'description'].forEach((key) => (this[key] = data[key]))
+    ;['name', 'description'].forEach((key) => (this[key] = data[key]))
 
     // Derive unique ID from location
     this.location = location
-    this.uniqueId = this.location.uniqueId + '/' + this.id
+    this.id = this.location.id + '/' + this.id
 
     this._image = data.image
   }
