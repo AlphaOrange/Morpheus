@@ -2,6 +2,8 @@ import Room from '@/classes/Room'
 import Location from '@/classes/Location'
 import Destination from '@/classes/Destination'
 
+// ----- General Helpers -----
+
 export function truncateString(str, num) {
   if (str.length > num) {
     return str.slice(0, num) + ' ...'
@@ -9,6 +11,20 @@ export function truncateString(str, num) {
     return str
   }
 }
+
+export function formatDate(datetime) {
+  const d = datetime.getDate()
+  const m = datetime.getMonth() + 1
+  const y = datetime.getFullYear()
+  return `${d}. ${m}. ${y}`
+}
+
+export function formatTime(datetime) {
+  const h = String(datetime.getHours()).padStart(2, '0')
+  const min = String(datetime.getMinutes()).padStart(2, '0')
+  return `${h}:${min}`
+}
+// ----- Distance Calculation -----
 
 // Calculate distance to target and return as text
 function distanceRooms(currentRoom, targetRoom) {

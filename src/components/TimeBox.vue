@@ -13,21 +13,16 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useBookStore } from '@/stores/book'
+import { formatTime, formatDate } from '@/helpers/utils'
+
 const book = useBookStore()
 const { datetime } = storeToRefs(book)
 
 const theDate = computed(() => {
-  const d = datetime.value.getDate()
-  const m = datetime.value.getMonth() + 1
-  const y = datetime.value.getFullYear()
-  return `${d}. ${m}. ${y}`
+  return formatDate(datetime.value)
 })
-
-// TODO: this does not update on datetime change
 const theTime = computed(() => {
-  const h = String(datetime.value.getHours()).padStart(2, '0')
-  const min = String(datetime.value.getMinutes()).padStart(2, '0')
-  return `${h}:${min}`
+  return formatTime(datetime.value)
 })
 </script>
 

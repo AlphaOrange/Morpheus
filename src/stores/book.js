@@ -63,9 +63,7 @@ export const useBookStore = defineStore('book', {
 
     // Current time as reactive Date object
     datetime(state) {
-      const current = new Date(state.startTime)
-      current.setSeconds(current.getSeconds() + state.time)
-      return current
+      return this.toGametime(state.time)
     },
 
     // Cover using fallback
@@ -134,6 +132,13 @@ export const useBookStore = defineStore('book', {
 
     getSetupCharacterNames() {
       return this.characters_names.filter((name) => this.characters[name].type === 'player')
+    },
+
+    // convert a timestamp to in-game time
+    toGametime(time) {
+      const gametime = new Date(this.startTime)
+      gametime.setSeconds(gametime.getSeconds() + time)
+      return gametime
     },
 
     addTime(duration) {

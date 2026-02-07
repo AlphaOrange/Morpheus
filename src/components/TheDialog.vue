@@ -14,7 +14,8 @@
           :style="{ backgroundImage: `url(images/S/${headerIcon(message)})` }"
         ></div>
         <div class="header-text">
-          {{ headerText(message) }}
+          <span>{{ headerText(message) }}</span>
+          <span class="timestamp">{{ timestamp(message) }}</span>
         </div>
       </header>
       <main class="message-box" v-html="renderMarkdown(message.text)"></main>
@@ -25,9 +26,12 @@
 <script setup>
 import { watch, nextTick, ref } from 'vue'
 import { storeToRefs } from 'pinia'
+import { formatTime, formatDate } from '@/helpers/utils'
+
 import { useBookStore } from '@/stores/book'
 const bookStore = useBookStore()
 const { characters, protocol } = storeToRefs(bookStore)
+
 import MarkdownIt from 'markdown-it'
 const md = new MarkdownIt({
   html: true,
@@ -72,6 +76,9 @@ const headerText = (message) => {
   } else {
     return 'Error: entry invalid'
   }
+}
+const timestamp = (message) => {
+  return formatTime(bookStore.toGametime(message.time))
 }
 
 // Render conversation texts from Markdown to HTML
@@ -157,10 +164,14 @@ header {
 }
 
 .header-text {
-  display: block;
-  float: left;
+  display: flex;
+  justify-content: space-between;
   height: 2rem;
   padding: 0.5rem;
+}
+
+.timestamp {
+  color: var(--col-font-blur);
 }
 
 main {

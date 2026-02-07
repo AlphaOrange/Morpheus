@@ -17,9 +17,7 @@ const props = defineProps({
 })
 
 const lightbox = () => {
-  console.log(props.src)
   const fullSrc = props.src.replace(/\/[SML]\//, '/full/') // use full image
-  console.log(fullSrc)
   options.lightboxImage = fullSrc
 }
 </script>
