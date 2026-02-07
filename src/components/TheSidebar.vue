@@ -60,7 +60,7 @@ import logoImg from '@/assets/images/logo.jpg'
   width: var(--width-navbar);
   height: 100vh;
   background: #030310;
-  transition: all 0.4s ease-in-out 0.5s;
+  transition: all 0.25s ease-out 0.15s;
   box-shadow: 0px 0px 5px 0px #000;
 }
 .logobox {
@@ -72,7 +72,7 @@ import logoImg from '@/assets/images/logo.jpg'
   background-size: 160% 160%;
   background-position: 50% 15%;
   cursor: pointer;
-  transition: all 0.4s ease-in-out 0.5s;
+  transition: all 0.25s ease-out 0.15s;
 }
 .main {
   padding: 0.5rem;
@@ -104,7 +104,7 @@ import logoImg from '@/assets/images/logo.jpg'
 .bar-label > span {
   opacity: 0;
   margin-left: 0.5rem;
-  transition: all 0.4s ease-in-out 0.5s;
+  transition: all 0.25s ease-out 0.15s;
 }
 
 footer {
@@ -123,7 +123,7 @@ footer img.cover {
   left: 0;
   box-shadow: var(--drop-shadow);
   z-index: 1000;
-  transition: all 0.4s ease-in-out 0.5s;
+  transition: all 0.25s ease-out 0.15s;
 }
 footer .book-title {
   position: relative;
@@ -131,18 +131,23 @@ footer .book-title {
   z-index: 2001;
   text-shadow: var(--text-shadow);
   opacity: 0;
-  transition: opacity 0.4s ease-in-out 0.5s;
+  transition: opacity 0.25s ease-out 0.15s;
 }
+
+/* Hovering */
 
 .sidebar:hover {
   width: var(--width-navbar-extended);
+  transition: all 0.4s ease-in-out 0.5s;
 }
 .sidebar:hover .logo {
   background-size: 100% 100%;
   background-position: 50% 50%;
+  transition: all 0.4s ease-in-out 0.5s;
 }
 .sidebar:hover .bar-label > span {
   opacity: 1;
+  transition: all 0.4s ease-in-out 0.5s;
 }
 .sidebar:hover footer img.cover {
   width: 8rem;
@@ -151,8 +156,10 @@ footer .book-title {
   left: calc(50% - 4rem);
   box-shadow: var(--drop-shadow);
   transform: rotate(-4deg);
+  transition: all 0.4s ease-in-out 0.5s;
 }
 .sidebar:hover footer .book-title {
   opacity: 1;
+  transition: opacity 0.4s ease-in-out 0.5s;
 }
 </style>
