@@ -26,7 +26,7 @@
 <script setup>
 import { watch, nextTick, ref } from 'vue'
 import { storeToRefs } from 'pinia'
-import { formatTime, formatDate } from '@/helpers/utils'
+import { formatTime } from '@/helpers/utils'
 
 import { useBookStore } from '@/stores/book'
 const bookStore = useBookStore()

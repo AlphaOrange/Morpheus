@@ -16,7 +16,7 @@ const props = defineProps({
 const emits = defineEmits(['hide'])
 </script>
 
-<style>
+<style scoped>
 .darkpane {
   position: fixed;
   top: 0;
@@ -29,16 +29,20 @@ const emits = defineEmits(['hide'])
   justify-content: center;
   z-index: 99999;
 }
+
 .lightbox {
-  max-width: 80%;
-  max-height: 80%;
   background: var(--bg-highlight);
   border-radius: 1rem;
   box-shadow: var(--center-shadow);
+  padding: 0.5rem;
 }
-img {
+
+.lightbox img {
+  max-width: 80vw;
+  max-height: 80vh;
+  width: auto;
+  height: auto;
   display: block;
-  margin: 0.5rem;
   border-radius: 0.5rem;
 }
 </style>
