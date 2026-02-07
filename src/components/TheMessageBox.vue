@@ -52,7 +52,14 @@ const onFocus = () => (options.idHintsActive = true)
 const onBlur = () => (options.idHintsActive = false)
 
 const focus = () => {
-  requestAnimationFrame(() => textarea.value?.focus())
+  requestAnimationFrame(() => {
+    const el = textarea.value
+    if (!el) return
+
+    el.focus()
+    const len = el.value.length
+    el.setSelectionRange(len, len)
+  })
 }
 
 // --- Expose message value manipulation ---
