@@ -34,6 +34,7 @@ const emits = defineEmits(['hide'])
   max-height: 80%;
   background: var(--bg-highlight);
   border-radius: 1rem;
+  box-shadow: var(--center-shadow);
 }
 img {
   display: block;

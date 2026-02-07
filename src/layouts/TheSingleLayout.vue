@@ -13,7 +13,6 @@ import TheMainLayout from '@/layouts/TheMainLayout.vue'
 <style scoped>
 .page {
   width: 100%;
-  height: 100vh;
   max-width: var(--width-page);
   min-height: 100vh;
   background: var(--bg-page);

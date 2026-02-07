@@ -26,6 +26,7 @@
   --width-navbar-extended: 12rem;
   --width-page: 100%;
   --text-shadow: 0 0 2px #000, 0 0 4px #000, 0 0 6px #000;
+  --center-shadow: 0 0 10px #000;
   --drop-shadow: 2px 2px 10px #000;
 }
 
