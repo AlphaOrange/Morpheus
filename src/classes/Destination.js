@@ -4,9 +4,15 @@ export default class Destination {
   locations = {}
   entry = null
 
-  constructor(data) {
+  constructor(data, full = true) {
     ;['id', 'name', 'description', 'position', 'detour'].forEach((key) => (this[key] = data[key]))
     this.commandId = data.id // for destinations commandId = id on purpose
+    this._image = data.image
+    if (full) this.fullConstructor(data)
+  }
+
+  // only to be used in original construction, not restore
+  fullConstructor(data) {
     for (let locationData of Object.values(data.locations)) {
       let location = new Location(locationData, this)
       this.locations[location.id] = location
@@ -16,11 +22,11 @@ export default class Destination {
     } else {
       this.entry = this.locations[data.entry]
     }
-    this._image = data.image
   }
+
   static fromJSON(data) {
     data.image = data._image
-    const proto = new Destination(data)
+    const proto = new Destination(data, false)
     for (let id in data.locations) {
       proto.locations[id] = Location.fromJSON(data.locations[id], proto)
     }
@@ -32,6 +38,7 @@ export default class Destination {
   toJSON() {
     return {
       id: this.id,
+      commandId: this.commandId,
       name: this.name,
       description: this.description,
       position: this.position,

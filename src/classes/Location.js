@@ -4,30 +4,35 @@ export default class Location {
   rooms = {}
   entry = null
 
-  constructor(data, destination) {
+  constructor(data, destination, full = true) {
     ;['name', 'description', 'position', 'detour'].forEach((key) => (this[key] = data[key]))
 
     // Derive unique ID from destination
     this.destination = destination
     this.id = this.destination.id + '/' + data.id
     this.commandId = data.id // short id only used in command; not unique overall!
+    this._image = data.image
+    if (full) this.fullConstructor(data)
+  }
 
+  // only to be used in original construction, not restore
+  fullConstructor(data) {
     for (let roomData of Object.values(data.rooms)) {
       let room = new Room(roomData, this)
       this.rooms[room.id] = room
     }
-
     if (data.entry === '') {
       this.entry = Object.values(this.rooms)[0]
     } else {
       this.entry = this.rooms[data.entry]
     }
-    this._image = data.image
   }
+
   static fromJSON(data, destination) {
     data.image = data._image
-    const proto = new Location(data)
-    proto.destination = destination
+    const proto = new Location(data, destination, false)
+    proto.id = data.id
+    proto.commandId = data.commandId
     for (let id in data.rooms) {
       proto.rooms[id] = Room.fromJSON(data.rooms[id], proto)
     }
@@ -39,6 +44,7 @@ export default class Location {
   toJSON() {
     return {
       id: this.id,
+      commandId: this.commandId,
       name: this.name,
       description: this.description,
       position: this.position,
