@@ -234,5 +234,9 @@ export function messageToCommand(message) {
 
 import helpData from '@/data/help.yaml'
 export function getHelpData(topic) {
-  return helpData[topic] || 'No help text available.'
+  const fallback = {
+    title: `Searching for '${topic}' ...`,
+    text: 'No help text available.',
+  }
+  return helpData[topic] || fallback
 }
