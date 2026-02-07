@@ -42,10 +42,12 @@ const move = function ({ location = null, room = null, chars = [] } = {}) {
   let text
   if (location) {
     text = chars.length
-      ? chars[0].id + ' move to location ' + location.id
-      : 'move to location ' + location.id
+      ? chars[0].id + ' move to location ' + location.commandId
+      : 'move to location ' + location.commandId
   } else if (room) {
-    text = chars.length ? chars[0].id + ' move to room ' + room.id : 'move to room ' + room.id
+    text = chars.length
+      ? chars[0].id + ' move to room ' + room.commandId
+      : 'move to room ' + room.commandId
   }
   if (text) messageBox.value?.setMessage(text)
 }

@@ -196,16 +196,18 @@ export const useBookStore = defineStore('book', {
     getMoveSpecs(targetId, spec) {
       const resolvers = {
         room: () => {
-          const targetRoom = this.room.availableRooms.find((room) => room.id === targetId)
+          const targetRoom = this.room.availableRooms.find((room) => room.commandId === targetId)
           return { targetRoom: targetRoom, distanceTo: targetRoom }
         },
         location: () => {
-          const location = this.room.availableLocations.find((location) => location.id === targetId)
+          const location = this.room.availableLocations.find(
+            (location) => location.commandId === targetId,
+          )
           return { targetRoom: location.entry, distanceTo: location }
         },
         destination: () => {
           const destination = this.availableDestinations.find(
-            (destination) => destination.id === targetId,
+            (destination) => destination.commandId === targetId,
           )
           return { targetRoom: destination.entry, distanceTo: destination }
         },
@@ -450,11 +452,15 @@ export const useBookStore = defineStore('book', {
 
         // Process target spec
         if (command.spec === ':undefined') {
-          if (this.room.availableRooms.map((room) => room.id).includes(command.target)) {
+          if (this.room.availableRooms.map((room) => room.commandId).includes(command.target)) {
             command.spec = 'room'
-          } else if (this.room.availableLocations.map((loc) => loc.id).includes(command.target)) {
+          } else if (
+            this.room.availableLocations.map((loc) => loc.commandId).includes(command.target)
+          ) {
             command.spec = 'location'
-          } else if (this.availableDestinations.map((dest) => dest.id).includes(command.target)) {
+          } else if (
+            this.availableDestinations.map((dest) => dest.commandId).includes(command.target)
+          ) {
             command.spec = 'destinations'
           } else {
             this.protocol.pushError({

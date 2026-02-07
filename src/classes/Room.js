@@ -7,6 +7,7 @@ export default class Room {
     // Derive unique ID from location
     this.location = location
     this.id = this.location.id + '/' + data.id
+    this.commandId = data.id // short id only used in command; not unique overall!
 
     this._image = data.image
   }

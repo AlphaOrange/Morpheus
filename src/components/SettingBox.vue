@@ -3,7 +3,7 @@
     <header>
       <small>{{ props.hint }}</small>
       <h3 class="hint-anchor">
-        {{ props.setting.name }}<span class="hint">{{ props.setting.id }}</span>
+        {{ props.setting.name }}<span class="hint">{{ props.setting.commandId }}</span>
       </h3>
     </header>
     <img :src="'images/L/' + props.setting.image" />

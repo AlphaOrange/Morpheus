@@ -10,6 +10,7 @@ export default class Location {
     // Derive unique ID from destination
     this.destination = destination
     this.id = this.destination.id + '/' + data.id
+    this.commandId = data.id // short id only used in command; not unique overall!
 
     for (let roomData of Object.values(data.rooms)) {
       let room = new Room(roomData, this)
