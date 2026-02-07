@@ -6,7 +6,7 @@
         {{ props.setting.name }}<span class="hint">{{ props.setting.commandId }}</span>
       </h3>
     </header>
-    <img :src="'images/L/' + props.setting.image" />
+    <LightboxImage :src="'images/M/' + props.setting.image" class="image" />
     <main>
       {{ props.setting.description }}
     </main>
@@ -15,6 +15,7 @@
 
 <script setup>
 import { computed, ref } from 'vue'
+import LightboxImage from '@/components/LightboxImage.vue'
 
 const props = defineProps({
   hint: {
@@ -74,10 +75,9 @@ const toggle = () => {
 }
 
 /* The setting-box image */
-.setting-box > img {
+.setting-box > .image {
   grid-area: image;
   width: 100%;
-  height: auto;
 }
 
 /* The setting-box main text */

@@ -22,6 +22,7 @@ import {
   faCircleQuestion,
   faBookOpen,
   faAddressCard,
+  faMaximize,
 } from '@fortawesome/free-solid-svg-icons'
 library.add(
   faPersonWalking,
@@ -35,6 +36,7 @@ library.add(
   faCircleQuestion,
   faBookOpen,
   faAddressCard,
+  faMaximize,
 )
 
 const app = createApp(App)

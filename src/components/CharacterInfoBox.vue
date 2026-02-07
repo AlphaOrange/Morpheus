@@ -1,6 +1,6 @@
 <template>
   <div class="box character-box" :class="collapsedClass" @click="toggle">
-    <img :src="'images/L/' + props.character.image" />
+    <LightboxImage :src="'images/M/' + props.character.image" class="image" />
     <div class="info-box">
       <h3 class="hint-anchor">
         {{ props.character.name }}<span class="hint">{{ props.character.id }}</span>
@@ -15,6 +15,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { truncateString } from '@/helpers/utils'
+import LightboxImage from '@/components/LightboxImage.vue'
 
 const props = defineProps({
   character: {
@@ -44,22 +45,30 @@ const shortDescription = computed(() => truncateString(props.character.descripti
 </script>
 
 <style scoped>
+.character-box {
+  display: grid;
+  grid-template-columns: 8rem 1fr;
+  grid-template-rows: 1fr;
+  cursor: pointer;
+}
+.character-box.collapsed {
+  grid-template-columns: 5rem 1fr;
+}
 .info-box {
   padding: 1rem;
-  cursor: pointer;
 }
 .collapsed .info-box {
   padding: 0.5rem;
 }
-img {
+.image {
   display: block;
   float: left;
-  width: 8rem;
+  width: 100%;
   height: auto;
   margin: 0 1rem 0 0;
 }
-.collapsed img {
-  width: 4rem;
+.collapsed .image {
+  width: 100%;
   margin-right: 0.5rem;
 }
 .profession {

@@ -4,6 +4,7 @@
 :root {
   --font-text: 'Barlow';
   --col-font: #fff;
+  --col-font-link: #607095;
   --col-font-fade: #666;
   --col-success: #3c5;
   --bg-body: #060606;
@@ -206,4 +207,23 @@ button:hover .pill {
 .item-selection > .selected:hover {
   margin: 0;
   border: 2px solid var(--bg-light);
+}
+
+/*** Vue Transitions ***/
+
+/* Lightbox Transition */
+
+.lightbox-enter-from,
+.lightbox-leave-to {
+  opacity: 0;
+}
+
+.lightbox-enter-to,
+.lightbox-leave-from {
+  opacity: 1;
+}
+
+.lightbox-enter-active,
+.lightbox-leave-active {
+  transition: opacity 0.25s ease;
 }

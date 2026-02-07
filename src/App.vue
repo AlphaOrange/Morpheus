@@ -1,5 +1,12 @@
 <template>
   <div class="body" :class="flags">
+    <Transition name="lightbox">
+      <TheLightbox
+        v-if="options.lightboxImage"
+        :image="options.lightboxImage"
+        @hide="hideSidebar"
+      />
+    </Transition>
     <RouterView />
   </div>
 </template>
@@ -7,6 +14,7 @@
 <script setup>
 import { computed } from 'vue'
 import { RouterView } from 'vue-router'
+import TheLightbox from '@/components/TheLightbox.vue'
 
 import { useOptionsStore } from '@/stores/options'
 const options = useOptionsStore()
@@ -18,6 +26,10 @@ const flags = computed(() => {
   }
   return cssFlags
 })
+
+const hideSidebar = () => {
+  options.lightboxImage = null
+}
 </script>
 
 <style scoped></style>
