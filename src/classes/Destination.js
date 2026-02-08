@@ -1,6 +1,7 @@
 import Location from '@/classes/Location'
 
 export default class Destination {
+  type = 'destination'
   locations = {}
   entry = null
 

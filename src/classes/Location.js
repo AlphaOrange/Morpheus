@@ -1,6 +1,7 @@
 import Room from '@/classes/Room'
 
 export default class Location {
+  type = 'location'
   rooms = {}
   entry = null
 

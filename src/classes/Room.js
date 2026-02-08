@@ -1,4 +1,5 @@
 export default class Room {
+  type = 'room'
   characters = {}
 
   constructor(data, location, full = true) {

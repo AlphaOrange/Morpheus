@@ -9,6 +9,18 @@
     <LightboxImage :src="'images/M/' + props.setting.image" class="image" />
     <main>
       {{ props.setting.description }}
+      <div v-if="props.setting.type == 'destination'">
+        <h4>Locations</h4>
+        <div v-for="location in props.setting.locations" :key="location.id" class="hint-anchor">
+          {{ location.name }}<span class="hint hint-small">{{ location.commandId }}</span>
+        </div>
+      </div>
+      <div v-if="props.setting.type == 'location'">
+        <h4>Rooms</h4>
+        <div v-for="room in props.setting.rooms" :key="room.id" class="hint-anchor">
+          {{ room.name }}<span class="hint hint-small">{{ room.commandId }}</span>
+        </div>
+      </div>
     </main>
   </div>
 </template>
@@ -87,5 +99,9 @@ const toggle = () => {
 }
 .setting-box.collapsed > main {
   display: none;
+}
+
+.setting-box h4 {
+  margin: 0.5rem 0 0;
 }
 </style>
