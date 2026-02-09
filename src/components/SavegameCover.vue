@@ -41,9 +41,9 @@ const cover = computed(() => {
 })
 
 const roomData = computed(() => {
-  return props.saveData.book.destinations[props.saveData.book.destinationId].locations[
-    props.saveData.book.locationId
-  ].rooms[props.saveData.book.roomId]
+  const roomPath = props.saveData.book.roomId.split('/')
+  return props.saveData.book.destinations[roomPath[0]].locations[roomPath[0] + '/' + roomPath[1]]
+    .rooms[props.saveData.book.roomId]
 })
 
 const roomImage = computed(() => {

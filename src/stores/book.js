@@ -122,8 +122,6 @@ export const useBookStore = defineStore('book', {
         agendas: this.agendas, // Do we need to save these?
         protocol: this.protocol, // stringify will convert character objects
         movingCharacterIDs: this.movingCharacterIDs,
-        destinationId: this.destinationId,
-        locationId: this.locationId,
         roomId: this.roomId,
         time: this.time,
         recentPlayerIDs: this.recentPlayerIDs,
