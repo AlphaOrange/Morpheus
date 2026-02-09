@@ -12,18 +12,13 @@ export default class Agent {
   // This is the Agent top-level class to be inherited from
   // This class provides all AI handling, evaluation, data cleaning and checking
 
-  systemInstruction = {
-    role: 'system',
-    parts: [{ text: 'You are a super-helpful AI assistent.' }],
-  }
+  systemPrompt = 'You are a super-helpful AI assistent.'
   model = 'gemini25_flash_lite'
   timeout = 6000
 
-  constructor() {}
-
   async query(prompt) {
     const body = {
-      systemInstruction: this.systemInstruction,
+      systemInstruction: { role: 'system', parts: [{ text: this.systemPrompt }] },
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
     }
     try {

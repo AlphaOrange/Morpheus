@@ -17,37 +17,42 @@ export default class Narrator {
 
   // Main Action: handle possible NPC actions
   runNPC() {
+    // Determine next actor
     const { actorId, action } = this.nextActionAgent.run({
       room: this.book.room,
       protocol: this.protocol,
     })
-    if (actorId) {
-      if (action === 'talk') {
-        const { message, targetId } = this.talkAgent.run({
+    if (!actorId) return
+    if (action === 'talk') {
+      // TALK Action
+      this.talkAgent
+        .run({
           actor: this.book.characters[actorId],
           room: this.book.room,
           protocol: this.protocol,
         })
-        this.book.executeCommand({
-          action: 'talk',
-          actor: actorId,
-          target: targetId,
-          message: message,
+        .then((response) => {
+          this.book.executeCommand({
+            action: 'talk',
+            actor: actorId,
+            target: response.targetId,
+            message: response.message,
+          })
         })
-      } else if (action === 'move') {
-        const { targetId, spec, message } = this.moveAgent.run({
-          actor: this.book.characters[actorId],
-          room: this.book.room,
-          protocol: this.protocol,
-        })
-        this.book.executeCommand({
-          action: 'move',
-          actor: actorId,
-          target: targetId,
-          spec: spec,
-          message: message,
-        })
-      }
+    } else if (action === 'move') {
+      // MOVE Action
+      const { targetId, spec, message } = this.moveAgent.run({
+        actor: this.book.characters[actorId],
+        room: this.book.room,
+        protocol: this.protocol,
+      })
+      this.book.executeCommand({
+        action: 'move',
+        actor: actorId,
+        target: targetId,
+        spec: spec,
+        message: message,
+      })
     }
   }
 

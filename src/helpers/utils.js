@@ -230,6 +230,25 @@ export function messageToCommand(message) {
   return { action: 'error', message: 'Invalid Command' }
 }
 
+// ----- Formatting -----
+
+// format dialog string for ai prompting
+export function formatDialog(messages) {
+  let dialog = []
+  for (let message of messages) {
+    if (message.type === 'talk') {
+      if (message.to === ':all') {
+        dialog.push(`${message.from}: "${message.text}"`)
+      } else {
+        dialog.push(`${message.from} to ${message.to}: "${message.text}"`)
+      }
+    } else if (message.type === 'hint') {
+      dialog.push(`(HINT: ${message.text})`)
+    }
+  }
+  return dialog.join('\n')
+}
+
 // ----- Help Texts -----
 
 import helpData from '@/data/help.yaml'

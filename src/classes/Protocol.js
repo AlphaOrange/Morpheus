@@ -18,6 +18,13 @@ export default class Protocol {
   // ERROR: a program error occurred // debug mode only
   // {type: "error", time, text, title}
 
+  typeFilters = {
+    // this.showTypes = ['talk', 'info'] // show these in dialog display
+    show: ['talk', 'hint', 'info', 'error', 'system'], // TEST MODE
+    context: ['talk', 'hint'], // give these to agent for historal context
+    active: ['talk'], // these action make a character active
+  }
+
   constructor(optionsStore) {
     this.options = optionsStore
     // this.messages = []
@@ -28,9 +35,6 @@ export default class Protocol {
         text: 'This is the start of the game protocol.',
       },
     ]
-    // this.showTypes = ['talk', 'info']
-    this.showTypes = ['talk', 'hint', 'info', 'error', 'system'] // TEST MODE
-    this.activeTypes = ['talk'] // these action make a character active
   }
   static fromJSON(data, optionsStore) {
     const proto = new Protocol(optionsStore)
@@ -45,10 +49,26 @@ export default class Protocol {
     }
   }
 
-  // Getter: Dialog messages to show on screen
-  get dialog() {
+  // Construct dialog from messages
+  filterDialog({ types, present }) {
     // Filter by message type
-    const filtered = this.messages.filter((message) => this.showTypes.includes(message.type))
+    let filtered = this.messages.filter((message) => this.typeFilters[types].includes(message.type))
+
+    // Filter by present character
+    if (present) {
+      filtered = filtered.filter((message) => {
+        if (!['talk', 'hint', 'summary'].includes(message.type)) {
+          return false // only these store presence
+        }
+        if (!message.present.includes(present.id)) {
+          return false // char not present
+        }
+        if (message.type === 'hint' && message.to !== present.id) {
+          return false // hint not readable for char
+        }
+        return true
+      })
+    }
 
     // Filter by message age
     const len = filtered.length
@@ -71,6 +91,11 @@ export default class Protocol {
       }
     }
     return dialog
+  }
+
+  // Standard dialog for display
+  get dialog() {
+    return this.filterDialog({ types: 'show' })
   }
 
   // Getter: Last active player

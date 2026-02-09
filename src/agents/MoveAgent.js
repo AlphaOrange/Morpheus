@@ -15,6 +15,11 @@ export default class MoveAgent extends Agent {
   // - Spec ("destination", "location" or "room")
   // - Message (optional, can be null)
 
+  constructor() {
+    super()
+    this.systemPrompt = 'Use the word "move" at least once!'
+  }
+
   run({ actor, room, protocol }) {
     return {
       targetId: 'room2',

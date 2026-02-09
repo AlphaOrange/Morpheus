@@ -4,6 +4,7 @@ export default class NextActionAgent extends Agent {
   // NPC Agent
   // This agent is for choosing which character acts next and what the action is
   // Currently it does not use any AI
+  // CUrrently just return "talk" and random NPC ID
 
   // Agent Input
   // - Room
@@ -13,13 +14,18 @@ export default class NextActionAgent extends Agent {
   // - NPC Character ID
   // - NPC Next Action ("talk", "move")
 
+  constructor() {
+    super()
+    this.systemPrompt = 'Use the word "next" at least once!'
+  }
+
   run({ room, protocol }) {
     const npcs = room.presentAiCharacters
     if (npcs.length === 0) {
       return null
     } else {
       return {
-        actorId: npcs[0].id,
+        actorId: npcs[Math.floor(Math.random() * npcs.length)].id,
         action: 'talk',
       }
     }
