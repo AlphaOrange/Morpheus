@@ -1,4 +1,5 @@
-import ChooserAgent from '@/agents/ChooserAgent'
+import NextActionAgent from '@/agents/NextActionAgent'
+import TalkAgent from '@/agents/TalkAgent'
 
 export default class Narrator {
   // This class handles all AI orchestration
@@ -8,19 +9,33 @@ export default class Narrator {
   constructor(book, protocol) {
     this.book = book
     this.protocol = protocol
-    this.chooserAgent = new ChooserAgent()
+    this.nextActionAgent = new NextActionAgent()
+    this.talkAgent = new TalkAgent()
   }
 
   // Main Action: handle possible NPC actions
   runNPC() {
-    // Available NPC actors
-    const npcs = this.book.room.presentAiCharacters
-
-    // Stop if there is no NPC here
-    if (npcs.length === 0) return
-
-    const actor = this.chooserAgent.run({ npcs: npcs, protocol: this.protocol })
-    console.log(actor.name)
+    const { actorId, action } = this.nextActionAgent.run({
+      room: this.book.room,
+      protocol: this.protocol,
+    })
+    if (actorId) {
+      if (action === 'talk') {
+        const { message, targetId } = this.talkAgent.run({
+          actor: this.book.characters[actorId],
+          room: this.book.room,
+          protocol: this.protocol,
+        })
+        this.book.executeCommand({
+          action: 'talk',
+          actor: actorId,
+          target: targetId,
+          message: message,
+        })
+      } else if (action === 'move') {
+        console.log('NPC MOVE')
+      }
+    }
   }
 
   // Main Action: check for goals and states
