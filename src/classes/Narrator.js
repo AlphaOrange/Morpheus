@@ -1,5 +1,6 @@
 import NextActionAgent from '@/agents/NextActionAgent'
 import TalkAgent from '@/agents/TalkAgent'
+import MoveAgent from '@/agents/MoveAgent'
 
 export default class Narrator {
   // This class handles all AI orchestration
@@ -11,6 +12,7 @@ export default class Narrator {
     this.protocol = protocol
     this.nextActionAgent = new NextActionAgent()
     this.talkAgent = new TalkAgent()
+    this.moveAgent = new MoveAgent()
   }
 
   // Main Action: handle possible NPC actions
@@ -33,7 +35,18 @@ export default class Narrator {
           message: message,
         })
       } else if (action === 'move') {
-        console.log('NPC MOVE')
+        const { targetId, spec, message } = this.moveAgent.run({
+          actor: this.book.characters[actorId],
+          room: this.book.room,
+          protocol: this.protocol,
+        })
+        this.book.executeCommand({
+          action: 'move',
+          actor: actorId,
+          target: targetId,
+          spec: spec,
+          message: message,
+        })
       }
     }
   }

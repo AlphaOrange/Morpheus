@@ -1,6 +1,6 @@
-export default class NextAgent {
+export default class TalkAgent {
   // NPC Agent
-  // This agent is for choosing which character acts next and what the action is
+  // This agent is performing a TALK action
   // Currently it does not use any AI
 
   // Agent Input
@@ -12,7 +12,6 @@ export default class NextAgent {
   // - Target (:all or Character.id)
   // - Message
 
-  // Run Action: evaluate and return the next npc to act
   run({ actor, room, protocol }) {
     const others = Object.values(room.characters).filter((char) => char.id != actor.id)
     return {
