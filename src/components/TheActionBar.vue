@@ -73,6 +73,7 @@
       <h3>Debug / Test</h3>
       <ActionButton @click="debug_addTime()" :text="`+1min`" />
       <ActionButton @click="debug_save()" :text="`Save`" />
+      <ActionButton @click="debug_ai()" :text="`AI Turn`" />
     </div>
   </div>
 </template>
@@ -127,6 +128,10 @@ const debug_addTime = () => {
 // DEBUG: SAVE GAME
 const debug_save = () => {
   shelf.saveBook()
+}
+// DEBUG: RUN AI EVAL
+const debug_ai = () => {
+  book.narrator.runNPC()
 }
 </script>
 

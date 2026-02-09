@@ -3,6 +3,7 @@ import World from '@/classes/World'
 import Character from '@/classes/Character'
 import Destination from '@/classes/Destination'
 import Protocol from '@/classes/Protocol'
+import Narrator from '@/classes/Narrator'
 import { messageToCommand, distancePeriod, getHelpData } from '@/helpers/utils'
 import { useOptionsStore } from '@/stores/options'
 
@@ -33,6 +34,9 @@ export const useBookStore = defineStore('book', {
 
     // The Protocol --> if referenced make sure a reactive component is watched
     protocol: null,
+
+    // The Narrator
+    narrator: null,
 
     // Registers
     movingCharacterIDs: [],
@@ -362,6 +366,7 @@ export const useBookStore = defineStore('book', {
       }
       this.addTime(0) // triggering arrivals and timed events at 0
       this.updateRecentPlayerIDs() // set initial active player
+      this.narrator = new Narrator(this, this.protocol) // instantiate narrator
       this.activateBook()
     },
 
@@ -395,6 +400,9 @@ export const useBookStore = defineStore('book', {
         this.roomId = data.roomId
         this.time = data.time
         this.recentPlayerIDs = data.recentPlayerIDs
+
+        // instantiate narrator
+        this.narrator = new Narrator(this, this.protocol)
 
         // now activate book for play
         this.activateBook()
