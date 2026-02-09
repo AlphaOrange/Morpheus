@@ -1,4 +1,6 @@
-export default class NextActionAgent {
+import Agent from '@/agents/Agent'
+
+export default class NextActionAgent extends Agent {
   // NPC Agent
   // This agent is for choosing which character acts next and what the action is
   // Currently it does not use any AI

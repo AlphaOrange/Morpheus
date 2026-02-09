@@ -1,4 +1,6 @@
-export default class TalkAgent {
+import Agent from '@/agents/Agent'
+
+export default class TalkAgent extends Agent {
   // NPC Agent
   // This agent is performing a TALK action
   // Currently it does not use any AI

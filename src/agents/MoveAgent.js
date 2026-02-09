@@ -1,4 +1,6 @@
-export default class MoveAgent {
+import Agent from '@/agents/Agent'
+
+export default class MoveAgent extends Agent {
   // NPC Agent
   // This agent is performing a MOVE action
   // Currently it does not use any AI
