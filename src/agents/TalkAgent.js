@@ -15,16 +15,22 @@ export default class TalkAgent extends Agent {
   // - Target (:all or Character.id)
   // - Message
 
-  TEMPLATE = `### RECENT DIALOG
+  TEMPLATE = `### RECENT DIALOG ###
 
 %dialog%
 
-### CHARACTERS WITH YOU IN THE ROOM
+### THIS IS YOU ###
 
-%others%
+You are now %you%.
 
-Character %you% is talking next. Considering the recent dialog create what they are saying next and to whom (one specific person or to all). You can indicate what %you% is doing in terms of gesture, facial expressions, movement or minor actions by enclosing in single asterisk.
-You must use this exact json template for your answer:
+%you_profile%
+
+### CHARACTERS WITH YOU IN THE ROOM ###
+
+%others_profiles%
+
+You, %you%, are talking next. Considering the recent dialog create what you are saying next and to whom (one specific person or to all). You can indicate what you are doing in terms of gesture, facial expressions, movement or minor actions by enclosing in single asterisk.
+You must exclusively use this exact json template for your answer and nothing else:
 
 {
   "to": [id of person spoken to or ':all'],
@@ -42,18 +48,28 @@ You must use this exact json template for your answer:
 
   constructor() {
     super()
-    this.systemPrompt = 'Use the word "talk" at least once!' // TODO: can this be above like TEMPLATE even with superclass already setting it?
+    this.systemPrompt =
+      'You are an expert screenwriter and improv actor who slips into a specific role for continuing a dialogue.' // TODO: can this be above like TEMPLATE even with superclass already setting it?
   }
 
   async run({ actor, room, protocol }) {
     const dialog = formatDialog(protocol.filterDialog({ types: 'context', present: actor }))
-    const others = Object.values(room.characters)
+    const others_profiles = Object.values(room.characters)
       .filter((char) => char.id != actor.id)
-      .map((char) => `${char.name} (ID: ${char.id})`)
-      .join('\n')
+      .map(
+        (char) => `${char.name}, ${char.profession} (ID: ${char.id})
+${char.body}, ${char.clothing}, ${char.appearance}`,
+      )
+      .join('\n\n')
+    const you_profile = `${actor.name}, ${actor.profession} (${actor.gender}, ${actor.age})
+${actor.background}, ${actor.wants}
+${actor.body}, ${actor.clothing}, ${actor.appearance}
+Attributes: ${actor.mind}`
     const prompt = this.TEMPLATE.replaceAll('%you%', actor.name)
       .replace('%dialog%', dialog)
-      .replace('%others%', others)
+      .replace('%others_profiles%', others_profiles)
+      .replace('%you_profile%', you_profile)
+    console.log(prompt)
     const answer = await this.query(prompt)
     if (!answer) {
       return null
