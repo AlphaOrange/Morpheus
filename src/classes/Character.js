@@ -5,9 +5,22 @@ export default class Character {
   arrivalTarget = null
 
   constructor(data) {
-    ;['id', 'name', 'isPlayable', 'isNSC', 'description', 'gender', 'age', 'profession'].forEach(
-      (key) => (this[key] = data[key]),
-    )
+    ;[
+      'id',
+      'name',
+      'isPlayable',
+      'isNSC',
+      'description',
+      'gender',
+      'age',
+      'profession',
+      'body',
+      'mind',
+      'clothing',
+      'appearance',
+      'background',
+      'wants',
+    ].forEach((key) => (this[key] = data[key]))
     this._image = data.image
     this.start = data.start
       ? data.start.destination + '/' + data.start.location + '/' + data.start.room
@@ -36,6 +49,12 @@ export default class Character {
       gender: this.gender,
       age: this.age,
       profession: this.profession,
+      body: this.body,
+      mind: this.mind,
+      clothing: this.clothing,
+      appearance: this.appearance,
+      background: this.background,
+      wants: this.wants,
       start: this.start,
       _image: this._image,
       room: this.room === null ? null : this.room.id,
