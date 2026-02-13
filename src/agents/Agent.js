@@ -17,6 +17,7 @@ export default class Agent {
   timeout = 6000
 
   async query(prompt) {
+    console.log(`== PROMPT ==\n${prompt}`)
     const body = {
       systemInstruction: { role: 'system', parts: [{ text: this.systemPrompt }] },
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
@@ -26,8 +27,12 @@ export default class Agent {
         headers: { 'Content-Type': 'application/json' },
         timeout: this.timeout,
       })
-      const text = response.data?.candidates?.[0]?.content?.parts?.[0]?.text ?? null
-      return text
+      let text = response.data?.candidates?.[0]?.content?.parts?.[0]?.text ?? null
+      console.log(`== RESPONSE ==\n${text}`)
+      text = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1)
+      console.log(`== CLEAN RESPONSE ==\n${text}`)
+      const json = JSON.parse(text)
+      return json
     } catch (err) {
       console.log(`ERROR: ${err.response?.data?.error?.message || err.message || 'Unknown error'}`)
       return null
