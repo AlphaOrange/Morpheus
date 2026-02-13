@@ -42,7 +42,7 @@ Attributes: ${actor.mind}`
     const answer = await this.query(prompt)
     return {
       message: answer.text,
-      targetId: answer.to,
+      targetId: answer.to === 'all' ? ':all' : answer.to, // ai usually gets this wrong
     }
   }
 }

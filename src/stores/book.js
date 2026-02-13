@@ -186,8 +186,10 @@ export const useBookStore = defineStore('book', {
     },
 
     setActivePlayerID(activeID) {
-      const newRecentPlayerIDs = this.recentPlayerIDs.filter((id) => id !== activeID)
-      this.recentPlayerIDs = [activeID, ...newRecentPlayerIDs]
+      if (Object.keys(this.playerCharacters).includes(activeID)) {
+        const newRecentPlayerIDs = this.recentPlayerIDs.filter((id) => id !== activeID)
+        this.recentPlayerIDs = [activeID, ...newRecentPlayerIDs]
+      }
     },
 
     updateRecentPlayerIDs() {
