@@ -21,25 +21,62 @@ export default class NextActionAgent extends Agent {
 
   calculatePressure({ chars, messages }) {
     const pressure_notSpokenYet = 1
+    const pressure_notAnsweredYet = 0.5
 
+    // Add index to messages
+    messages = messages.map((message, index) => ({ ...message, index: index }))
+
+    // Initialize some collectors
     let pressure = {}
-    let char_messages = {}
 
+    // Initialize collectors
+    let char_messages = {}
+    let last_index = {}
     for (let char of chars) {
-      char_messages[char.id] = messages.filter((message) => message.from === char.id)
+      char_messages[char.id] = []
+      last_index[char.id] = {
+        to: -1,
+        from: -1,
+      }
     }
 
-    // Criterion 1: has character spoken yet?
+    // Collect data over messages
+    messages.forEach((message) => {
+      const { from, to, index, type } = message
+
+      // Collect messages from character
+      if (char_messages[from]) {
+        char_messages[from].push(message)
+      }
+
+      // Track last message sent TO character
+      if (last_index[to]) {
+        last_index[to].to = Math.max(last_index[to].to, index)
+      }
+
+      // Track last TALK message FROM character
+      if (type === 'talk' && last_index[from]) {
+        last_index[from].from = Math.max(last_index[from].from, index)
+      }
+    })
+
+    // Calculate pressure
     for (let char of chars) {
+      pressure[char.id] = 0
+
+      // Criterion 1: has character spoken yet?
       if (char_messages[char.id].length === 0) {
-        pressure[char.id] = pressure_notSpokenYet
-      } else {
-        pressure[char.id] = 0
+        pressure[char.id] += pressure_notSpokenYet
+      }
+
+      // Criterion 2: has been spoken to but not answered yet
+      // we define "not answered yet" as "has not TALKed yet" to avoid permanent pressure traps
+      if (last_index[char.id].to > last_index[char.id].from) {
+        pressure[char.id] += pressure_notAnsweredYet
       }
     }
 
     /*
-    const beenSpokenToUnresolved = 0
     const spokenToSomeoneUnresolved = 0
     const runningDialog = 0
     const notSpokenLonger = 0
@@ -52,6 +89,7 @@ export default class NextActionAgent extends Agent {
     )
     */
 
+    console.log(pressure)
     return pressure
   }
 
@@ -60,7 +98,7 @@ export default class NextActionAgent extends Agent {
     const present = Object.keys(room.characters)
     const scene = protocol.getScene({ time, room: room.id, present })
     const messages = protocol.filterDialog({
-      types: 'active',
+      types: 'talk', // all AI actions are TALK actions that can be followed by other types of action
       room: room.id,
       scene: scene,
     })

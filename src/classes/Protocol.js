@@ -26,6 +26,7 @@ export default class Protocol {
     context: ['talk', 'hint', 'summary'], // give these to agent for historal context
     scene: ['talk', 'hint', 'summary'], // these count for scene building
     active: ['talk'], // these action make a character active
+    talk: ['talk'],
   }
 
   constructor(optionsStore) {
