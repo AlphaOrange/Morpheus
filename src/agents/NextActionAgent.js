@@ -22,6 +22,7 @@ export default class NextActionAgent extends Agent {
   calculatePressure({ chars, messages }) {
     const pressure_notSpokenYet = 1
     const pressure_notAnsweredYet = 0.5
+    const pressure_spokenToUnresolved = -0.5
 
     // Add index to messages
     messages = messages.map((message, index) => ({ ...message, index: index }))
@@ -31,9 +32,11 @@ export default class NextActionAgent extends Agent {
 
     // Initialize collectors
     let char_messages = {}
+    let last_spoken_to = {}
     let last_index = {}
     for (let char of chars) {
       char_messages[char.id] = []
+      last_spoken_to[char.id] = ':all'
       last_index[char.id] = {
         to: -1,
         from: -1,
@@ -42,22 +45,21 @@ export default class NextActionAgent extends Agent {
 
     // Collect data over messages
     messages.forEach((message) => {
-      const { from, to, index, type } = message
-
-      // Collect messages from character
+      const { from, to, index } = message
       if (char_messages[from]) {
         char_messages[from].push(message)
       }
-
-      // Track last message sent TO character
       if (last_index[to]) {
-        last_index[to].to = Math.max(last_index[to].to, index)
+        last_index[to].to = index
+      } else {
+        last_index[to] = { to: index, from: -1 }
       }
-
-      // Track last TALK message FROM character
-      if (type === 'talk' && last_index[from]) {
-        last_index[from].from = Math.max(last_index[from].from, index)
+      if (last_index[from]) {
+        last_index[from].from = index
+      } else {
+        last_index[from] = { to: -1, from: index }
       }
+      last_spoken_to[from] = to
     })
 
     // Calculate pressure
@@ -74,10 +76,21 @@ export default class NextActionAgent extends Agent {
       if (last_index[char.id].to > last_index[char.id].from) {
         pressure[char.id] += pressure_notAnsweredYet
       }
+
+      // Criterion 3: spoken to someone else who hasn't spoken since
+      if (last_spoken_to[char.id] !== ':all') {
+        if (last_index[last_spoken_to[char.id]].from) {
+          if (last_index[last_spoken_to[char.id]].from < last_index[char.id].from) {
+            pressure[char.id] += pressure_spokenToUnresolved
+          }
+        } else {
+          // if player character has not spoken yet we have no entry
+          pressure[char.id] += pressure_spokenToUnresolved
+        }
+      }
     }
 
     /*
-    const spokenToSomeoneUnresolved = 0
     const runningDialog = 0
     const notSpokenLonger = 0
     return (
@@ -114,6 +127,7 @@ export default class NextActionAgent extends Agent {
       actorId = npcs[0].id
     } else {
       // Determine actor using pressure model
+      // TODO: change this from Max pressure wins To Pressure is probability
       const pressure = this.calculatePressure({ chars: npcs, messages })
       const maxPressure = Math.max(...Object.values(pressure))
       const candidates = Object.keys(pressure).filter((key) => pressure[key] === maxPressure)
