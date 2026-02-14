@@ -22,9 +22,9 @@ export default class Protocol {
 
   typeFilters = {
     // this.showTypes = ['talk', 'info'] // show these in dialog display
-    show: ['talk', 'hint', 'info', 'error', 'system'], // TEST MODE
-    context: ['talk', 'hint'], // give these to agent for historal context
-    scene: ['talk', 'hint'], // these count for scene building
+    show: ['talk', 'hint', 'info', 'error', 'system', 'summary'], // TEST MODE
+    context: ['talk', 'hint', 'summary'], // give these to agent for historal context
+    scene: ['talk', 'hint', 'summary'], // these count for scene building
     active: ['talk'], // these action make a character active
   }
 
@@ -54,16 +54,27 @@ export default class Protocol {
   }
 
   // Construct dialog from messages
-  filterDialog({ types, present, room, since }) {
+  filterDialog({ types, present, room, since, scene }) {
     let filtered = this.messages
 
     // Filter by cutoff point
     if (since) {
-      if (since.type === 'scene') {
-        // TODO: scene not available for all types
-      } else if (since.type === 'time') {
+      if (since.type === 'time') {
         filtered = filtered.filter((message) => message.time >= since.threshold)
       }
+    }
+
+    // Filter by scene
+    if (scene) {
+      filtered = filtered.filter((message) => {
+        if (!this.typeFilters['scene'].includes(message.type)) {
+          return false // no scene information
+        }
+        if (message.scene !== scene) {
+          return false // wrong scene
+        }
+        return true
+      })
     }
 
     // Filter by message type

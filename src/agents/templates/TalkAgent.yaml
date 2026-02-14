@@ -17,7 +17,9 @@ user: |-
 
   %others_profiles%
 
-  You, %you%, are talking next. Considering the recent dialog create what you are saying next and to whom (one specific person or to all). You may indicate what you are doing in terms of gesture, facial expressions, movement or minor actions by enclosing in single asterisk, but use it sparse and concise.
+  ### INSTRUCTIONS ###
+
+  You, %you%, are talking next. Considering the recent dialog create what you are saying next and to whom (one specific person or to all). You may indicate what you are doing in terms of gesture, facial expressions, movement or minor actions by enclosing in single asterisk, but use it sparse and concise. No long monologues, we want a lively dialogue.
   You must exclusively use this exact json template for your answer and nothing else:
 
   {
@@ -25,7 +27,7 @@ user: |-
     "text": [what you are saying]
   }
 
-  ### EXAMPLE OUTPUT
+  ### EXAMPLE OUTPUT ###
 
   {
     "to": "nina",

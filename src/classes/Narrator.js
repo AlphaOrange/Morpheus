@@ -19,6 +19,7 @@ export default class Narrator {
   runNPC() {
     // Determine next actor
     const { actorId, action } = this.nextActionAgent.run({
+      time: this.book.time,
       room: this.book.room,
       protocol: this.protocol,
     })

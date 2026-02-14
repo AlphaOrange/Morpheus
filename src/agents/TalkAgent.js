@@ -21,19 +21,27 @@ export default class TalkAgent extends Agent {
     this.systemPrompt = TEMPLATES.system
   }
 
-  async run({ actor, room, protocol }) {
-    const dialog = formatDialog(protocol.filterDialog({ types: 'context', present: actor }))
-    const others_profiles = Object.values(room.characters)
+  you_profile(actor) {
+    return `${actor.name}, ${actor.profession} (${actor.gender}, ${actor.age})
+${actor.background}, ${actor.wants}
+${actor.body}, ${actor.clothing}, ${actor.appearance}
+Attributes: ${actor.mind}`
+  }
+
+  others_profiles({ actor, room }) {
+    return Object.values(room.characters)
       .filter((char) => char.id != actor.id)
       .map(
         (char) => `${char.name}, ${char.profession} (ID: ${char.id})
 ${char.body}, ${char.clothing}, ${char.appearance}`,
       )
       .join('\n\n')
-    const you_profile = `${actor.name}, ${actor.profession} (${actor.gender}, ${actor.age})
-${actor.background}, ${actor.wants}
-${actor.body}, ${actor.clothing}, ${actor.appearance}
-Attributes: ${actor.mind}`
+  }
+
+  async run({ actor, room, protocol }) {
+    const dialog = formatDialog(protocol.filterDialog({ types: 'context', present: actor }))
+    const you_profile = this.you_profile(actor)
+    const others_profiles = this.others_profiles({ actor: actor, room: room })
     const prompt = TEMPLATES.user
       .replaceAll('%you%', actor.name)
       .replace('%dialog%', dialog)
