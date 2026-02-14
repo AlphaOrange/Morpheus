@@ -76,6 +76,15 @@ export default class Room {
     return this.location.availableLocations
   }
 
+  // Describe current room situation
+  describe() {
+    const chars = Object.values(this.characters)
+      .map((char) => char.name)
+      .join(', ')
+    return `${this.description}
+Present characters: ${chars}`
+  }
+
   // Adding and removing characters
   addCharacter(character) {
     this.characters[character.id] = character

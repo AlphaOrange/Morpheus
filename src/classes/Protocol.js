@@ -6,11 +6,11 @@ export default class Protocol {
   //            options: {} <- depends on type
   //           }
   // TALK: somebody talks to one or all characters
-  // {type: "talk", time, text, room, present, from, to}
+  // {type: "talk", scene, time, text, room, present, from, to}
   // HINT: ingame hint visible to one or all characters
-  // {type: "hint", time, text, room, present, to}
+  // {type: "hint", scene, time, text, room, present, to}
   // SUMMARY: not implemented yet, summaries of TALK/HINT blocks
-  // {type: "summary", time_start, time_end, text, room, present}
+  // {type: "summary", scene, time_start, time_end, text, room, present}
   // INFO: additional information only visible to user, not to ai
   // {type: "info", time, text, title}
   // SYSTEM: a message describing a program process // debug mode only
@@ -18,15 +18,19 @@ export default class Protocol {
   // ERROR: a program error occurred // debug mode only
   // {type: "error", time, text, title}
 
+  // TODO: nearly everywhere here room should be roomId
+
   typeFilters = {
     // this.showTypes = ['talk', 'info'] // show these in dialog display
     show: ['talk', 'hint', 'info', 'error', 'system'], // TEST MODE
     context: ['talk', 'hint'], // give these to agent for historal context
+    scene: ['talk', 'hint'], // these count for scene building
     active: ['talk'], // these action make a character active
   }
 
   constructor(optionsStore) {
     this.options = optionsStore
+    this.scene = 0
     // this.messages = []
     this.messages = [
       {
@@ -50,15 +54,26 @@ export default class Protocol {
   }
 
   // Construct dialog from messages
-  filterDialog({ types, present }) {
+  filterDialog({ types, present, room, since }) {
+    let filtered = this.messages
+
+    // Filter by cutoff point
+    if (since) {
+      if (since.type === 'scene') {
+        // TODO: scene not available for all types
+      } else if (since.type === 'time') {
+        filtered = filtered.filter((message) => message.time >= since.threshold)
+      }
+    }
+
     // Filter by message type
-    let filtered = this.messages.filter((message) => this.typeFilters[types].includes(message.type))
+    filtered = filtered.filter((message) => this.typeFilters[types].includes(message.type))
 
     // Filter by present character
     if (present) {
       filtered = filtered.filter((message) => {
         if (!['talk', 'hint', 'summary'].includes(message.type)) {
-          return false // only these store presence
+          return false // no present stored
         }
         if (!message.present.includes(present.id)) {
           return false // char not present
@@ -70,7 +85,17 @@ export default class Protocol {
       })
     }
 
-    // Filter by message age
+    // Filter by room ID
+    if (room) {
+      filtered = filtered.filter((message) => {
+        if (!['talk', 'hint', 'summary'].includes(message.type)) {
+          return false // no room stored
+        }
+        return message.room === room
+      })
+    }
+
+    // Filter additional info by message age
     const len = filtered.length
     let dialog = []
     for (let i = 0; i < filtered.length; i++) {
@@ -104,10 +129,37 @@ export default class Protocol {
     return filtered[filtered.length - 1].from
   }
 
+  // Check for new scene and return scene number
+  getScene({ time, room, present }) {
+    // Check if there is a running scene in the room
+    const relevantDialog = this.filterDialog({
+      types: 'scene',
+      room,
+      since: time - 3600,
+    }) // TODO: 3600 -> from options
+    if (relevantDialog.length === 0) {
+      // start new scene
+      this.scene = this.scene + 1
+      return this.scene
+    }
+    // Check if there is a character continuation
+    const lastMessage = relevantDialog.pop()
+    const commonChars = lastMessage.present.filter((char) => present.includes(char))
+    if (commonChars.length === 0) {
+      // start new scene
+      this.scene = this.scene + 1
+      return this.scene
+    }
+    // continue scene
+    return lastMessage.scene
+  }
+
   // Actions: add entries
   pushTalk({ time, text, room, present, from, to = ':all' }) {
+    const scene = this.getScene({ time, room, present })
     this.messages.push({
       type: 'talk',
+      scene: scene,
       time: time,
       text: text,
       room: room,
@@ -117,8 +169,10 @@ export default class Protocol {
     })
   }
   pushHint({ time, text, room, present, to = ':all' }) {
+    const scene = this.getScene({ time, room, present })
     this.messages.push({
       type: 'hint',
+      scene: scene,
       time: time,
       text: text,
       room: room,

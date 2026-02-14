@@ -148,9 +148,21 @@ export const useBookStore = defineStore('book', {
       this.time = this.time + duration
       // Check Arrivals
       for (const charID of this.movingCharacterIDs) {
-        let arrived = this.characters[charID].checkForArrival(this.time)
+        const char = this.characters[charID]
+        let arrived = char.checkForArrival(this.time)
         if (arrived) {
           this.movingCharacterIDs = this.movingCharacterIDs.filter((id) => id != charID)
+          // Sent Arrive HINT message if this is a player character
+          if (char.controlledBy === 'player') {
+            const present = Object.keys(char.room.characters)
+            this.protocol.pushHint({
+              time: this.time,
+              text: `${char.name} just arrived at ${char.room.name}`,
+              room: char.room.id,
+              present: present,
+              to: ':all',
+            })
+          }
         }
       }
     },

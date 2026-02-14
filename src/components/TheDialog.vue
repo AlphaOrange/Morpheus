@@ -63,10 +63,10 @@ const headerText = (message) => {
   if (message.type === 'talk') {
     let charFrom = characters.value[message.from].name
     let charTo = message.to === ':all' ? 'all' : characters.value[message.to].name
-    return `${charFrom} to ${charTo}:`
+    return `${message.scene}| ${charFrom} to ${charTo}:`
   } else if (message.type === 'hint') {
     let charTo = message.to === ':all' ? 'all' : characters.value[message.to].name
-    return `Hint for ${charTo}:`
+    return `${message.scene}| Hint for ${charTo}:`
   } else if (message.type === 'info') {
     return message.title
   } else if (message.type === 'system') {
