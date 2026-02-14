@@ -24,6 +24,7 @@ export default class NextActionAgent extends Agent {
     const pressure_notAnsweredYet = 0.5
     const pressure_spokenToUnresolved = -0.5
     const pressure_runningDialog = 1
+    const pressure_notSpokenRounds = 0.5
 
     //TODO: if there is no messages return same pressure for all
 
@@ -123,22 +124,18 @@ export default class NextActionAgent extends Agent {
       // Criterion 4: is there a longer running dialog betwen this char and one other char
       const maxRunningDialogLength = 8 // TODO: make this an option
       if (dialogLength > 0 && dialogActor === char.id) {
-        const dialogFactor =
+        let dialogFactor =
           Math.min(dialogLength - 1, maxRunningDialogLength) / maxRunningDialogLength
         pressure[char.id] += pressure_runningDialog * dialogFactor
       }
-    }
 
-    /*
-    const notSpokenLonger = 0
-    return (
-      notSpokenYet +
-      beenSpokenToUnresolved +
-      spokenToSomeoneUnresolved +
-      runningDialog +
-      notSpokenLonger
-    )
-    */
+      // Criterion 5: not spoken in a while
+      const maxNotSpokenRounds = 12 // TODO: make this an option
+      let notSpokenFactor =
+        Math.min(messages.length - last_index[char.id].from - 1, maxNotSpokenRounds) /
+        maxNotSpokenRounds
+      pressure[char.id] += pressure_notSpokenRounds * notSpokenFactor
+    }
 
     console.log(pressure)
     return pressure
@@ -155,6 +152,7 @@ export default class NextActionAgent extends Agent {
     })
 
     // Check if at least one available
+    // TODO: don't check for NPC just spoken
     const npcs = room.presentAiCharacters
     if (npcs.length === 0) {
       return null
