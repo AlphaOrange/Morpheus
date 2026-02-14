@@ -23,6 +23,9 @@ export default class NextActionAgent extends Agent {
     const pressure_notSpokenYet = 1
     const pressure_notAnsweredYet = 0.5
     const pressure_spokenToUnresolved = -0.5
+    const pressure_runningDialog = 1
+
+    //TODO: if there is no messages return same pressure for all
 
     // Add index to messages
     messages = messages.map((message, index) => ({ ...message, index: index }))
@@ -62,6 +65,34 @@ export default class NextActionAgent extends Agent {
       last_spoken_to[from] = to
     })
 
+    // Find longest current dialog by traversing backwards
+    const maxSearch = 20 // TODO: make this an option
+    let dialogActor = ':none'
+    let dialogRespondent = ':none'
+    let dialogLength = 0
+    if (messages.length > 1) {
+      const lastMessage = messages[messages.length - 1]
+      if (lastMessage.to !== ':all') {
+        dialogActor = lastMessage.to
+        dialogRespondent = lastMessage.from
+        const dialogMaxLength = Math.min(maxSearch, messages.length)
+        let pos
+        for (pos = 2; pos <= dialogMaxLength; ++pos) {
+          let message = messages[messages.length - pos]
+          if (pos % 2 === 0) {
+            if (message.from !== dialogActor || message.to !== dialogRespondent) {
+              break
+            }
+          } else {
+            if (message.from !== dialogRespondent || message.to !== dialogActor) {
+              break
+            }
+          }
+        }
+        dialogLength = pos - 1
+      }
+    }
+
     // Calculate pressure
     for (let char of chars) {
       pressure[char.id] = 0
@@ -88,10 +119,17 @@ export default class NextActionAgent extends Agent {
           pressure[char.id] += pressure_spokenToUnresolved
         }
       }
+
+      // Criterion 4: is there a longer running dialog betwen this char and one other char
+      const maxRunningDialogLength = 8 // TODO: make this an option
+      if (dialogLength > 0 && dialogActor === char.id) {
+        const dialogFactor =
+          Math.min(dialogLength - 1, maxRunningDialogLength) / maxRunningDialogLength
+        pressure[char.id] += pressure_runningDialog * dialogFactor
+      }
     }
 
     /*
-    const runningDialog = 0
     const notSpokenLonger = 0
     return (
       notSpokenYet +
