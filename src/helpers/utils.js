@@ -24,6 +24,22 @@ export function formatTime(datetime) {
   const min = String(datetime.getMinutes()).padStart(2, '0')
   return `${h}:${min}`
 }
+
+// return a key from object using keys as relative probabilities
+export function sampleKey(obj) {
+  const entries = Object.entries(obj)
+  const total = entries.reduce((sum, [, val]) => sum + val, 0)
+  if (total === 0) {
+    const keys = entries.map(([k]) => k)
+    return keys[Math.floor(Math.random() * keys.length)]
+  }
+  let rand = Math.random() * total
+  for (const [key, val] of entries) {
+    if (rand < val) return key
+    rand -= val
+  }
+}
+
 // ----- Distance Calculation -----
 
 // Calculate distance to target and return as text
