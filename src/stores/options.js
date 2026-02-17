@@ -22,6 +22,9 @@ export const useOptionsStore = defineStore('options', {
 
     // Book Settings (can be overwritten by book, e.g. ai settings)
     talkDuration: 30, // seconds that pass per talk action
+    moveDurationRoom: 60, // seconds to adjacent room
+    moveDurationLocation: 60, // seconds / 1 distance location move
+    moveDurationDestination: 3600, // seconds / 1 distance destination move
 
     // Special Variables (e.g. user activity flags)
     idHintsActive: false,

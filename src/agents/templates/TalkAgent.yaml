@@ -19,24 +19,16 @@ user: |-
 
   ### INSTRUCTIONS ###
 
-  You, %you%, are talking next. Considering the recent dialog create what you are saying next and to whom (one specific person or to all). You may indicate what you are doing in terms of gesture, facial expressions, movement or minor actions by enclosing in single asterisk, but use it sparse and concise. No long monologues, we want a lively dialogue.
-  You must exclusively use this exact json template for your answer and nothing else:
-
-  {
-    "to": [id of person you speak to ':all'],
-    "text": [what you are saying]
-  }
-
-  ### EXAMPLE OUTPUT ###
-
-  {
-    "to": "nina",
-    "text": "*Looking at Nina curiously* Hey! Haven't I seen you on the conference today? Third row, red shirt, right? *smiling*"
-  }
-schema: |-
+  You, %you%, are talking next. Considering the recent dialog create what you are saying next and to whom (one specific person or to all). You may indicate what you are doing in terms of gesture, facial expressions, movement or minor actions by enclosing in single asterisk, but use it sparse and concise. No long monologues, we want a lively quick dialogue.
+format: |-
   {
     "to": [id of person spoken to or ':all'],
     "text": [what you are saying]
+  }
+example: |-
+  {
+    "to": "nina",
+    "text": "*Looking at Nina curiously* Hey! Haven't I seen you on the conference today? Third row, red shirt, right? *smiling*"
   }
 validation: |-
   {

@@ -19,6 +19,8 @@ export default class TalkAgent extends Agent {
   constructor() {
     super()
     this.systemPrompt = TEMPLATES.system
+    this.responseFormat = TEMPLATES.format
+    this.responseExample = TEMPLATES.example
   }
 
   you_profile(actor) {

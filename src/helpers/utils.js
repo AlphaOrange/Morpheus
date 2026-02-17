@@ -1,6 +1,7 @@
 import Room from '@/classes/Room'
 import Location from '@/classes/Location'
 import Destination from '@/classes/Destination'
+import { useOptionsStore } from '@/stores/options'
 
 // ----- General Helpers -----
 
@@ -44,23 +45,26 @@ export function sampleKey(obj) {
 
 // Calculate distance to target and return as text
 function distanceRooms(currentRoom, targetRoom) {
-  return 60 // TODO: all of this needs to be (optional) book parameters
+  const options = useOptionsStore()
+  return options.moveDurationRoom
 }
 function distanceLocations(currentLocation, targetLocation) {
+  const options = useOptionsStore()
   const route = Math.sqrt(
     (currentLocation.position[0] - targetLocation.position[0]) ** 2 +
       (currentLocation.position[1] - targetLocation.position[1]) ** 2,
   )
   const detour = currentLocation.detour + targetLocation.detour
-  return (route + detour) * 60
+  return (route + detour) * options.moveDurationLocation
 }
 function distanceDestinations(currentDestination, targetDestination) {
+  const options = useOptionsStore()
   const route = Math.sqrt(
     (currentDestination.position[0] - targetDestination.position[0]) ** 2 +
       (currentDestination.position[1] - targetDestination.position[1]) ** 2,
   )
   const detour = currentDestination.detour + targetDestination.detour
-  return (route + detour) * 3600
+  return (route + detour) * options.moveDurationDestination
 }
 export function distancePeriod(currentRoom, target) {
   if (target instanceof Room) {

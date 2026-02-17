@@ -13,10 +13,26 @@ export default class Agent {
   // This class provides all AI handling, evaluation, data cleaning and checking
 
   systemPrompt = 'You are a super-helpful AI assistent.'
+  responseFormat = null
+  responseExample = null
   model = 'gemini25_flash_lite'
   timeout = 6000
 
   async query(prompt) {
+    if (this.responseFormat) {
+      prompt = `${prompt}
+
+You must exclusively use this exact json template for your answer and nothing else:
+
+${this.responseFormat}`
+    }
+    if (this.responseExample) {
+      prompt = `${prompt}
+
+### EXAMPLE OUTPUT ###
+
+${this.responseExample}`
+    }
     console.log(`== PROMPT ==\n${prompt}`)
     const body = {
       systemInstruction: { role: 'system', parts: [{ text: this.systemPrompt }] },
