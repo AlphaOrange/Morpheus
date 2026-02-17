@@ -41,7 +41,11 @@ ${char.body}, ${char.clothing}, ${char.appearance}`,
   }
 
   async run({ actor, room, protocol }) {
-    const dialog = formatDialog(protocol.filterDialog({ types: 'context', present: actor }))
+    const dialog = formatDialog({
+      messages: protocol.filterDialog({ types: 'context', present: actor }),
+      perspective: actor.id,
+    })
+    console.log(dialog)
     const you_profile = this.you_profile(actor)
     const others_profiles = this.others_profiles({ actor: actor, room: room })
     const prompt = TEMPLATES.user

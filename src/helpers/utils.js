@@ -2,6 +2,7 @@ import Room from '@/classes/Room'
 import Location from '@/classes/Location'
 import Destination from '@/classes/Destination'
 import { useOptionsStore } from '@/stores/options'
+import { useBookStore } from '@/stores/book'
 
 // ----- General Helpers -----
 
@@ -253,16 +254,25 @@ export function messageToCommand(message) {
 // ----- Formatting -----
 
 // format dialog string for ai prompting
-export function formatDialog(messages) {
+export function formatDialog({ messages, perspective }) {
+  const book = useBookStore()
+  const options = useOptionsStore()
   let dialog = []
+  let scene = -1
+  let time = -1
   for (let message of messages) {
+    if (message.scene !== scene || message.time - time >= options.repeatTimestampAfterSeconds) {
+      scene = message.scene
+      time = message.time
+      dialog.push('Time: ' + formatTime(book.toGametime(message.time)))
+    }
     if (message.type === 'talk') {
       if (message.to === ':all') {
         dialog.push(`${message.from}: "${message.text}"`)
       } else {
         dialog.push(`${message.from} to ${message.to}: "${message.text}"`)
       }
-    } else if (message.type === 'hint') {
+    } else if (message.type === 'hint' && [perspective, ':all'].includes(message.to)) {
       dialog.push(`(HINT: ${message.text})`)
     }
   }

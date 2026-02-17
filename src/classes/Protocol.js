@@ -57,7 +57,6 @@ export default class Protocol {
   // Construct dialog from messages
   filterDialog({ types, present, room, since, scene }) {
     let filtered = this.messages
-
     // Filter by cutoff point
     if (since) {
       if (since.type === 'time') {

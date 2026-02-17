@@ -16,6 +16,8 @@ export const useOptionsStore = defineStore('options', {
     maxSearchRunningDialog: 20, // how long traverse backwards for finding longest dialog
     maxRunningDialogLength: 8, // running dialog length for max pressure
     maxNotSpokenRounds: 12, // not spoken rounds for max pressure
+    // AI Parameters
+    repeatTimestampAfterSeconds: 600, // seconds after which timestamp is shown again in formatted dialog
 
     // Game Settings (can be changed by user, e.g. display options)
     idHintsMode: 'auto', // can be "never", "auto", "always"
