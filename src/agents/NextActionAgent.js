@@ -35,6 +35,9 @@ export default class NextActionAgent extends Agent {
 
     // Return if no messages
     if (messages.length === 0) {
+      for (let char of chars) {
+        pressure[char.id] = 100
+      }
       return pressure
     }
 
@@ -167,6 +170,14 @@ export default class NextActionAgent extends Agent {
     } else {
       // Determine actor using pressure model
       const pressure = this.calculatePressure({ chars: npcs, messages })
+      const maxPressure = Math.max(...Object.values(pressure))
+      if (maxPressure <= this.options.pressure_threshold) {
+        const noActionProb =
+          (1 - maxPressure / this.options.pressure_threshold) * this.options.pressure_noActionProb
+        if (Math.random() < noActionProb) {
+          return {}
+        }
+      }
       actorId = sampleKey(pressure)
     }
 

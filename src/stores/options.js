@@ -13,6 +13,7 @@ export const useOptionsStore = defineStore('options', {
     pressure_spokenToUnresolved: -50,
     pressure_runningDialog: 60,
     pressure_notSpokenRounds: 15,
+    pressure_threshold: 40, // if max pressure above: ai must act
     maxSearchRunningDialog: 20, // how long traverse backwards for finding longest dialog
     maxRunningDialogLength: 8, // running dialog length for max pressure
     maxNotSpokenRounds: 12, // not spoken rounds for max pressure
