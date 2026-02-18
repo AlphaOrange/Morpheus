@@ -8,7 +8,7 @@
         <div class="dialog-box">
           <TheDialog />
         </div>
-        <TheMessageBox ref="messageBox" />
+        <TheMessageBox ref="messageBox" @activity="startNpcTimer" />
       </div>
     </template>
     <template #rightSlot>
@@ -18,12 +18,17 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import TheThirdsLayout from '@/layouts/TheThirdsLayout.vue'
 import TheDialog from '@/components/TheDialog.vue'
 import TheMessageBox from '@/components/TheMessageBox.vue'
 import TheActionBar from '@/components/TheActionBar.vue'
 import TheSettingBar from '@/components/TheSettingBar.vue'
+import { useBookStore } from '@/stores/book'
+import { useOptionsStore } from '@/stores/options'
+
+const book = useBookStore()
+const options = useOptionsStore()
 
 const messageBox = ref(null)
 
@@ -51,6 +56,30 @@ const move = function ({ location = null, room = null, chars = [] } = {}) {
   }
   if (text) messageBox.value?.setMessage(text)
 }
+
+// --- running NPC actions on idling
+
+// Build looped timer for NPC actions
+let npcTimeout = null
+let narratorRunning = false
+const startNpcTimer = () => {
+  if (narratorRunning) return
+  clearTimeout(npcTimeout)
+  npcTimeout = setTimeout(async () => {
+    narratorRunning = true
+    await book.narrator.run()
+    narratorRunning = false
+    startNpcTimer()
+  }, options.idlingBeforeTriggerNpc * 1000)
+}
+
+// start/stop with Book view
+onMounted(() => {
+  startNpcTimer()
+})
+onUnmounted(() => {
+  clearTimeout(npcTimeout)
+})
 </script>
 
 <style scoped>

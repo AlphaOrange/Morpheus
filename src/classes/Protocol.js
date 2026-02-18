@@ -136,8 +136,8 @@ export default class Protocol {
 
   // Getter: Last active player
   get recentActor() {
-    let filtered = this.messages.filter((message) => this.activeTypes.includes(message.type))
-    return filtered[filtered.length - 1].from
+    let filtered = this.messages.filter((message) => this.typeFilters.active.includes(message.type))
+    return filtered[filtered.length - 1]?.from || ''
   }
 
   // Check for new scene and return scene number

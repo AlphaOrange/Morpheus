@@ -19,6 +19,8 @@ import { ref, watch } from 'vue'
 import { useBookStore } from '@/stores/book'
 import { useOptionsStore } from '@/stores/options'
 
+const emit = defineEmits(['activity']) // emits if user is active
+
 const book = useBookStore()
 const options = useOptionsStore()
 
@@ -35,8 +37,12 @@ const send = () => {
   message.value = ''
 }
 
-// Send on triple-enter
+// Send on triple-enter, notify user activity
 watch(message, (newVal, oldVal) => {
+  if (newVal !== oldVal) {
+    emit('activity')
+  }
+
   if (newVal.endsWith('\n\n\n') && newVal.length > oldVal.length) {
     send()
   }

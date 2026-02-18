@@ -23,6 +23,7 @@ export const useOptionsStore = defineStore('options', {
 
     // Game Settings (can be changed by user, e.g. display options)
     idHintsMode: 'auto', // can be "never", "auto", "always"
+    idlingBeforeTriggerNpc: 4, // seconds of idling until NPC actions are triggered
 
     // Book Settings (can be overwritten by book, e.g. ai settings)
     talkDuration: 30, // seconds that pass per talk action

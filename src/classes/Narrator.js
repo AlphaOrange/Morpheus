@@ -16,9 +16,9 @@ export default class Narrator {
   }
 
   // Main Action: handle possible NPC actions
-  runNPC() {
+  async runNPC() {
     // Determine next actor
-    const { actorId, action } = this.nextActionAgent.run({
+    const { actorId, action } = await this.nextActionAgent.run({
       time: this.book.time,
       room: this.book.room,
       protocol: this.protocol,
@@ -54,6 +54,14 @@ export default class Narrator {
         spec: spec,
         message: message,
       })
+    }
+  }
+
+  async run() {
+    // check if last action was user otherwise return
+    const playerCharIds = Object.keys(this.book.playerCharacters)
+    if (playerCharIds.includes(this.protocol.recentActor)) {
+      await this.runNPC()
     }
   }
 

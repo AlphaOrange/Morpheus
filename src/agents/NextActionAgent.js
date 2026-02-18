@@ -147,7 +147,7 @@ export default class NextActionAgent extends Agent {
     return pressure
   }
 
-  run({ time, room, protocol }) {
+  async run({ time, room, protocol }) {
     // Get scene and context
     const present = Object.keys(room.characters)
     const scene = protocol.getScene({ time, room: room.id, present })
