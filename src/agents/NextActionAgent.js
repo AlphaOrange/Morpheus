@@ -153,7 +153,6 @@ export default class NextActionAgent extends Agent {
     const scene = protocol.getScene({ time, room: room.id, present })
     const messages = protocol.filterDialog({
       types: 'talk', // all AI actions are TALK actions that can be followed by other types of action
-      room: room.id,
       scene: scene,
     })
 
@@ -161,7 +160,7 @@ export default class NextActionAgent extends Agent {
     const lastTalker = messages[messages.length - 1]?.from
     const npcs = room.presentAiCharacters.filter((char) => char.id !== lastTalker)
     if (npcs.length === 0) {
-      return null
+      return { actorId: null, action: null }
     }
 
     let actorId
