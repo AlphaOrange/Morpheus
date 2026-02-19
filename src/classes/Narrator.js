@@ -7,7 +7,8 @@ export default class Narrator {
   // Particularly AI talks/actions and all checks and events
   // Narrator does not hold any game data and does not need to be saved with the game
 
-  constructor(book, protocol) {
+  constructor(book, protocol, options) {
+    this.options = options
     this.book = book
     this.protocol = protocol
     this.nextActionAgent = new NextActionAgent()
@@ -16,17 +17,18 @@ export default class Narrator {
   }
 
   // Main Action: handle possible NPC actions
-  async runNPC() {
+  async runNPC({ cycle = 1 }) {
     // Determine next actor
     const { actorId, action } = await this.nextActionAgent.run({
       time: this.book.time,
       room: this.book.room,
       protocol: this.protocol,
+      urgentOnly: cycle > 1,
     })
     if (!actorId) return
     if (action === 'talk') {
       // TALK Action
-      this.talkAgent
+      await this.talkAgent
         .run({
           actor: this.book.characters[actorId],
           room: this.book.room,
@@ -42,7 +44,7 @@ export default class Narrator {
         })
     } else if (action === 'move') {
       // MOVE Action
-      const { targetId, spec, message } = this.moveAgent.run({
+      const { targetId, spec, message } = await this.moveAgent.run({
         actor: this.book.characters[actorId],
         room: this.book.room,
         protocol: this.protocol,
@@ -55,13 +57,17 @@ export default class Narrator {
         message: message,
       })
     }
+    if (cycle < this.options.multiActionMaxCycles) {
+      await new Promise((r) => setTimeout(r, this.options.waitBetweenNpcActions * 1000))
+      await this.runNPC({ cycle: cycle + 1 })
+    }
   }
 
   async run() {
     // check if last action was user otherwise return
     const playerCharIds = Object.keys(this.book.playerCharacters)
     if (playerCharIds.includes(this.protocol.recentActor)) {
-      await this.runNPC()
+      await this.runNPC({})
     }
   }
 

@@ -20,7 +20,7 @@ export default class MoveAgent extends Agent {
     this.systemPrompt = 'Use the word "move" at least once!'
   }
 
-  run({ actor, room, protocol }) {
+  async run({ actor, room, protocol }) {
     return {
       targetId: 'room2',
       spec: 'room',

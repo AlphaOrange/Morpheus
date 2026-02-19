@@ -18,6 +18,9 @@ export const useOptionsStore = defineStore('options', {
     maxSearchRunningDialog: 20, // how long traverse backwards for finding longest dialog //TODO: same as next?
     maxRunningDialogLength: 8, // running dialog length for max pressure
     maxNotSpokenRounds: 12, // not spoken rounds for max pressure
+    multiActionThreshold: 100, // threshold: pressure threshold to allow additional npc action
+    multiActionMaxCycles: 3, // threshold: number of max npc actions per round
+    waitBetweenNpcActions: 0.5, // wait time before executing possible next npc action (in addition to execution time!)
     // AI Parameters
     repeatTimestampAfterSeconds: 600, // seconds after which timestamp is shown again in formatted dialog
 

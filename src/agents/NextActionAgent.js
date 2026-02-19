@@ -143,11 +143,10 @@ export default class NextActionAgent extends Agent {
       pressure[char.id] = Math.max(pressure[char.id], 0)
     }
 
-    console.log(pressure)
     return pressure
   }
 
-  async run({ time, room, protocol }) {
+  async run({ time, room, protocol, urgentOnly = false }) {
     // Get scene and context
     const present = Object.keys(room.characters)
     const scene = protocol.getScene({ time, room: room.id, present })
@@ -164,17 +163,24 @@ export default class NextActionAgent extends Agent {
     }
 
     let actorId
-    if (npcs.length === 1) {
+    console.log('messages: ' + messages.length)
+    if (!urgentOnly && npcs.length === 1) {
+      console.log('just one npc available')
       actorId = npcs[0].id
     } else {
       // Determine actor using pressure model
+      console.log('use pressure')
       const pressure = this.calculatePressure({ chars: npcs, messages })
+      console.log(pressure)
       const maxPressure = Math.max(...Object.values(pressure))
+      if (urgentOnly && maxPressure < this.options.multiActionThreshold) {
+        return { actorId: null, action: null }
+      }
       if (maxPressure <= this.options.pressure_threshold) {
         const noActionProb =
           (1 - maxPressure / this.options.pressure_threshold) * this.options.pressure_noActionProb
         if (Math.random() < noActionProb) {
-          return {}
+          return { actorId: null, action: null }
         }
       }
       actorId = sampleKey(pressure)

@@ -30,6 +30,9 @@ export function formatTime(datetime) {
 // return a key from object using keys as relative probabilities
 export function sampleKey(obj) {
   const entries = Object.entries(obj)
+  if (entries.length === 1) {
+    return Object.keys(obj)[0]
+  }
   const total = entries.reduce((sum, [, val]) => sum + val, 0)
   if (total === 0) {
     const keys = entries.map(([k]) => k)

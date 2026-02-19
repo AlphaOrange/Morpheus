@@ -54,6 +54,8 @@ ${char.body}, ${char.clothing}, ${char.appearance}`,
       .replace('%others_profiles%', others_profiles)
       .replace('%you_profile%', you_profile)
     const answer = await this.query(prompt)
+    // FOR TESTING PURPOSES:
+    // const answer = { text: 'Test', to: 'alice' }
     return {
       message: answer.text,
       targetId: answer.to === 'all' ? ':all' : answer.to, // ai usually gets this wrong

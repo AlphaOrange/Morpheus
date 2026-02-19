@@ -380,7 +380,7 @@ export const useBookStore = defineStore('book', {
       }
       this.addTime(0) // triggering arrivals and timed events at 0
       this.updateRecentPlayerIDs() // set initial active player
-      this.narrator = new Narrator(this, this.protocol) // instantiate narrator
+      this.narrator = new Narrator(this, this.protocol, this.options) // instantiate narrator
       this.activateBook()
     },
 
@@ -416,7 +416,7 @@ export const useBookStore = defineStore('book', {
         this.recentPlayerIDs = data.recentPlayerIDs
 
         // instantiate narrator
-        this.narrator = new Narrator(this, this.protocol)
+        this.narrator = new Narrator(this, this.protocol, this.options)
 
         // now activate book for play
         this.activateBook()
