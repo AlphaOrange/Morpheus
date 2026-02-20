@@ -37,6 +37,8 @@ export const useOptionsStore = defineStore('options', {
     // Special Variables (e.g. user activity flags)
     idHintsActive: false,
     lightboxImage: null,
+    narratorRunning: false,
+    narratorRunningMessage: '',
   }),
 
   getters: {

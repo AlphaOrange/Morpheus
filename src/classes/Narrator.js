@@ -18,6 +18,10 @@ export default class Narrator {
 
   // Main Action: handle possible NPC actions
   async runNPC({ cycle = 1 }) {
+    // inform options
+    this.options.narratorRunningMessage = '...'
+    this.options.narratorRunning = true
+
     // Determine next actor
     const { actorId, action } = await this.nextActionAgent.run({
       time: this.book.time,
@@ -28,6 +32,7 @@ export default class Narrator {
     if (!actorId) return
     if (action === 'talk') {
       // TALK Action
+      this.options.narratorRunningMessage = `${actorId} talking ...`
       await this.talkAgent
         .run({
           actor: this.book.characters[actorId],
@@ -41,26 +46,40 @@ export default class Narrator {
             target: response.targetId,
             message: response.message,
           })
+          this.options.narratorRunning = false
+          this.options.narratorRunningMessage = ''
         })
     } else if (action === 'move') {
       // MOVE Action
-      const { targetId, spec, message } = await this.moveAgent.run({
-        actor: this.book.characters[actorId],
-        room: this.book.room,
-        protocol: this.protocol,
-      })
-      this.book.executeCommand({
-        action: 'move',
-        actor: actorId,
-        target: targetId,
-        spec: spec,
-        message: message,
-      })
+      this.options.narratorRunningMessage = `${actorId} moving ...`
+      await this.moveAgent
+        .run({
+          actor: this.book.characters[actorId],
+          room: this.book.room,
+          protocol: this.protocol,
+        })
+        .then((response) => {
+          this.book.executeCommand({
+            action: 'move',
+            actor: actorId,
+            target: response.targetId,
+            spec: response.spec,
+            message: response.message,
+          })
+          this.options.narratorRunning = false
+          this.options.narratorRunningMessage = ''
+        })
     }
+
+    // start for new cycle
     if (cycle < this.options.multiActionMaxCycles) {
       await new Promise((r) => setTimeout(r, this.options.waitBetweenNpcActions * 1000))
       await this.runNPC({ cycle: cycle + 1 })
     }
+
+    // inform options (fallback)
+    this.options.narratorRunning = false
+    this.options.narratorRunningMessage = ''
   }
 
   async run() {

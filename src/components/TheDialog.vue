@@ -20,6 +20,9 @@
       </header>
       <main class="message-box" v-html="renderMarkdown(message.text)"></main>
     </div>
+    <div v-if="options.narratorRunning" class="temp-message">
+      {{ options.narratorRunningMessage }}
+    </div>
   </div>
 </template>
 
@@ -29,8 +32,10 @@ import { storeToRefs } from 'pinia'
 import { formatTime } from '@/helpers/utils'
 
 import { useBookStore } from '@/stores/book'
+import { useOptionsStore } from '@/stores/options'
 const bookStore = useBookStore()
 const { characters, protocol } = storeToRefs(bookStore)
+const options = useOptionsStore()
 
 import MarkdownIt from 'markdown-it'
 const md = new MarkdownIt({
@@ -181,5 +186,13 @@ main {
 
 main:last-child {
   margin: 0;
+}
+
+.temp-message {
+  width: 100%;
+  padding: 0.5rem;
+  margin: 0 0 1rem;
+  border-radius: 0.5rem;
+  background: var(--bg-page);
 }
 </style>
