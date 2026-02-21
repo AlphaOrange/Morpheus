@@ -1,6 +1,5 @@
 import Agent from '@/agents/Agent'
 import { sampleKey } from '@/helpers/utils'
-import { useOptionsStore } from '@/stores/options'
 
 export default class NextActionAgent extends Agent {
   // NPC Agent
@@ -20,7 +19,6 @@ export default class NextActionAgent extends Agent {
 
   constructor() {
     super()
-    this.options = useOptionsStore()
   }
 
   calculatePressure({ chars, messages }) {

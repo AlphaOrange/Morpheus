@@ -1,10 +1,10 @@
 import axios from 'axios'
+import { useOptionsStore } from '@/stores/options'
 
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY
 const API = {
-  gemini25_flash_lite: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${API_KEY}`,
-  gemini25_flash: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
-  gemini20_flash: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`,
+  gemini25_flash_lite: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=`,
+  gemini25_flash: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=`,
+  gemini20_flash: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=`,
 }
 
 export default class Agent {
@@ -15,8 +15,8 @@ export default class Agent {
   systemPrompt = 'You are a super-helpful AI assistent.'
   responseFormat = null
   responseExample = null
-  model = 'gemini25_flash_lite'
   timeout = 30000
+  options = useOptionsStore()
 
   async query(prompt) {
     if (this.responseFormat) {
@@ -39,7 +39,8 @@ ${this.responseExample}`
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
     }
     try {
-      const response = await axios.post(API[this.model], body, {
+      const apiCall = API[this.options.aiModel] + this.options.aiApiKey
+      const response = await axios.post(apiCall, body, {
         headers: { 'Content-Type': 'application/json' },
         timeout: this.timeout,
       })

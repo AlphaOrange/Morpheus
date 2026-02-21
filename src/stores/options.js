@@ -27,6 +27,10 @@ export const useOptionsStore = defineStore('options', {
     // Game Settings (can be changed by user, e.g. display options)
     idHintsMode: 'auto', // can be "never", "auto", "always"
     idlingBeforeTriggerNpc: 4, // seconds of idling until NPC actions are triggered
+    // AI configuration
+    aiVendor: 'Gemini',
+    aiModel: 'gemini25_flash_lite',
+    aiApiKey: import.meta.env.VITE_GEMINI_API_KEY,
 
     // Book Settings (can be overwritten by book, e.g. ai settings)
     talkDuration: 30, // seconds that pass per talk action
