@@ -21,6 +21,7 @@
       <main class="message-box" v-html="renderMarkdown(message.text)"></main>
     </div>
     <div v-if="options.narratorRunning" class="temp-message">
+      <div class="loader"></div>
       {{ options.narratorRunningMessage }}
     </div>
   </div>
@@ -94,7 +95,7 @@ const renderMarkdown = (text) => {
 // Watcher: scroll to start of new message when added
 const messageEls = ref([])
 watch(
-  () => protocol.value.dialog.length,
+  () => [protocol.value.dialog.length, options.narratorRunning],
   async () => {
     await nextTick()
     const messages = messageEls.value

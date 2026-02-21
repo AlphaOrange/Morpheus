@@ -16,7 +16,7 @@ export default class Agent {
   responseFormat = null
   responseExample = null
   model = 'gemini25_flash_lite'
-  timeout = 6000
+  timeout = 30000
 
   async query(prompt) {
     if (this.responseFormat) {
@@ -50,8 +50,9 @@ ${this.responseExample}`
       const json = JSON.parse(text)
       return json
     } catch (err) {
-      console.log(`ERROR: ${err.response?.data?.error?.message || err.message || 'Unknown error'}`)
-      return null
+      const errorMessage = err.response?.data?.error?.message || err.message || 'Unknown error'
+      console.log(`ERROR: ${errorMessage}`)
+      return { error: errorMessage }
     }
   }
 }

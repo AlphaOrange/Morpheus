@@ -8,6 +8,8 @@
   --col-font-blur: #607095;
   --col-font-fade: #666;
   --col-success: #3c5;
+  --col-loader: #607095;
+  --col-loader-fade: #60709522;
   --bg-body: #060606;
   --bg-page: #141414;
   --bg-navbar: #232323;
@@ -216,6 +218,45 @@ button:hover .pill {
 .item-selection > .selected:hover {
   margin: 0;
   border: 2px solid var(--bg-light);
+}
+
+/* Animations */
+
+/* HTML: <div class="loader"></div> */
+/* from: https://css-loaders.com/dots/ */
+.loader {
+  width: 12px;
+  margin: 3px 25px 0 18px;
+  float: left;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  animation: l5 1s infinite linear alternate;
+}
+@keyframes l5 {
+  0% {
+    box-shadow:
+      16px 0 var(--col-loader),
+      -16px 0 var(--col-loader-fade);
+    background: var(--col-loader);
+  }
+  33% {
+    box-shadow:
+      16px 0 var(--col-loader),
+      -16px 0 var(--col-loader-fade);
+    background: var(--col-loader-fade);
+  }
+  66% {
+    box-shadow:
+      16px 0 var(--col-loader-fade),
+      -16px 0 var(--col-loader);
+    background: var(--col-loader-fade);
+  }
+  100% {
+    box-shadow:
+      16px 0 var(--col-loader-fade),
+      -16px 0 var(--col-loader);
+    background: var(--col-loader);
+  }
 }
 
 /*** Vue Transitions ***/

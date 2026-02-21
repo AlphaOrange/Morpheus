@@ -129,9 +129,14 @@ export default class Protocol {
     return dialog
   }
 
-  // Standard dialog for display
+  // Getter: Standard dialog for display
   get dialog() {
     return this.filterDialog({ types: 'show' })
+  }
+
+  // Getter: Just the last protocol entry
+  get lastMessage() {
+    return this.messages[this.messages.length - 1]
   }
 
   // Getter: Last active player
