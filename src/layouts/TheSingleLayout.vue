@@ -1,14 +1,10 @@
 <template>
-  <TheMainLayout>
-    <div class="page">
-      <slot></slot>
-    </div>
-  </TheMainLayout>
+  <div class="page">
+    <slot></slot>
+  </div>
 </template>
 
-<script setup>
-import TheMainLayout from '@/layouts/TheMainLayout.vue'
-</script>
+<script setup></script>
 
 <style scoped>
 .page {

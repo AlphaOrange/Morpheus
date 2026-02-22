@@ -1,6 +1,6 @@
 <template>
   <TheSingleLayout>
-    <div class="content">
+    <div class="content vertical-center-flex">
       <div class="page-header">
         <h1>Game Options</h1>
       </div>
@@ -59,7 +59,6 @@ const options = useOptionsStore()
   min-width: 30%;
   padding: 0.5rem;
   width: 30%;
-  margin-bottom: 1rem;
 }
 .input-group {
   margin: 0.5rem;

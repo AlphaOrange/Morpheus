@@ -1,22 +1,18 @@
 <template>
-  <TheMainLayout>
-    <div class="page">
-      <div class="third left">
-        <slot name="leftSlot">[no content]</slot>
-      </div>
-      <div class="third middle">
-        <slot name="middleSlot">[no content]</slot>
-      </div>
-      <div class="third right">
-        <slot name="rightSlot">[no content]</slot>
-      </div>
+  <div class="page">
+    <div class="third left">
+      <slot name="leftSlot">[no content]</slot>
     </div>
-  </TheMainLayout>
+    <div class="third middle">
+      <slot name="middleSlot">[no content]</slot>
+    </div>
+    <div class="third right">
+      <slot name="rightSlot">[no content]</slot>
+    </div>
+  </div>
 </template>
 
-<script setup>
-import TheMainLayout from '@/layouts/TheMainLayout.vue'
-</script>
+<script setup></script>
 
 <style scoped>
 .page {

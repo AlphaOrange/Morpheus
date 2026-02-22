@@ -7,7 +7,9 @@
         @hide="hideSidebar"
       />
     </Transition>
-    <RouterView />
+    <TheMainLayout>
+      <RouterView />
+    </TheMainLayout>
   </div>
 </template>
 
@@ -15,6 +17,7 @@
 import { computed } from 'vue'
 import { RouterView } from 'vue-router'
 import TheLightbox from '@/components/TheLightbox.vue'
+import TheMainLayout from '@/layouts/TheMainLayout.vue'
 
 import { useOptionsStore } from '@/stores/options'
 const options = useOptionsStore()
