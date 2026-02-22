@@ -1,5 +1,21 @@
 import { defineStore } from 'pinia'
 
+// these options will be stored and restored with saving/loading books
+const SAVEABLE_OPTIONS = [
+  // User Settings
+  'idHintsMode',
+  'idlingBeforeTriggerNpc',
+  // AI Settings
+  'aiVendor',
+  'aiModel',
+  'aiApiKey',
+  // Book Settings
+  'talkDuration',
+  'moveDurationRoom',
+  'moveDurationLocation',
+  'moveDurationDestination',
+]
+
 export const useOptionsStore = defineStore('options', {
   state: () => ({
     // Engine Parameters (cannot be changed, e.g. ui settings)
@@ -57,14 +73,18 @@ export const useOptionsStore = defineStore('options', {
   actions: {
     // restore from savefile json
     restoreOptions(data) {
-      this.idHintsMode = data.idHintsMode
+      for (let option of SAVEABLE_OPTIONS) {
+        console.log(`restore ${option}`)
+        this[option] = data[option]
+      }
     },
     // write to json for savefile
     toJSON() {
-      // only save game settings and book settings
-      return {
-        idHintsMode: this.idHintsMode,
+      let data = {}
+      for (let option of SAVEABLE_OPTIONS) {
+        data[option] = this[option]
       }
+      return data
     },
   },
 })
