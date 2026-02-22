@@ -86,7 +86,7 @@ export const useBookStore = defineStore('book', {
     // Playable characters who are currently moving + time left
     movingPlayerCharacters() {
       const ids = this.movingCharacterIDs
-      return this.playableCharacters.filter((char) => ids.includes(char.id))
+      return Object.values(this.playerCharacters).filter((char) => ids.includes(char.id))
     },
 
     // Available Travel Targets
