@@ -23,6 +23,7 @@ export default class TalkAgent extends Agent {
     this.responseExample = TEMPLATES.example
   }
 
+  // Build text block: description of You
   you_profile(actor) {
     return `${actor.name}, ${actor.profession} (${actor.gender}, ${actor.age})
 ${actor.background}, ${actor.wants}
@@ -30,6 +31,7 @@ ${actor.body}, ${actor.clothing}, ${actor.appearance}
 Attributes: ${actor.mind}`
   }
 
+  // Build text block: descriptions of Others
   others_profiles({ actor, room }) {
     return Object.values(room.characters)
       .filter((char) => char.id != actor.id)
@@ -40,12 +42,12 @@ ${char.body}, ${char.clothing}, ${char.appearance}`,
       .join('\n\n')
   }
 
+  // Main Method
   async run({ actor, room, protocol }) {
     const dialog = formatDialog({
       messages: protocol.filterDialog({ types: 'context', present: actor }),
       perspective: actor.id,
     })
-    console.log(dialog)
     const you_profile = this.you_profile(actor)
     const others_profiles = this.others_profiles({ actor: actor, room: room })
     const prompt = TEMPLATES.user
@@ -62,6 +64,7 @@ ${char.body}, ${char.clothing}, ${char.appearance}`,
       return {
         message: answer.text,
         targetId: answer.to === 'all' ? ':all' : answer.to, // ai usually gets this wrong
+        additionalAction: answer.action.toLowerCase(),
       }
     }
   }

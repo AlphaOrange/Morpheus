@@ -19,16 +19,22 @@ user: |-
 
   ### INSTRUCTIONS ###
 
-  You, %you%, are talking next. Considering the recent dialog create what you are saying next and to whom (one specific person or to all). You may indicate what you are doing in terms of gesture, facial expressions, movement or minor actions by enclosing in single asterisk, but use it sparse and concise. No long monologues, we want a lively quick dialogue.
+  You, %you%, are talking next. Considering the recent dialog create what you are saying next and to whom (one specific person or to all). You may indicate what you are doing in terms of gesture, facial expressions, movement or minor actions by enclosing in double asterisk, but use it sparse and concise. Use single asterisk enclosing for emphasis if needed. Do not mess up the json format by using double quotation marks in your talk text.
+  No long monologues, we want a lively quick dialogue.
+  Also decide based on the dialog and your talk message on an additional action from your character. Possible actions are:
+  - MOVE: move to another room or a different location
+  - NONE: no additional action
 format: |-
   {
     "to": [id of person spoken to or ':all'],
-    "text": [what you are saying]
+    "text": [what you are saying],
+    "action": [additional action: 'MOVE' or 'NONE']
   }
 example: |-
   {
     "to": "nina",
-    "text": "*Looking at Nina curiously* Hey! Haven't I seen you on the conference today? Third row, red shirt, right? *smiling*"
+    "text": "**Looking at Nina curiously** Hey! Haven't I seen you on the conference today? Third row, *really* bright red shirt, right?",
+    "action": "NONE"
   }
 validation: |-
   {
@@ -40,6 +46,9 @@ validation: |-
         "type": "string"
       },
       "text": {
+        "type": "string"
+      }
+      "action": {
         "type": "string"
       }
     },

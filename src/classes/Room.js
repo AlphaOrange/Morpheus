@@ -1,3 +1,5 @@
+import { distancePeriodText } from '@/helpers/utils'
+
 export default class Room {
   type = 'room'
   characters = {}
@@ -76,13 +78,29 @@ export default class Room {
     return this.location.availableLocations
   }
 
-  // Describe current room situation
-  describe() {
-    const chars = Object.values(this.characters)
-      .map((char) => char.name)
-      .join(', ')
-    return `${this.description}
-Present characters: ${chars}`
+  // Describe where one can go from here
+  describeMoveOptions() {
+    const avRooms = this.availableRooms
+      .map((room) => {
+        const time = distancePeriodText(this, room)
+        return `- ${room.name} [Type: room, ID: ${room.commandId}]: ${room.description} [takes time: ${time}]`
+      })
+      .join('\n')
+    const avLocations = this.availableLocations
+      .map((loc) => {
+        const time = distancePeriodText(this, loc)
+        return `- ${loc.name} [Type: location, ID: ${loc.commandId}]: ${loc.description} [takes time: ${time}]`
+      })
+      .join('\n')
+    const description = `**${this.name}**
+${this.description}
+
+Rooms you can go to:
+${avRooms}
+
+Locations you can go to:
+${avLocations}`
+    return description
   }
 
   // Adding and removing characters
