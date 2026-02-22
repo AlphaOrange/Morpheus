@@ -4,36 +4,31 @@
       <div class="logo" :style="{ backgroundImage: `url(${logoImg})` }" @click="router.push('/')" />
     </div>
     <div class="main"></div>
-    <div class="bar-option" @click="router.push('/')">
-      <div class="bar-label">
-        <font-awesome-icon class="icon" icon="fa-book-atlas" /><span>Shelf</span>
-      </div>
-    </div>
-    <!-- book shelf -->
-    <div class="bar-option" @click="router.push('/options')">
-      <div class="bar-label">
-        <font-awesome-icon class="icon" icon="fa-sliders" /><span>Options</span>
-      </div>
-    </div>
-    <!-- hide other locations ins dialog / hide type hints -->
-    <div class="bar-option" @click="router.push('/help')">
-      <div class="bar-label">
-        <font-awesome-icon class="icon" icon="fa-circle-question" /><span>Help</span>
-      </div>
-    </div>
-    <!-- type hints -->
     <div class="bar-option" @click="router.push('/book')">
       <div class="bar-label">
         <font-awesome-icon class="icon" icon="fa-book-open" /><span>Play</span>
       </div>
     </div>
-    <!-- back to book -->
+    <div class="bar-option" @click="router.push('/')">
+      <div class="bar-label">
+        <font-awesome-icon class="icon" icon="fa-book-atlas" /><span>Shelf</span>
+      </div>
+    </div>
+    <div class="bar-option" @click="router.push('/options')">
+      <div class="bar-label">
+        <font-awesome-icon class="icon" icon="fa-sliders" /><span>Options</span>
+      </div>
+    </div>
+    <div class="bar-option" @click="router.push('/help')">
+      <div class="bar-label">
+        <font-awesome-icon class="icon" icon="fa-circle-question" /><span>Help</span>
+      </div>
+    </div>
     <div class="bar-option" @click="router.push('/about')">
       <div class="bar-label">
         <font-awesome-icon class="icon" icon="fa-address-card" /><span>About</span>
       </div>
     </div>
-    <!-- about Morpheus -->
     <footer v-if="started" @click="router.push('/info')">
       <img :src="'images/M/' + cover" class="cover" />
       <div class="book-title">
