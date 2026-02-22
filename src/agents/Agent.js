@@ -4,7 +4,31 @@ import { useOptionsStore } from '@/stores/options'
 const API = {
   gemini25_flash_lite: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=`,
   gemini25_flash: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=`,
-  gemini20_flash: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=`,
+  gemini20_flash: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=`, //TODO: deprecated
+}
+
+// TODO: make these configurable
+const safetySettings = [
+  {
+    category: 'HARM_CATEGORY_HARASSMENT',
+    threshold: 'BLOCK_ONLY_HIGH',
+  },
+  {
+    category: 'HARM_CATEGORY_HATE_SPEECH',
+    threshold: 'BLOCK_ONLY_HIGH',
+  },
+  {
+    category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+    threshold: 'BLOCK_NONE',
+  },
+  {
+    category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
+    threshold: 'BLOCK_MEDIUM_AND_ABOVE',
+  },
+]
+
+const generationConfig = {
+  temperature: 0.7,
 }
 
 export default class Agent {
@@ -37,6 +61,8 @@ ${this.responseExample}`
     const body = {
       systemInstruction: { role: 'system', parts: [{ text: this.systemPrompt }] },
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      safetySettings,
+      generationConfig,
     }
     try {
       const apiCall = API[this.options.aiModel] + this.options.aiApiKey
