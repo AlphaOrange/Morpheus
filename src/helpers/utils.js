@@ -103,6 +103,7 @@ export function distancePeriodText(currentRoom, target) {
 
 const rx = {
   help: /^--([a-z]+)/i,
+  talk_colons: /^((?:[^:]+ ){6}.*)$/i, // after 6 spaces without colon, this is just a talk message and user may use colons
   move_room: /^(?:([a-z0-9_]+) )?(move room |move to room )([a-z0-9_]+)(?::(.*))?$/i,
   move_location: /^(?:([a-z0-9_]+) )?(move location |move to location )([a-z0-9_]+)(?::(.*))?$/i,
   move_destination:
@@ -116,8 +117,8 @@ const rx = {
   talk2: /^([a-z0-9_]+)? ?(-) ?([a-z0-9_]+):(.+)$/i, // alice-bob: text / -bob: text
   talk3all: /^([a-z0-9_]+)::(.+)$/i, // alice:: text
   talk3: /^([a-z0-9_]+):(.+)$/i, // alice: text
-  talk4all: /^:: ?([^:]+)$/i, // :: text
-  talk4: /^:? ?([^:]+)$/i, // text / : text
+  talk4all: /^:: ?(.+)$/i, // :: text
+  talk4: /^:? ?(.+)$/i, // text / : text
 }
 
 export function messageToCommand(message) {
@@ -128,6 +129,13 @@ export function messageToCommand(message) {
   res = rx.help.exec(message)
   if (res) {
     command = { action: 'help', topic: res[1].toLowerCase() }
+    return command
+  }
+
+  // Talk: Message only (with possible colons)
+  res = rx.talk_colons.exec(message)
+  if (res) {
+    command = { action: 'talk', actor: ':active', target: ':resume', message: res[1].trim() }
     return command
   }
 
