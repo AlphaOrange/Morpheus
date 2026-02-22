@@ -450,6 +450,28 @@ export const useBookStore = defineStore('book', {
           }
         }
 
+        // Check if spoken to is valid
+        if (command.target === command.actor) {
+          this.protocol.pushError({
+            time: this.time,
+            title: `Invalid Command`,
+            text: `You cannot speak to yourself`,
+          })
+          return
+        }
+        const possibleSpokenTo = [
+          ...Object.values(this.room.characters).map((char) => char.id),
+          ':all',
+        ]
+        if (!possibleSpokenTo.includes(command.target)) {
+          this.protocol.pushError({
+            time: this.time,
+            title: `Invalid Command`,
+            text: `You cannot talk to ${command.target}`,
+          })
+          return
+        }
+
         // Send TALK message
         this.protocol.pushTalk({
           text: command.message,
@@ -568,6 +590,7 @@ export const useBookStore = defineStore('book', {
         return
       }
 
+      // Check if actor is valid
       const possibleActors = [
         ...this.room.presentPlayerCharacters.map((char) => char.id),
         ':active',
@@ -581,6 +604,7 @@ export const useBookStore = defineStore('book', {
         })
         return
       }
+
       this.executeCommand(command)
     },
   },
