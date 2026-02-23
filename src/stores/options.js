@@ -31,7 +31,6 @@ export const useOptionsStore = defineStore('options', {
     pressure_notSpokenRounds: 15,
     pressure_threshold: 40, // if max pressure above: ai must act
     pressure_noActionProb: 0.5, // max probability of no-action if below threshold
-    maxSearchRunningDialog: 20, // how long traverse backwards for finding longest dialog //TODO: same as next?
     maxRunningDialogLength: 8, // running dialog length for max pressure
     maxNotSpokenRounds: 12, // not spoken rounds for max pressure
     multiActionThreshold: 100, // threshold: pressure threshold to allow additional npc action

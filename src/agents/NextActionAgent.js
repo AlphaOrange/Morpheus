@@ -80,7 +80,7 @@ export default class NextActionAgent extends Agent {
       if (lastMessage.to !== ':all') {
         dialogActor = lastMessage.to
         dialogRespondent = lastMessage.from
-        const dialogMaxLength = Math.min(this.options.maxSearchRunningDialog, messages.length)
+        const dialogMaxLength = Math.min(this.options.maxRunningDialogLength, messages.length)
         let pos
         for (pos = 2; pos <= dialogMaxLength; ++pos) {
           let message = messages[messages.length - pos]
