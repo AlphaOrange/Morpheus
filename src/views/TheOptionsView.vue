@@ -15,7 +15,6 @@
           <select v-model="options.aiModel">
             <option>gemini25_flash_lite</option>
             <option>gemini25_flash</option>
-            <option>gemini20_flash</option>
           </select>
         </div>
         <div>API Key:</div>

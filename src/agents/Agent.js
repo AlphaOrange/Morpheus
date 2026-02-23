@@ -4,7 +4,6 @@ import { useOptionsStore } from '@/stores/options'
 const API = {
   gemini25_flash_lite: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=`,
   gemini25_flash: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=`,
-  gemini20_flash: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=`, //TODO: deprecated
 }
 
 // TODO: make these configurable
