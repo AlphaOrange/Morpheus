@@ -290,6 +290,20 @@ export function formatDialog({ messages, perspective }) {
   return dialog.join('\n')
 }
 
+export function joinOr(parts) {
+  parts = parts.slice()
+  if (parts.length === 1) return parts
+  const lastPart = parts.pop()
+  return parts.join(', ') + ' or ' + lastPart
+}
+
+export function joinAnd(parts) {
+  parts = parts.slice()
+  if (parts.length === 1) return parts
+  const lastPart = parts.pop()
+  return parts.join(', ') + ' and ' + lastPart
+}
+
 // ----- Help Texts -----
 
 import helpData from '@/data/help.yaml'

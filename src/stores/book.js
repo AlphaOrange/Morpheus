@@ -4,7 +4,7 @@ import Character from '@/classes/Character'
 import Destination from '@/classes/Destination'
 import Protocol from '@/classes/Protocol'
 import Narrator from '@/classes/Narrator'
-import { messageToCommand, distancePeriod, getHelpData } from '@/helpers/utils'
+import { messageToCommand, distancePeriod, getHelpData, joinAnd } from '@/helpers/utils'
 import { useOptionsStore } from '@/stores/options'
 
 export const useBookStore = defineStore('book', {
@@ -522,7 +522,7 @@ export const useBookStore = defineStore('book', {
         // Construct info message
         let charMoving
         if (command.actor === ':group') {
-          charMoving = this.room.presentPlayerCharacters.map((char) => char.name).join(', ')
+          charMoving = joinAnd(this.room.presentPlayerCharacters.map((char) => char.name))
         } else {
           charMoving = this.characters[command.actor].name
         }
