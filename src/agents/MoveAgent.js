@@ -32,8 +32,8 @@ Attributes: ${actor.mind}`
   }
 
   // Build text block: descriptions of Others
-  others_profiles({ actor, room }) {
-    return Object.values(room.characters)
+  others_profiles({ actor }) {
+    return Object.values(actor.room.characters)
       .filter((char) => char.id != actor.id)
       .map(
         (char) => `${char.name}, ${char.profession} (ID: ${char.id})
@@ -43,13 +43,14 @@ ${char.body}, ${char.clothing}, ${char.appearance}`,
   }
 
   // Main Method
-  async run({ actor, room, protocol }) {
+  async run({ actor, protocol }) {
     const dialog = formatDialog({
       messages: protocol.filterDialog({ types: 'context', present: actor }),
       perspective: actor.id,
     })
+    const room = actor.room
     const you_profile = this.you_profile(actor)
-    const others_profiles = this.others_profiles({ actor: actor, room: room })
+    const others_profiles = this.others_profiles({ actor: actor })
     const place_description = room.describeMoveOptions()
     const prompt = TEMPLATES.user
       .replace('%dialog%', dialog)

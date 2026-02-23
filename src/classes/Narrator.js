@@ -33,7 +33,6 @@ export default class Narrator {
     this.options.narratorRunningMessage = `${actorId} talking ...`
     const response = await this.talkAgent.run({
       actor: this.book.characters[actorId],
-      room: this.book.room, // TODO: do we need this? It's actor.room
       protocol: this.protocol,
     })
 
@@ -57,7 +56,6 @@ export default class Narrator {
     this.options.narratorRunningMessage = `${actorId} moving ...`
     const response = await this.moveAgent.run({
       actor: this.book.characters[actorId],
-      room: this.book.room, // TODO: do we need this? It's actor.room
       protocol: this.protocol,
     })
 
