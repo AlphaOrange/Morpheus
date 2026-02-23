@@ -25,6 +25,7 @@ export default class Character {
     this.start = data.start
       ? data.start.destination + '/' + data.start.location + '/' + data.start.room
       : null
+    this.language = data?.language
     // data.load_states
     // data.load_agendas
   }

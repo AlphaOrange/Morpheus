@@ -28,7 +28,8 @@ export default class TalkAgent extends Agent {
     return `${actor.name}, ${actor.profession} (${actor.gender}, ${actor.age})
 ${actor.background}, ${actor.wants}
 ${actor.body}, ${actor.clothing}, ${actor.appearance}
-Attributes: ${actor.mind}`
+Attributes: ${actor.mind}
+Linguistic characteristics: ${actor.language}`
   }
 
   // Build text block: descriptions of Others
