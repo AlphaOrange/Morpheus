@@ -2,6 +2,7 @@ import { fileURLToPath, URL } from 'node:url'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import pkg from './package.json'
 import yaml from '@rollup/plugin-yaml'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import prepareBooksPlugin from './vite-plugin-prepare-books.js'
@@ -26,6 +27,9 @@ export default defineConfig({
       booksDir: 'public/images',
     }),
   ],
+  define: {
+    __APP_VERSION__: JSON.stringify(pkg.version),
+  },
   base: '/test/morpheus/',
   resolve: {
     alias: {
