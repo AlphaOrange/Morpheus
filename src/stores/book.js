@@ -47,8 +47,6 @@ export const useBookStore = defineStore('book', {
     recentPlayerIDs: [],
   }),
 
-  // TODO: konsequent roomID vs room, destinationID vs. destination etc. verwenden
-
   getters: {
     // The options store
     options() {
@@ -488,11 +486,11 @@ export const useBookStore = defineStore('book', {
 
       // Action MOVE
       if (command.action === 'move') {
-        if ((command.message !== null) & (command.actor === ':group')) {
+        if (command.message !== null && command.actor === ':group') {
           this.protocol.pushError({
             time: this.time,
             title: 'Invalid Command',
-            text: 'You cannot send an exit message if the group moves together.\n\n**Original message**\n${message}',
+            text: `You cannot send an exit message if the group moves together.\n\nTried to say: ${command.message}`,
           })
           return
         }
@@ -547,7 +545,7 @@ export const useBookStore = defineStore('book', {
             room: this.room.id,
             present: present,
             from: command.actor,
-          }) // TODO: WHAT IF ACTOR IS GROUP?
+          })
         }
         // Send INFO message
         this.protocol.pushHint({
@@ -603,6 +601,11 @@ export const useBookStore = defineStore('book', {
           text: `**Original message**\n${message}`,
         })
         return
+      }
+
+      // replace :group with actor id if only one player
+      if (command.actor === ':group' && this.room.presentPlayerCharacters.length === 1) {
+        command.actor = this.room.presentPlayerCharacters[0].id
       }
 
       this.executeCommand(command)

@@ -18,8 +18,6 @@ export default class Protocol {
   // ERROR: a program error occurred // debug mode only
   // {type: "error", time, text, title}
 
-  // TODO: nearly everywhere here room should be roomId
-
   typeFilters = {
     // this.showTypes = ['talk', 'info'] // show these in dialog display
     show: ['talk', 'hint', 'info', 'error', 'system', 'summary'], // TEST MODE
@@ -151,8 +149,8 @@ export default class Protocol {
     const relevantDialog = this.filterDialog({
       types: 'scene',
       room,
-      since: time - 3600,
-    }) // TODO: 3600 -> from options
+      since: time - this.options.sceneIdleLength,
+    })
     if (relevantDialog.length === 0) {
       // start new scene
       this.scene = this.scene + 1
@@ -222,10 +220,9 @@ export default class Protocol {
 
   // Who has character charID last spoken to
   lastSpokenTo(charID) {
-    const LOOKBACK_LASTSPOKEN = 30 // TODO: move to config file
     for (
       let i = this.messages.length - 1;
-      i > Math.max(0, this.messages.length - LOOKBACK_LASTSPOKEN);
+      i > Math.max(0, this.messages.length - this.options.lookbackLastSpoken);
       i--
     ) {
       if (this.messages[i].type === 'talk') {

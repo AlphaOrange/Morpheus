@@ -37,6 +37,9 @@ export const useOptionsStore = defineStore('options', {
     multiActionThreshold: 100, // threshold: pressure threshold to allow additional npc action
     multiActionMaxCycles: 3, // threshold: number of max npc actions per round
     waitBetweenNpcActions: 0.5, // wait time before executing possible next npc action (in addition to execution time!)
+    // Game Flow
+    sceneIdleLength: 3600, // seconds without action until a scene is ended
+    lookbackLastSpoken: 30, // how many messages max checking to find who actor has last spoken to
     // AI Parameters
     repeatTimestampAfterSeconds: 600, // seconds after which timestamp is shown again in formatted dialog
 

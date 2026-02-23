@@ -6,7 +6,6 @@ const API = {
   gemini25_flash: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=`,
 }
 
-// TODO: make these configurable
 const safetySettings = [
   {
     category: 'HARM_CATEGORY_HARASSMENT',
