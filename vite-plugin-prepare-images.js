@@ -101,21 +101,31 @@ export default function prepareImagesPlugin(options = {}) {
   const genericsPath = resolve(__dirname, genericsDir)
   const booksPath = resolve(__dirname, booksDir)
 
+  // Flag to ensure we only run once
+  let hasRun = false
+  let isBuild = false
+
   // Loop through all folders, images and sizes
   async function runPrepareImages() {
-    for (const path of [
-      { from: genericsPathFrom, to: genericsPath },
-      { from: booksPathFrom, to: booksPath },
-    ]) {
-      const files = walkDir(path.from)
+    if (hasRun) return
+    hasRun = true
+    const bookIDs = readdirSync(booksPathFrom, { withFileTypes: true })
+      .filter((entry) => !entry.name.startsWith('.'))
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name)
+    const allPathsFrom = [genericsPathFrom, ...bookIDs.map((id) => join(booksPathFrom, id))]
+    const allPathsTo = [genericsPath, ...bookIDs.map((id) => join(booksPath, id))]
+    allPathsFrom.forEach(async (from, index) => {
+      let to = allPathsTo[index]
+      const files = walkDir(from)
       for (const size of ['L', 'M', 'S', 'full']) {
-        mkdirSync(join(path.to, size), { recursive: true })
+        mkdirSync(join(to, size), { recursive: true })
       }
       for (const file of files) {
         const ext = extname(file).toLowerCase()
         if (!['.png', '.jpg', '.jpeg'].includes(ext)) continue
 
-        const inputFilePath = join(path.from, file)
+        const inputFilePath = join(from, file)
 
         // ---- determine type (cover / portrait / landscape)
         const image = sharp(inputFilePath)
@@ -133,7 +143,7 @@ export default function prepareImagesPlugin(options = {}) {
 
         // ---- ensure directories exist
         for (const size of ['L', 'M', 'S', 'full']) {
-          mkdirSync(join(path.to, size, subDir), { recursive: true })
+          mkdirSync(join(to, size, subDir), { recursive: true })
         }
 
         // ---- thumbnails
@@ -144,15 +154,15 @@ export default function prepareImagesPlugin(options = {}) {
               height: SIZES[type].sizes[size].height,
             })
             .jpeg({ quality: 80 })
-            .toFile(join(path.to, size, outName))
+            .toFile(join(to, size, outName))
         }
 
         // ---- full size
         await sharp(inputFilePath)
           .jpeg({ quality: 80 })
-          .toFile(join(path.to, 'full', outName))
+          .toFile(join(to, 'full', outName))
       }
-    }
+    })
   }
 
   let hasProcessedOnce = false
@@ -161,17 +171,26 @@ export default function prepareImagesPlugin(options = {}) {
     name: 'prepare-images-plugin',
     enforce: 'post',
 
-    configureServer() {
-      // --- only called in dev ---
-      if (!hasProcessedOnce) {
+    // Detect mode
+    configResolved(config) {
+      isBuild = config.command === 'build'
+    },
+
+    // Only run in build
+    buildStart() {
+      if (isBuild) {
         runPrepareImages()
-        hasProcessedOnce = true
       }
     },
 
-    buildStart() {
-      // --- only called in build ---
-      runPrepareImages()
+    // Only run in dev server
+    configureServer() {
+      if (!isBuild) {
+        if (!hasProcessedOnce) {
+          runPrepareImages()
+          hasProcessedOnce = true
+        }
+      }
     },
   }
 }
