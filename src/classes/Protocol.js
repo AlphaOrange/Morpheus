@@ -129,7 +129,18 @@ export default class Protocol {
 
   // Getter: Standard dialog for display
   get dialog() {
-    return this.filterDialog({ types: 'show' })
+    let dialog = this.filterDialog({ types: 'show' })
+    // add room changes
+    let enhancedDialog = []
+    let room = ''
+    dialog.forEach((message) => {
+      if ('room' in message && message.room != room) {
+        room = message.room
+        enhancedDialog.push({ type: 'structural', spec: 'room', room: room })
+      }
+      enhancedDialog.push(message)
+    })
+    return enhancedDialog
   }
 
   // Getter: Just the last protocol entry

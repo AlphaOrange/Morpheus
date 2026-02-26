@@ -1,24 +1,24 @@
 <template>
   <div class="dialog">
-    <div
-      v-for="(message, index) in protocol.dialog"
-      :key="index"
-      ref="messageEls"
-      class="message"
-      :class="messageClasses(message)"
-    >
-      <header>
-        <div
-          v-if="showIcon(message)"
-          class="header-icon"
-          :style="{ backgroundImage: `url(${headerIcon(message)})` }"
-        ></div>
-        <div class="header-text">
-          <span>{{ headerText(message) }}</span>
-          <span class="timestamp">{{ timestamp(message) }}</span>
-        </div>
-      </header>
-      <main class="message-box" v-html="renderMarkdown(message.text)"></main>
+    <div v-for="(message, index) in protocol.dialog" :key="index" ref="messageEls">
+      <div v-if="isMajorMessage(message)" class="message" :class="messageClasses(message)">
+        <header>
+          <div
+            v-if="showIcon(message)"
+            class="header-icon"
+            :style="{ backgroundImage: `url(${headerIcon(message)})` }"
+          ></div>
+          <div class="header-text">
+            <span>{{ headerText(message) }}</span>
+            <span class="timestamp">{{ timestamp(message) }}</span>
+          </div>
+        </header>
+        <main class="message-box" v-html="renderMarkdown(messageText(message))"></main>
+      </div>
+      <div v-else class="minor-message" :class="messageClasses(message)">
+        <img class="minor-icon" :src="structuralIcon(message)" />
+        <span>{{ messageText(message) }}</span>
+      </div>
     </div>
     <div v-if="options.narratorRunning" class="temp-message">
       <div class="loader"></div>
@@ -35,7 +35,7 @@ import { formatTime } from '@/helpers/utils'
 import { useBookStore } from '@/stores/book'
 import { useOptionsStore } from '@/stores/options'
 const bookStore = useBookStore()
-const { characters, protocol } = storeToRefs(bookStore)
+const { characters, rooms, protocol } = storeToRefs(bookStore)
 const options = useOptionsStore()
 
 import MarkdownIt from 'markdown-it'
@@ -45,6 +45,10 @@ const md = new MarkdownIt({
   linkify: false,
   typographer: false,
 })
+
+const isMajorMessage = (message) => {
+  return message.type !== 'structural'
+}
 
 const messageClasses = (message) => {
   const classes = ['message-' + message.type]
@@ -65,6 +69,13 @@ const showIcon = (message) => {
 const headerIcon = (message) => {
   return characters.value[message.from].imageS
 }
+const structuralIcon = (message) => {
+  if (message.spec === 'room') {
+    const room = rooms.value[message.room]
+    return room.imageS
+  }
+}
+
 const headerText = (message) => {
   if (message.type === 'talk') {
     let charFrom = characters.value[message.from].name
@@ -79,6 +90,19 @@ const headerText = (message) => {
     return `System:`
   } else if (message.type === 'error') {
     return `Error: ${message.title}`
+  } else {
+    return 'Error: entry invalid'
+  }
+}
+const messageText = (message) => {
+  if (isMajorMessage(message)) {
+    return message.text
+  }
+  if (message.type === 'structural') {
+    if (message.spec === 'room') {
+      const room = rooms.value[message.room]
+      return `${room.name} (${room.location.name})`
+    }
   } else {
     return 'Error: entry invalid'
   }
@@ -119,14 +143,18 @@ watch(
   scrollbar-width: thin;
 }
 
+.dialog > div {
+  margin: 0 0 1rem;
+}
+
+.dialog > div:last-child {
+  margin: 0;
+}
+
 .message {
   width: 100%;
-  margin: 0 0 1rem;
   border-radius: 0.5rem;
   overflow: hidden;
-}
-.message:last-child {
-  margin: 0;
 }
 
 .message-talk {
@@ -187,6 +215,23 @@ main {
 
 main:last-child {
   margin: 0;
+}
+
+.minor-message {
+  width: 100%;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  grid-template-rows: 1.5rem;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--col-font-toned);
+}
+
+.minor-icon {
+  display: block;
+  float: left;
+  height: 1.5rem;
+  width: auto;
 }
 
 .temp-message {

@@ -43,6 +43,7 @@
   --col-font: #fff;
   --col-font-link: #607095;
   --col-font-blur: #607095;
+  --col-font-toned: #ccc;
   --col-font-fade: #666;
   --col-success: #3c5;
   --col-loader: #607095;
@@ -60,6 +61,7 @@
   --bg-error: #c02000;
   --bg-warning: #501010;
   --bg-code: rgba(255, 255, 255, 0.2);
+  --bg-structural: #607095;
   --shadow-black: #000;
   --width-navbar: 3rem;
   --width-navbar-extended: 12rem;
