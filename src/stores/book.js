@@ -331,7 +331,7 @@ export const useBookStore = defineStore('book', {
         this.deactivateBook()
 
         // Load data
-        const response = await fetch(`books/${id}.json`)
+        const response = await fetch(`books/${id}/book.json`)
         const data = await response.json()
 
         // Store book base data
