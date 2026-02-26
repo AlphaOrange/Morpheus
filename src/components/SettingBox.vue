@@ -6,7 +6,7 @@
         {{ props.setting.name }}<span class="hint">{{ props.setting.commandId }}</span>
       </h3>
     </header>
-    <LightboxImage :src="'images/M/' + props.setting.image" class="image" />
+    <LightboxImage :src="props.setting.imageM" class="image" />
     <main>
       {{ props.setting.description }}
       <div v-if="props.setting.type == 'destination'">

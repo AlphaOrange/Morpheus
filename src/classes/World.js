@@ -1,3 +1,5 @@
+import { genericImg, bookImg } from '@/helpers/utils'
+
 export default class World {
   constructor(data) {
     ;['id', 'name', 'description'].forEach((key) => (this[key] = data[key]))
@@ -19,12 +21,26 @@ export default class World {
     }
   }
 
-  // Getter: Image or Placeholder
-  get image() {
+  // Backbone for image getters
+  getImage(size) {
     if (this._image === '') {
-      return `generic_world.jpg`
+      return genericImg({ filename: 'generic_world.jpg', size })
     } else {
-      return this._image
+      return bookImg({ filename: this._image, size })
     }
+  }
+
+  // Getter: Image
+  get imageFull() {
+    return this.getImage('full')
+  }
+  get imageL() {
+    return this.getImage('L')
+  }
+  get imageM() {
+    return this.getImage('M')
+  }
+  get imageS() {
+    return this.getImage('S')
   }
 }

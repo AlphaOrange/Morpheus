@@ -1,5 +1,5 @@
 <template>
-  <div class="book" :style="{ backgroundImage: `url(images/L/${cover})` }">
+  <div class="book" :style="{ backgroundImage: `url(${cover})` }">
     <header>
       <div class="title">{{ book.title }}</div>
       <div v-if="showDescription" class="description">{{ book.description }}</div>
@@ -13,6 +13,8 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
+import { genericImg, bookImg } from '@/helpers/utils'
 const props = defineProps({
   book: {
     type: Object,
@@ -24,7 +26,16 @@ const props = defineProps({
   },
 })
 
-const cover = props.book.cover === '' ? 'generic_cover.jpg' : props.book.cover
+const cover = computed(() => {
+  if (props.book.coverL) {
+    return props.book.coverL
+  } else if (props.book.cover) {
+    // for pre-load
+    return bookImg({ filename: props.book.cover, size: 'L', bookId: props.book.id })
+  } else {
+    return genericImg({ filename: 'generic_cover.jpg', size: 'L' })
+  }
+})
 </script>
 
 <style scoped>

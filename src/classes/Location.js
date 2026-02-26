@@ -1,3 +1,4 @@
+import { genericImg, bookImg } from '@/helpers/utils'
 import Room from '@/classes/Room'
 
 export default class Location {
@@ -57,13 +58,27 @@ export default class Location {
     }
   }
 
-  // Getter: Image or Placeholder
-  get image() {
+  // Backbone for image getters
+  getImage(size) {
     if (this._image === '') {
-      return `generic_location.jpg`
+      return genericImg({ filename: 'generic_location.jpg', size })
     } else {
-      return this._image
+      return bookImg({ filename: this._image, size })
     }
+  }
+
+  // Getter: Image
+  get imageFull() {
+    return this.getImage('full')
+  }
+  get imageL() {
+    return this.getImage('L')
+  }
+  get imageM() {
+    return this.getImage('M')
+  }
+  get imageS() {
+    return this.getImage('S')
   }
 
   // Getters: Available Move Targets

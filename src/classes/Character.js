@@ -1,3 +1,5 @@
+import { genericImg, bookImg } from '@/helpers/utils'
+
 export default class Character {
   room = null
   controlledBy = null
@@ -65,17 +67,33 @@ export default class Character {
     }
   }
 
-  // Getter: Image or Placeholder
-  get image() {
+  // Backbone for image getters
+  getImage(size) {
     if (this._image === '') {
+      let filename
       if (['male', 'female'].includes(this.gender)) {
-        return `generic_${this.gender}.jpg`
+        filename = `generic_${this.gender}.jpg`
       } else {
-        return `generic_diverse.jpg`
+        filename = `generic_diverse.jpg`
       }
+      return genericImg({ filename, size })
     } else {
-      return this._image
+      return bookImg({ filename: this._image, size })
     }
+  }
+
+  // Getter: Image
+  get imageFull() {
+    return this.getImage('full')
+  }
+  get imageL() {
+    return this.getImage('L')
+  }
+  get imageM() {
+    return this.getImage('M')
+  }
+  get imageS() {
+    return this.getImage('S')
   }
 
   // Getter: Gender+Age combination

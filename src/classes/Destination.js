@@ -1,3 +1,4 @@
+import { genericImg, bookImg } from '@/helpers/utils'
 import Location from '@/classes/Location'
 
 export default class Destination {
@@ -50,13 +51,27 @@ export default class Destination {
     }
   }
 
-  // Getter: Image or Placeholder
-  get image() {
+  // Backbone for image getters
+  getImage(size) {
     if (this._image === '') {
-      return `generic_destination.jpg`
+      return genericImg({ filename: 'generic_destination.jpg', size })
     } else {
-      return this._image
+      return bookImg({ filename: this._image, size })
     }
+  }
+
+  // Getter: Image
+  get imageFull() {
+    return this.getImage('full')
+  }
+  get imageL() {
+    return this.getImage('L')
+  }
+  get imageM() {
+    return this.getImage('M')
+  }
+  get imageS() {
+    return this.getImage('S')
   }
 
   // Rooms with player characters

@@ -4,7 +4,14 @@ import Character from '@/classes/Character'
 import Destination from '@/classes/Destination'
 import Protocol from '@/classes/Protocol'
 import Narrator from '@/classes/Narrator'
-import { messageToCommand, distancePeriod, getHelpData, joinAnd } from '@/helpers/utils'
+import {
+  messageToCommand,
+  distancePeriod,
+  getHelpData,
+  joinAnd,
+  genericImg,
+  bookImg,
+} from '@/helpers/utils'
 import { useOptionsStore } from '@/stores/options'
 
 export const useBookStore = defineStore('book', {
@@ -68,8 +75,19 @@ export const useBookStore = defineStore('book', {
       return this.toGametime(state.time)
     },
 
-    // Cover using fallback
-    cover: (state) => (state._cover === '' ? 'generic_cover.jpg' : state._cover),
+    // Cover
+    coverFull() {
+      return this.getCover('full')
+    },
+    coverL() {
+      return this.getCover('L')
+    },
+    coverM() {
+      return this.getCover('M')
+    },
+    coverS() {
+      return this.getCover('S')
+    },
 
     activePlayerID: (state) => {
       return state.recentPlayerIDs[0]
@@ -127,6 +145,15 @@ export const useBookStore = defineStore('book', {
         roomId: this.roomId,
         time: this.time,
         recentPlayerIDs: this.recentPlayerIDs,
+      }
+    },
+
+    // Backbone for cover getters
+    getCover(size) {
+      if (this._cover === '') {
+        return genericImg({ filename: 'generic_cover.jpg', size })
+      } else {
+        return bookImg({ filename: this._cover, size })
       }
     },
 

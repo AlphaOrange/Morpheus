@@ -1,6 +1,6 @@
 <template>
   <div class="box character-box" :class="collapsedClass" @click="toggle">
-    <LightboxImage :src="'images/M/' + props.character.image" class="image" />
+    <LightboxImage :src="props.character.imageM" class="image" />
     <div class="info-box">
       <h3 class="hint-anchor">
         {{ props.character.name }}<span class="hint">{{ props.character.id }}</span>

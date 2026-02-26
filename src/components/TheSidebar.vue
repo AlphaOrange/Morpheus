@@ -30,7 +30,7 @@
       </div>
     </div>
     <footer v-if="started" @click="router.push('/info')">
-      <img :src="'images/M/' + cover" class="cover" />
+      <img :src="coverM" class="cover" />
       <div class="book-title">
         <small>Currently playing:</small>
         <br />
@@ -44,7 +44,7 @@
 import { storeToRefs } from 'pinia'
 import { useBookStore } from '@/stores/book'
 const bookStore = useBookStore()
-const { title, cover, started } = storeToRefs(bookStore)
+const { title, coverM, started } = storeToRefs(bookStore)
 import { useRouter } from 'vue-router'
 const router = useRouter()
 import logoImg from '@/assets/images/logo.jpg'

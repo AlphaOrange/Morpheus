@@ -1,5 +1,5 @@
 <template>
-  <div class="book" :style="{ backgroundImage: `url(images/L/${cover})` }">
+  <div class="book" :style="{ backgroundImage: `url(${cover})` }">
     <div class="shade">
       <div class="bookmark">BOOKMARK</div>
       <header>
@@ -7,7 +7,7 @@
         <div class="description">{{ truncateString(saveData.book.description, 108) }}</div>
       </header>
       <footer>
-        <div class="room" :style="{ backgroundImage: `url(images/S/${roomImage})` }">
+        <div class="room" :style="{ backgroundImage: `url(${roomImage})` }">
           {{ roomData.name }}
         </div>
         <div class="characters">
@@ -15,7 +15,7 @@
             class="character"
             v-for="char in chars"
             :key="char.id"
-            :style="{ backgroundImage: `url(images/S/${charImage(char)})` }"
+            :style="{ backgroundImage: `url(${charImage(char)})` }"
           >
             {{ char.name }}
           </div>
@@ -28,6 +28,7 @@
 <script setup>
 import { computed } from 'vue'
 import { truncateString } from '@/helpers/utils'
+import { genericImg, bookImg } from '@/helpers/utils'
 
 const props = defineProps({
   saveData: {
@@ -37,7 +38,15 @@ const props = defineProps({
 })
 
 const cover = computed(() => {
-  return props.saveData.book._cover === '' ? 'generic_cover.jpg' : props.saveData.book._cover
+  if (props.saveData.book._cover) {
+    return bookImg({
+      filename: props.saveData.book._cover,
+      size: 'L',
+      bookId: props.saveData.book.id,
+    })
+  } else {
+    return genericImg({ filename: 'generic_cover.jpg', size: 'L' })
+  }
 })
 
 const roomData = computed(() => {
@@ -47,7 +56,15 @@ const roomData = computed(() => {
 })
 
 const roomImage = computed(() => {
-  return roomData.value._image === '' ? 'generic_room.jpg' : roomData.value._image
+  if (roomData.value._image) {
+    return bookImg({
+      filename: roomData.value._image,
+      size: 'L',
+      bookId: props.saveData.book.id,
+    })
+  } else {
+    return genericImg({ filename: 'generic_room.jpg', size: 'S' })
+  }
 })
 
 const chars = computed(() => {
@@ -57,14 +74,20 @@ const chars = computed(() => {
 })
 
 const charImage = (char) => {
-  if (char._image === '') {
-    if (['male', 'female'].includes(char.gender)) {
-      return `generic_${char.gender}.jpg`
-    } else {
-      return `generic_diverse.jpg`
-    }
+  if (char._image) {
+    return bookImg({
+      filename: char._image,
+      size: 'S',
+      bookId: props.saveData.book.id,
+    })
   } else {
-    return char._image
+    let filename
+    if (['male', 'female'].includes(char.gender)) {
+      filename = `generic_${char.gender}.jpg`
+    } else {
+      filename = `generic_diverse.jpg`
+    }
+    return genericImg({ filename, size: 'S' })
   }
 }
 </script>

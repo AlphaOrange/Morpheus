@@ -99,7 +99,7 @@ export function distancePeriodText(currentRoom, target) {
   return periodText(distance)
 }
 
-// ----- Interprete User Commands -----
+// ----- Interpret User Commands -----
 
 const rx = {
   help: /^--([a-z]+)/i,
@@ -302,6 +302,19 @@ export function joinAnd(parts) {
   if (parts.length === 1) return parts
   const lastPart = parts.pop()
   return parts.join(', ') + ' and ' + lastPart
+}
+
+// ----- Image Helpers -----
+
+export function genericImg({ filename, size }) {
+  return `images/${size}/${filename}`
+}
+export function bookImg({ filename, size, bookId = null }) {
+  if (!bookId) {
+    const book = useBookStore()
+    bookId = book.id
+  }
+  return `books/${bookId}/${size}/${filename}`
 }
 
 // ----- Help Texts -----
