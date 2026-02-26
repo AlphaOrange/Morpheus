@@ -52,7 +52,10 @@ function _readDeepYaml(inputPath, nesting) {
       try {
         const bookYaml = readFileSync(entryPath, 'utf-8')
         let parsed = yaml.load(bookYaml)
-        parsed = _prefixImages(parsed, 'books/' + nesting.join('_') + '_')
+        // Prefix images from deeper files
+        if (nesting.length > 1) {
+          parsed = _prefixImages(parsed, nesting.slice(1).join('_') + '_')
+        }
         const id = basename(entry.name, '.yaml')
         if (id !== nesting.slice(-1)[0]) {
           content[id] = parsed
