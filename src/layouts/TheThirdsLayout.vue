@@ -21,7 +21,7 @@
   min-height: 100vh;
   background: var(--bg-page);
   display: grid;
-  grid-template-columns: 1fr 3fr 1fr;
+  grid-template-columns: minmax(16rem, 1fr) 3fr minmax(16rem, 1fr);
 }
 
 .third {

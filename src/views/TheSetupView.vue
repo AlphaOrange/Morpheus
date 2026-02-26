@@ -30,7 +30,7 @@
         <div class="book-info">
           <span>{{ description }}</span>
           <h3>{{ world.name }}</h3>
-          <img :src="world.imageL" />
+          <img :src="world.imageM" />
           {{ world.description }}
         </div>
       </div>
