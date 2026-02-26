@@ -11,7 +11,7 @@
         <div
           v-if="showIcon(message)"
           class="header-icon"
-          :style="{ backgroundImage: `url(images/S/${headerIcon(message)})` }"
+          :style="{ backgroundImage: `url(${headerIcon(message)})` }"
         ></div>
         <div class="header-text">
           <span>{{ headerText(message) }}</span>
@@ -63,7 +63,7 @@ const showIcon = (message) => {
 }
 
 const headerIcon = (message) => {
-  return characters.value[message.from].image
+  return characters.value[message.from].imageS
 }
 const headerText = (message) => {
   if (message.type === 'talk') {

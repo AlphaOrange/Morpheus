@@ -1,6 +1,6 @@
 <template>
   <div class="character-marker">
-    <div class="character-image" :style="{ backgroundImage: `url(images/L/${character.image})` }">
+    <div class="character-image" :style="{ backgroundImage: `url(${character.imageS})` }">
       <font-awesome-icon v-if="icon" :icon="`fa-${icon}`" class="character-icon" />
       <div class="pill character-pill">{{ props.text }}</div>
     </div>
