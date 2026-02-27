@@ -136,10 +136,14 @@ export default class Protocol {
     dialog.forEach((message) => {
       if ('room' in message && message.room != room) {
         room = message.room
-        enhancedDialog.push({ type: 'structural', spec: 'room', room: room })
+        enhancedDialog.push({ type: 'structural', spec: 'room', room: room, undo: false })
       }
-      enhancedDialog.push(message)
+      enhancedDialog.push({ ...message, undo: false })
     })
+    const lastMessage = enhancedDialog[enhancedDialog.length - 1]
+    if (lastMessage.type === 'talk') {
+      lastMessage.undo = true
+    }
     return enhancedDialog
   }
 
@@ -227,6 +231,11 @@ export default class Protocol {
       text: text,
       title: title,
     })
+  }
+
+  // Undo Last Message
+  undoLastMessage() {
+    this.messages.pop()
   }
 
   // Who has character charID last spoken to

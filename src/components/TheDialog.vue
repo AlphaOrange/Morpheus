@@ -10,7 +10,14 @@
           ></div>
           <div class="header-text">
             <span>{{ headerText(message) }}</span>
-            <span class="timestamp">{{ timestamp(message) }}</span>
+            <div>
+              <IconButton
+                v-if="message.undo"
+                icon="circle-xmark"
+                @click="protocol.undoLastMessage()"
+              />
+              <span class="timestamp">{{ timestamp(message) }}</span>
+            </div>
           </div>
         </header>
         <main class="message-box" v-html="renderMarkdown(messageText(message))"></main>
@@ -31,6 +38,7 @@
 import { watch, nextTick, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { formatTime } from '@/helpers/utils'
+import IconButton from '@/components/IconButton.vue'
 
 import { useBookStore } from '@/stores/book'
 import { useOptionsStore } from '@/stores/options'
@@ -205,6 +213,7 @@ header {
 }
 
 .timestamp {
+  margin-left: 0.5rem;
   color: var(--col-font-blur);
 }
 
