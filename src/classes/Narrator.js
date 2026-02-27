@@ -77,7 +77,10 @@ export default class Narrator {
 
   // Main Action: handle possible NPC actions
   async runNPC({ cycle = 1 }) {
-    // inform options
+    // Check first if there even is an NPC present
+    if (this.book.room.presentAiCharacters.length === 0) return
+
+    // Inform options
     this.options.narratorRunningMessage = ''
     this.options.narratorRunning = true
 
