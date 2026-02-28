@@ -1,14 +1,14 @@
 <template>
   <TheThirdsLayout>
     <template #leftSlot>
-      <TheActionBar @talk="talk" @move="move" />
+      <TheActionBar @talk="talk" @move="move" @runNarrator="manualNarrator" />
     </template>
     <template #middleSlot>
       <div class="center">
         <div class="dialog-box">
           <TheDialog />
         </div>
-        <TheMessageBox ref="messageBox" @activity="startNpcTimer" />
+        <TheMessageBox ref="messageBox" @activity="startNpcTimer" @runNarrator="manualNarrator" />
       </div>
     </template>
     <template #rightSlot>
@@ -59,18 +59,31 @@ const move = function ({ location = null, room = null, chars = [] } = {}) {
 
 // --- running NPC actions on idling
 
-// Build looped timer for NPC actions
+// Start and block NPC narrator
+const runNarrator = async function ({ force = false } = {}) {
+  narratorRunning = true
+  if (force) {
+    await book.narrator.runNPC()
+  } else {
+    await book.narrator.run()
+  }
+  narratorRunning = false
+  startNpcTimer()
+}
+
+// Looped timer for automatic NPC actions
 let npcTimeout = null
 let narratorRunning = false
 const startNpcTimer = () => {
   if (narratorRunning) return
   clearTimeout(npcTimeout)
-  npcTimeout = setTimeout(async () => {
-    narratorRunning = true
-    await book.narrator.run()
-    narratorRunning = false
-    startNpcTimer()
-  }, options.idlingBeforeTriggerNpc * 1000)
+  npcTimeout = setTimeout(runNarrator, options.idlingBeforeTriggerNpc * 1000)
+}
+
+// Manual NPC actions
+const manualNarrator = () => {
+  if (narratorRunning) return
+  runNarrator({ force: true })
 }
 
 // start/stop with Book view

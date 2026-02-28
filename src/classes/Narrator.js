@@ -76,20 +76,20 @@ export default class Narrator {
   }
 
   // Main Action: handle possible NPC actions
-  async runNPC({ cycle = 1 }) {
+  async runNPC({ cycle = 1 } = {}) {
     // Check first if there even is an NPC present
     if (this.book.room.presentAiCharacters.length === 0) return
 
     // Inform options
     this.options.narratorRunningMessage = ''
     this.options.narratorRunning = true
-
     // Determine next actor
     let { actorId, action } = await this.nextActionAgent.run({
       time: this.book.time,
       room: this.book.room,
       protocol: this.protocol,
       urgentOnly: cycle > 1,
+      excludeLastActor: cycle > 1,
     })
     if (!actorId) return
     if (action === 'talk') {

@@ -24,7 +24,7 @@
         :key="avRoom.id"
         @click="moveToRoom(avRoom)"
         :text="avRoom.name"
-        :icon="'door-open'"
+        icon="door-open"
         :pill="distancePeriodText(room, avRoom)"
         :hint="avRoom.commandId"
       />
@@ -33,7 +33,7 @@
         :key="location.id"
         @click="moveToLocation(location)"
         :text="location.name"
-        :icon="'person-walking'"
+        icon="person-walking"
         :pill="distancePeriodText(room, location)"
         :hint="location.commandId"
       />
@@ -70,9 +70,13 @@
       />
     </div>
     <div class="box action-box">
-      <h3>Debug / Test</h3>
+      <h3>User Actions</h3>
+      <ActionButton @click="runNarrator" text="Run NPCs" icon="circle-play" />
+      <ActionButton @click="debug_save" text="Save" icon="bookmark" />
+    </div>
+    <div class="box action-box">
+      <h3>// Testing Actions //</h3>
       <ActionButton @click="debug_addTime()" :text="`+1min`" />
-      <ActionButton @click="debug_save()" :text="`Save`" />
     </div>
   </div>
 </template>
@@ -90,7 +94,7 @@ import { useBookStore } from '@/stores/book'
 const book = useBookStore()
 
 const { activeRooms, movingPlayerCharacters, activePlayerID, time, room } = storeToRefs(book)
-const emits = defineEmits(['talk', 'move'])
+const emits = defineEmits(['talk', 'move', 'runNarrator'])
 
 const switchTo = (room) => {
   book.switchTo(room)
@@ -114,6 +118,9 @@ const moveCharToRoom = (char, room) => {
 }
 const moveCharToLocation = (char, location) => {
   emits('move', { location: location, chars: [char] })
+}
+const runNarrator = () => {
+  emits('runNarrator')
 }
 
 const multiroom = computed(() => activeRooms.value.length > 1)

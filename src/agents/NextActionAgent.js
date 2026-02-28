@@ -144,7 +144,7 @@ export default class NextActionAgent extends Agent {
     return pressure
   }
 
-  async run({ time, room, protocol, urgentOnly = false }) {
+  async run({ time, room, protocol, urgentOnly = false, excludeLastActor = true }) {
     // Get scene and context
     const present = Object.keys(room.characters)
     const scene = protocol.getScene({ time, room: room.id, present })
@@ -154,8 +154,11 @@ export default class NextActionAgent extends Agent {
     })
 
     // Check if at least one available that did not just spoke
-    const lastTalker = messages[messages.length - 1]?.from
-    const npcs = room.presentAiCharacters.filter((char) => char.id !== lastTalker)
+    let npcs = room.presentAiCharacters
+    if (excludeLastActor) {
+      const lastTalker = messages[messages.length - 1]?.from
+      npcs = npcs.filter((char) => char.id !== lastTalker)
+    }
     if (npcs.length === 0) {
       return { actorId: null, action: null }
     }

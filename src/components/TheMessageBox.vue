@@ -19,7 +19,7 @@ import { ref, watch } from 'vue'
 import { useBookStore } from '@/stores/book'
 import { useOptionsStore } from '@/stores/options'
 
-const emit = defineEmits(['activity']) // emits if user is active
+const emits = defineEmits(['activity', 'runNarrator']) // emits if user is active
 
 const book = useBookStore()
 const options = useOptionsStore()
@@ -33,6 +33,11 @@ const textarea = ref(null)
 const send = () => {
   const trimmed = message.value.trim()
   if (!trimmed) return
+  // emit static commands
+  if (trimmed.toLowerCase() === 'skip') {
+    emits('runNarrator')
+    return
+  }
   book.sendMessage(trimmed)
   message.value = ''
 }
@@ -40,7 +45,7 @@ const send = () => {
 // Send on triple-enter, notify user activity
 watch(message, (newVal, oldVal) => {
   if (newVal !== oldVal) {
-    emit('activity')
+    emits('activity')
   }
 
   if (newVal.endsWith('\n\n\n') && newVal.length > oldVal.length) {

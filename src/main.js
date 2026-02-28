@@ -24,6 +24,8 @@ import {
   faAddressCard,
   faMaximize,
   faCircleXmark,
+  faCirclePlay,
+  faBookmark,
 } from '@fortawesome/free-solid-svg-icons'
 library.add(
   faPersonWalking,
@@ -39,6 +41,8 @@ library.add(
   faAddressCard,
   faMaximize,
   faCircleXmark,
+  faCirclePlay,
+  faBookmark,
 )
 
 const app = createApp(App)
