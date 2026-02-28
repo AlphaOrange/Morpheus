@@ -172,24 +172,36 @@ export const useBookStore = defineStore('book', {
       // Increase time
       this.time = this.time + duration
       // Check Arrivals
+      const arrivals = {}
       for (const charID of this.movingCharacterIDs) {
         const char = this.characters[charID]
         let arrived = char.checkForArrival(this.time)
         if (arrived) {
           this.movingCharacterIDs = this.movingCharacterIDs.filter((id) => id != charID)
-          // Sent Arrive HINT message if this is a player character
-          if (char.controlledBy === 'player') {
-            const present = Object.keys(char.room.characters)
-            this.protocol.pushHint({
-              time: this.time,
-              text: `${char.name} just arrived at ${char.room.name}`,
-              room: char.room.id,
-              present: present,
-              to: ':all',
-            })
+          // Collect arrivals per room
+          if (!(char.room.id in arrivals)) {
+            arrivals[char.room.id] = [char]
+          } else {
+            arrivals[char.room.id].push(char)
           }
+          arrivals[char.room.id]
         }
       }
+      // Sent Arrive HINT message per arrival room with player character
+      Object.keys(arrivals).forEach((roomId) => {
+        const room = this.rooms[roomId]
+        if (room.numberOfPlayers > 0) {
+          const present = Object.keys(room.characters)
+          const charArrived = joinAnd(arrivals[roomId].map((char) => char.name))
+          this.protocol.pushHint({
+            time: this.time,
+            text: `${charArrived} just arrived at ${room.name}`,
+            room: roomId,
+            present: present,
+            to: ':all',
+          })
+        }
+      })
     },
 
     // timejump until at least one active room, switch to active room
