@@ -34,11 +34,14 @@ const send = () => {
   const trimmed = message.value.trim()
   if (!trimmed) return
   // emit static commands
-  if (trimmed.toLowerCase() === 'skip') {
+  const lower = trimmed.toLowerCase()
+  if (lower === 'skip') {
     emits('runNarrator')
-    return
+  } else if (lower === 'save') {
+    emits('save')
+  } else {
+    book.sendMessage(trimmed)
   }
-  book.sendMessage(trimmed)
   message.value = ''
 }
 

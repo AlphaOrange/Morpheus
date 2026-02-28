@@ -72,7 +72,7 @@
     <div class="box action-box">
       <h3>User Actions</h3>
       <ActionButton @click="runNarrator" text="Run NPCs" icon="circle-play" />
-      <ActionButton @click="debug_save" text="Save" icon="bookmark" />
+      <ActionButton @click="save" text="Save Book" icon="bookmark" />
     </div>
     <div class="box action-box">
       <h3>// Testing Actions //</h3>
@@ -88,13 +88,11 @@ import { periodText, distancePeriodText } from '@/helpers/utils'
 import CharacterMarker from '@/components/CharacterMarker.vue'
 import ActionButton from '@/components/ActionButton.vue'
 
-import { useShelfStore } from '@/stores/shelf'
-const shelf = useShelfStore()
 import { useBookStore } from '@/stores/book'
 const book = useBookStore()
 
 const { activeRooms, movingPlayerCharacters, activePlayerID, time, room } = storeToRefs(book)
-const emits = defineEmits(['talk', 'move', 'runNarrator'])
+const emits = defineEmits(['talk', 'move', 'runNarrator', 'save'])
 
 const switchTo = (room) => {
   book.switchTo(room)
@@ -119,8 +117,13 @@ const moveCharToRoom = (char, room) => {
 const moveCharToLocation = (char, location) => {
   emits('move', { location: location, chars: [char] })
 }
+
+// Emit meta commands
 const runNarrator = () => {
   emits('runNarrator')
+}
+const save = () => {
+  emits('save')
 }
 
 const multiroom = computed(() => activeRooms.value.length > 1)
@@ -130,10 +133,6 @@ const showTopBox = computed(() => multiroom.value || movingchars.value)
 // DEBUG: ADD 1 MINUTE
 const debug_addTime = () => {
   book.addTime(60)
-}
-// DEBUG: SAVE GAME
-const debug_save = () => {
-  shelf.saveBook()
 }
 </script>
 

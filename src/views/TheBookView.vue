@@ -1,14 +1,19 @@
 <template>
   <TheThirdsLayout>
     <template #leftSlot>
-      <TheActionBar @talk="talk" @move="move" @runNarrator="manualNarrator" />
+      <TheActionBar @talk="talk" @move="move" @runNarrator="manualNarrator" @save="save" />
     </template>
     <template #middleSlot>
       <div class="center">
         <div class="dialog-box">
           <TheDialog />
         </div>
-        <TheMessageBox ref="messageBox" @activity="startNpcTimer" @runNarrator="manualNarrator" />
+        <TheMessageBox
+          ref="messageBox"
+          @activity="startNpcTimer"
+          @runNarrator="manualNarrator"
+          @save="save"
+        />
       </div>
     </template>
     <template #rightSlot>
@@ -26,9 +31,11 @@ import TheActionBar from '@/components/TheActionBar.vue'
 import TheSettingBar from '@/components/TheSettingBar.vue'
 import { useBookStore } from '@/stores/book'
 import { useOptionsStore } from '@/stores/options'
+import { useShelfStore } from '@/stores/shelf'
 
 const book = useBookStore()
 const options = useOptionsStore()
+const shelf = useShelfStore()
 
 const messageBox = ref(null)
 
@@ -55,6 +62,12 @@ const move = function ({ location = null, room = null, chars = [] } = {}) {
       : 'move to room ' + room.commandId
   }
   if (text) messageBox.value?.setMessage(text)
+}
+
+// --- meta commands ---
+
+const save = () => {
+  shelf.saveBook()
 }
 
 // --- running NPC actions on idling
