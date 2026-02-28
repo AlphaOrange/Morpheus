@@ -272,10 +272,17 @@ export function formatDialog({ messages, perspective }) {
   let scene = -1
   let time = -1
   for (let message of messages) {
-    if (message.scene !== scene || message.time - time >= options.repeatTimestampAfterSeconds) {
+    if (message.scene !== scene) {
       scene = message.scene
       time = message.time
-      dialog.push('Time: ' + formatTime(book.toGametime(message.time)))
+      const roomName = book.rooms[message.room].name
+      const gameTime = formatTime(book.toGametime(message.time))
+      dialog.push(`(Place: ${roomName} | Time: ${gameTime})`)
+    }
+    if (message.time - time >= options.repeatTimestampAfterSeconds) {
+      time = message.time
+      const gameTime = formatTime(book.toGametime(message.time))
+      dialog.push(`(Time: ${gameTime})`)
     }
     if (message.type === 'talk') {
       if (message.to === ':all') {
