@@ -4,6 +4,7 @@
       <div class="page-header">
         <h1>Help</h1>
       </div>
+      <HelpBox :data="getHelpData('meta')"></HelpBox>
       <HelpBox :data="getHelpData('commands')"></HelpBox>
       <HelpBox :data="getHelpData('natural')"></HelpBox>
       <HelpBox :data="getHelpData('short')"></HelpBox>

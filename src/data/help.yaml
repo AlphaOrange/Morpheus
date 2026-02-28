@@ -10,7 +10,7 @@ help:
     `--help`
     Overview of available help commands.
 
-    **COMMANDS**
+    **MESSAGE BOX COMMANDS**
 
     `--natural`
     All natural language commands you can use in the game's message box.
@@ -20,6 +20,9 @@ help:
 
     `--commands`
     All message box commands you can use in the game in one overview, also some alternative commands not mentioned in `--natural` or `--short`.
+
+    `--meta`
+    All message box meta commands like saving the current book.
 
     **GAME INFO**
 
@@ -254,3 +257,13 @@ short:
 
     `[acting char id]>>>[destination id]: [message]`
     Talk to all, then whole group travel to another location
+meta:
+  title: Meta Commands
+  text: |-
+    You can use the following commands to directly trigger out-game actions in the message box:
+
+    `save`
+    Save the current book/game.
+
+    `skip`
+    Manually trigger NPC actions. This only works if an NPC is present and it only triggers NPC evaluation which does not guarantee an NPC to actually talk or take action. You can use this for example after entering a new location or after an NPC just acted when the game usually waits for you to act first.
