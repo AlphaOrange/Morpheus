@@ -627,6 +627,45 @@ export const useBookStore = defineStore('book', {
         return
       }
 
+      // User commands
+      if (command.action === 'switch') {
+        if ('roomId' in command) {
+          const possibleRooms = this.activeRooms.filter((room) => room.commandId === command.roomId)
+          if (possibleRooms.length > 0) {
+            this.switchTo(possibleRooms[0])
+          } else {
+            this.protocol.pushError({
+              time: this.time,
+              title: `${command.roomId} is no currently active room`,
+              text: `**Original message**\n${message}`,
+            })
+          }
+        } else if ('roomNumber' in command) {
+          if (command.roomNumber > 0 && command.roomNumber <= this.activeRooms.length) {
+            this.switchTo(this.activeRooms[command.roomNumber - 1])
+          } else {
+            this.protocol.pushError({
+              time: this.time,
+              title: `There currently is no active room number ${command.roomNumber}`,
+              text: `**Original message**\n${message}`,
+            })
+          }
+        } else {
+          const numRooms = this.activeRooms.length
+          if (numRooms > 1) {
+            const activeIndex = this.activeRooms.findIndex((room) => room.id === this.roomId)
+            this.switchTo(this.activeRooms[(activeIndex + 1) % numRooms])
+          } else {
+            this.protocol.pushError({
+              time: this.time,
+              title: `There currently is no other active room`,
+              text: `**Original message**\n${message}`,
+            })
+          }
+        }
+        return
+      }
+
       // Check if actor is valid
       const possibleActors = [
         ...this.room.presentPlayerCharacters.map((char) => char.id),

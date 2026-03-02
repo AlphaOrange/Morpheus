@@ -103,6 +103,9 @@ export function distancePeriodText(currentRoom, target) {
 
 const rx = {
   help: /^--([a-z]+)/i,
+  switch1: /^switch ([0-9]+)$/i, // switch 3 (third room in the room row)
+  switch2: /^switch ([a-z0-9_]+)$/i, // switch taproom
+  switch3: /^switch$/i, // switch (next room in the room row)
   talk_colons: /^((?:[^:]+ ){6}.*)$/i, // after 6 spaces without colon, this is just a talk message and user may use colons
   move_room: /^(?:([a-z0-9_]+) )?(move room |move to room )([a-z0-9_]+)(?::(.*))?$/i,
   move_location: /^(?:([a-z0-9_]+) )?(move location |move to location )([a-z0-9_]+)(?::(.*))?$/i,
@@ -129,6 +132,23 @@ export function messageToCommand(message) {
   res = rx.help.exec(message)
   if (res) {
     command = { action: 'help', topic: res[1].toLowerCase() }
+    return command
+  }
+
+  // Switch to another room
+  res = rx.switch1.exec(message)
+  if (res) {
+    command = { action: 'switch', roomNumber: Number(res[1]) }
+    return command
+  }
+  res = rx.switch2.exec(message)
+  if (res) {
+    command = { action: 'switch', roomId: res[1].trim() }
+    return command
+  }
+  res = rx.switch3.exec(message)
+  if (res) {
+    command = { action: 'switch' }
     return command
   }
 
