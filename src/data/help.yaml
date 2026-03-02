@@ -267,3 +267,8 @@ meta:
 
     `skip`
     Manually trigger NPC actions. This only works if an NPC is present and it only triggers NPC evaluation which does not guarantee an NPC to actually talk or take action. You can use this for example after entering a new location or after an NPC just acted when the game usually waits for you to act first.
+
+    `switch`
+    `switch [number]`
+    `switch [room id]`
+    Switch view to another active room (i.e. there is another player-controlled character). If command is just `switch` game switches to next active room in order, if there is a number it uses the order of the switch buttons in the upper left.
