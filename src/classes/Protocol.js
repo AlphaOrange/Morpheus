@@ -87,7 +87,7 @@ export default class Protocol {
         if (!message.present.includes(present.id)) {
           return false // char not present
         }
-        if (message.type === 'hint' && message.to !== present.id) {
+        if (message.type === 'hint' && ![present.id, ':all'].includes(message.to)) {
           return false // hint not readable for char
         }
         return true

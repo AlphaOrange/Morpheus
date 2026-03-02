@@ -291,7 +291,7 @@ export function formatDialog({ messages, perspective }) {
         dialog.push(`${message.from} to ${message.to}: "${message.text}"`)
       }
     } else if (message.type === 'hint' && [perspective, ':all'].includes(message.to)) {
-      dialog.push(`(HINT: ${message.text})`)
+      dialog.push(`(Hint: ${message.text})`)
     }
   }
   return dialog.join('\n')
