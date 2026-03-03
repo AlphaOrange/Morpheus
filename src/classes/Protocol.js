@@ -109,7 +109,7 @@ export default class Protocol {
     let dialog = []
     for (let i = 0; i < filtered.length; i++) {
       if (filtered[i].type === 'info') {
-        if (i >= len - this.options.lookbackInfo) {
+        if (i >= len - filtered[i].expire) {
           dialog.push(filtered[i])
         }
       } else if (filtered[i].type === 'system') {
@@ -209,12 +209,13 @@ export default class Protocol {
       to: to,
     })
   }
-  pushInfo({ time, text, title = 'Info' }) {
+  pushInfo({ time, text, title = 'Info', expire = this.options.lookbackInfo }) {
     this.messages.push({
       type: 'info',
       time: time,
       text: text,
       title: title,
+      expire: expire,
     })
   }
   pushSystem({ time, text }) {

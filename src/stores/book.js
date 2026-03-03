@@ -403,7 +403,12 @@ export const useBookStore = defineStore('book', {
     async startBook() {
       // start fresh protocol
       this.protocol = new Protocol(this.options)
-      this.protocol.pushInfo({ time: this.time, text: this.introduction, title: 'Introduction' })
+      this.protocol.pushInfo({
+        time: this.time,
+        text: this.introduction,
+        title: 'Introduction',
+        expire: 999999,
+      })
       // build set of AI characters
       const playerIds = Object.keys(this.playerCharacters)
       this.classifyCharacters(playerIds)
