@@ -227,7 +227,7 @@ export const useBookStore = defineStore('book', {
         if (playerIds.includes(char.id)) {
           char.controlledBy = 'player'
           this.playerCharacters[char.id] = char
-        } else if (char.isNSC) {
+        } else if (char.isNPC) {
           char.controlledBy = 'ai'
           this.aiCharacters[char.id] = char
         }
