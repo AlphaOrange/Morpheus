@@ -75,11 +75,7 @@ const save = () => {
 // Start and block NPC narrator
 const runNarrator = async function ({ force = false } = {}) {
   narratorRunning = true
-  if (force) {
-    await book.narrator.runNPC()
-  } else {
-    await book.narrator.run()
-  }
+  await book.narrator.run({ force })
   narratorRunning = false
   startNpcTimer()
 }
