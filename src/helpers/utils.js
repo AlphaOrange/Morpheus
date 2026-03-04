@@ -305,10 +305,14 @@ export function formatDialog({ messages, perspective }) {
       dialog.push(`(Time: ${gameTime})`)
     }
     if (message.type === 'talk') {
+      let fromName = book.characters[message.from].name
+      let fromId = message.from
       if (message.to === ':all') {
-        dialog.push(`${message.from}: "${message.text}"`)
+        dialog.push(`${fromName} [${fromId}]: "${message.text}"`)
       } else {
-        dialog.push(`${message.from} to ${message.to}: "${message.text}"`)
+        let toName = book.characters[message.to].name
+        let toId = message.to
+        dialog.push(`${fromName} [${fromId}] to ${toName} [${toId}]: "${message.text}"`)
       }
     } else if (message.type === 'hint' && [perspective, ':all'].includes(message.to)) {
       dialog.push(`(Hint: ${message.text})`)
