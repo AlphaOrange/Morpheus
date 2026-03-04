@@ -250,4 +250,9 @@ main:last-child {
   border-radius: 0.5rem;
   background: var(--bg-page);
 }
+.temp-message::after {
+  content: '';
+  clear: both;
+  display: table;
+}
 </style>
