@@ -1,0 +1,415 @@
+# Writing Books
+
+*Version 0.2*
+
+This documentation contains a detailed specification for book structures and files. Following these specs enables you to write your own *Morpheus* books that can be played in the *Morpheus* app for interactive story games.
+
+### Writing YAML
+
+All book files are .yaml files. So it is recommended to have at least basic knowledge of how to write YAML.
+
+Learn more about YAML, for example here:  
+https://www.yaml.info/learn/index.html
+
+## What is a book
+
+A book contains all information that is needed to set up the game world. Particularly books define:
+
+- Places: the areas where characters can go and interact, split into destinations, locations and rooms.
+- Characters: both player characters and non-player (ai-controlled) characters
+- States: character stats and definitions of corresponding effects
+- Agendas: structured definition of (non-player) characters' goals
+
+## Overall Structure
+
+A book is organized in a specific structure of folders and subfolders that contain .yaml files. The basic structure of a book looks like this:
+
+```
+[BookID]
+├── book.yaml
+├── world.yaml
+├── agendas
+│   └── [Agenda files]
+│
+├── characters
+│   ├── [Character_1_ID]
+│   │   ├── [Character_1_ID].yaml
+│   │   ├── agendas
+│   │   │   └── [Agenda files]
+│   │   │
+│   │   └── states
+│   │       └── [State files]
+│   │
+│   └── [more Character folders]
+│
+├── destinations
+│   ├── [Destination_1_ID]
+│   │   ├── [Destination_1_ID].yaml
+│   │   └── locations
+│   │       ├── [Location_1_ID]
+│   │       │   ├── [Location_1_ID].yaml
+│   │       │   └── rooms
+│   │       │       ├── [Room_1_ID]
+│   │       │       │   └── [Location_1_ID].yaml
+│   │       │       │
+│   │       │       └── [more Room folders]
+│   │       │
+│   │       └── [more Location folders]
+│   │
+│   └── [more Destination folders]
+│
+└── states
+    └── [State files]
+```
+
+### Minimal Requirements
+
+Your books needs a `book.yaml` file, a `world.yaml` file and at least one of each of these:
+
+- characters
+- destinations
+- locations
+- rooms
+
+### IDs
+
+You can choose IDs freely as long as names only consist of lowercase and uppercase letters, numbers and underscores.
+
+Short, memorable names are recommended, because players have to write these names in the message box when playing with text commands.
+
+Valid and recommended:
+
+- alice
+- taproom
+- market
+
+Also valid, but not recommended:
+
+- Alice (avoid uppercase letters)
+- room2 (avoid being generic)
+- the_town_market (avoid unnecessary long and complicated)
+
+Invalid:
+
+- "Alice Liddle" (no whitespace characters allowed)
+- tap.room (invalid character)
+
+### Image files
+
+All folders may contain image files that can be referenced in .yaml files in the same folder. Supported image formats are JPEG (.jpg or .jpeg) and PNG (.png).
+
+### Additional YAML files
+
+You can split .yaml files by creating additional .yaml files in a folder. Compilation will combine alle .yaml files in a folder into one. Additional files will inserted using their filenames as keys, i.e. a file called `additional.yaml` will have its content added to the folders main file under the top-level key `additional`.
+
+### Other files
+
+All files that are not YAML or supported image files will be ignored in compilation.
+
+### Example Structure
+
+```
+MyFirstBook
+├── book.yaml
+├── book_cover.png
+├── world.yaml
+├── agendas
+│   ├── findfriend.yaml
+│   └── earnmoney.yaml
+│
+├── characters
+│   ├── alice
+│   │   ├── alice.yaml
+│   │   ├── alice.jpg
+│   │   ├── agendas
+│   │   │   └── findjob.yaml
+│   │   │
+│   │   └── states (empty, but mandatory)
+│   │
+│   └── bob
+│       ├── bob.yaml
+│       ├── agendas (empty, but mandatory)
+│       │
+│       └── states
+│           └── hunger.yaml
+│
+├── destinations
+│   └── seatown
+│       ├── seatown.yaml
+│       └── locations
+│           ├── inn
+│           │   ├── inn.yaml
+│           │   └── rooms
+│           │       ├── taproom
+│           │       │   └── taproom.yaml
+│           │       │
+│           │       └── backroom
+│           │           └── backroom.yaml
+│           │
+│           └── market
+│               ├── market.yaml
+│               └── rooms
+│                   └── spices
+│                       └── spices.yaml
+│
+└── states
+    ├── energy.yaml
+    └── happiness.yaml
+```
+
+This exemplary book setup contains one location with two destinations (inn and market), one with two rooms, one with one room. Although normally you would not call a market stand (spices) a "room", in the logic of books, this is a room being a part of the market "location". The book also contains two characters (alice and bob), which can be built upon three states and three agendas defined throughout the book.
+
+## World, Destinations, Locations and Rooms
+
+*Morpheus* features four different types of "places":
+
+- World
+- Destinations
+- Locations
+- Rooms
+
+There is only one world in a book. The world is not a place to go to, but more a description of the general environment and book universe, that could for example include descriptions of flora and fauna, of political setup or currencies.
+
+The other three have a hierarchical order: destinations consist of locations and locations consist of rooms. Character can move to destinations (we often call this traveling) or locations, but they will always arrive in rooms.
+
+Usually destinations have the size of towns or islands, locations represant buildings, open places or forests and rooms the size of, well, rooms.  
+However, it's up to you to use this as it fits your creative vision. Rooms for example could also be consecutive sections of a cave or different fishing spots on a small lake.
+
+The most important difference in terms of dimensions is: Only destinations and locations have positions (like on a virtual map) used for the calculation of time it takes to move between them. Moving between rooms of a location always requires the same (small) amount of time.
+
+## File Specifications
+
+Each .yaml file must follow the specifications for the type of game element it defines. You must define everything that is not marked optional. We will implement more default values, making more features optional in the future.  
+You could add additional entries, which would then just be ignored in book compiling, but it is strongly advised not to do so, because this can break the book in future game updates.
+
+### Book File
+
+There must be exactly one book file and it must be named `book.yaml`. The book file contains general descriptions and settings for your book. This file must contain the following items:
+
+- `title`: the game title
+- `description`: a short description, try to stay under 200 characters
+- `tags`: a list of one-word tags that classify your book (e.g. "thrilling")
+- `cover`: name of an image file in the same folder, or "" for Morpheus default cover
+- `start`: an object with the following items:
+  - `destination`: ID of destination where the player starts
+  - `location`: ID of location where the player starts
+  - `room`: ID of room where the player starts
+  - `datetime`: valid datetime of when the story starts in-game (e.g. '2020-03-01 10:00:00')
+  - `introduction`: an introduction text for the *user* (not readable for the *characters*) at the very start of the story
+
+Make sure the IDs in `start` do not contradict each other.
+
+#### Example
+
+```yaml
+---
+title: Electric City
+description: >-
+  You explore the Electric City of the year 2077, a place,
+  where everything is connected.
+tags:
+- scifi
+- cyborg
+cover: cover.jpg
+start:
+  destination: electric_city
+  location: casino
+  room: gambling_hall
+  datetime: '2077-06-01 09:00:00'
+  introduction: >-
+    After travelling through the waste lands for several
+    you arrived at the Electric City in the morning.
+    The town is full of lights and buzzing noises, but the streets
+    are empty, so you enter the first building, the casino.
+```
+
+### World File
+
+There must be exactly one world file and it must be named `world.yaml`. The world file contains a description of the world your book is set. Currently this file is not used by any game mechanics and its content is only displayed to the user for information. This file must contain the following items:
+
+- `name`: the world's name
+- `description`: a short description, try to stay under 200 characters
+- `image`: name of an image file in the same folder, or "" for using the default world image
+
+#### Example
+
+```yaml
+---
+name: The Big Hive
+description: >-
+  Everything is connected, everyone is connected. The world is a huge
+  network that even span vast distances of wasteland between its
+  buzzing hubs of humans and electric activity.
+image: bighive.jpg
+```
+
+### Agenda File
+
+In the current version, no agenda files are used, yet.
+
+### Character File
+
+Each character in the game has their own folder and character file. A character can be an NPC (non-player character) or a playable character or both. A playable NPC character if not chosen by the player will still appear in the game. A playable character not defined as NPC, will not.
+The character file must have the same name as the character folder (the character ID) and contain the following items:
+
+- `name`: character name
+- `isPlayable`: if "true" the player can choose to control this character, otherwise set to "false"
+- `isNPC`: if "true" the character will appear as an NPC in the game (if not playable *and* chosen by the player)  
+- `description`: a short description only to be seen by the *player*
+- `gender`: *any* text  
+  *Be aware that some future game mechanics might only work for "male" and "female" characters*
+- `age`: age as a number
+- `image`: name of an image file in the same folder, or "" for default character image  
+  *Morpheus contains three default images: one for male gender, one for female gender and one for any other entry as gender*
+- `profession`: short name of the characters' profession
+- `body`: comprehensive description of distinctive body features, such as body type, eye color or hairstyle, preferrably as brief list
+- `mind`: comprehensive description of character traits, preferrably as brief list
+- `language`: comprehensive description of how the character speaks, such as dialect, tone, or words often used, preferrably as brief list
+- `clothing`: comprehensive description of what the character wears right now, preferrably as brief list
+- `appearance`: comprehensive description of *how* the character looks: is he well-groomed or exhausted and disheveled, do the clothes look brand-new or well-worn, preferrably as brief list
+- `background`: short description of the character's background story, only a few sentences mentioned what really matters for the character in the game
+- `wants`: short description of what drives the character, what do they want to achieve in life, what is their motto in life, what are they striving for
+- `load_states`: list of IDs of states defined in the "states" folder in the top-level folder, that should be used for this character, in addition to those defined in the character's "states" folder  
+  *Note: states are not yet implemented in the game, use an empty list [] for now*
+- `load_agendas`: list of IDs of agendas defined in the "agendas" folder in the top-level folder, that should be used for this character, in addition to those defined in the character's "agendas" folder
+  *Note: agendas are not yet implemented in the game, use an empty list [] for now*
+- `start`: an object with the following items:
+  - `destination`: ID of destination where the character starts
+  - `location`: ID of location where the character starts
+  - `room`: ID of room where the character starts
+
+  *Not needed if "isNPC = false", because for player characters the starting point from the book file will be used)*
+
+Note: Of the descriptive items, only `description` will ever be displayed for the player to read. All others (like `body`, `mind`, `background`) are only for the AI to use. Keep them precise, short and concise, you don't need to flesh out whole polished sentences.
+
+#### Example
+
+```yaml
+---
+name: Bob
+isPlayable: true
+isNPC: true
+description: >-
+  Bob treats everything from minor scratches to severe blowtorch
+  wounds, and always with a smile behind his mark.
+gender: male
+age: 32
+image: bob.jpg
+profession: Nurse
+body: tall, strong build, short curly black hair with an undercut, striking eyebrows, dark eyes
+mind: attentive, helpful, intelligent
+language: calm, soothing, sometimes mumble under mask if unsure, sarcastic remarks
+clothing: worn open leather jacket, underneath a gray hoodie, black face mask
+appearance: well-groomed appearance, older worn clothing, slightly exhausted look
+background: >-
+  your parents died early and you have achieved everything
+  in life through your own efforts
+wants: you want to help others in need, so they have it easier in life than you did
+load_states:
+- energy
+load_agendas: []
+start:
+  destination: seatown
+  location: inn
+  room: tabroom
+```
+
+### Destination File
+
+Destinations are the largest type of places in the game. There must be at least one destination (serving as starting point for the player characters).  
+The destination file must have the same name as the destination folder (the destination ID) and contain the following items:
+
+- `name`: the destination's name
+- `description`: a short description, try to stay under 200 characters
+- `position`: a list with two numbers, see "Position and Detour"
+- `detour`: a number, see "Position and Detour"
+- `entry`: ID of a location in this destination, that characters start in after travelling to this destination. Can be "", then the (alphabetically) first location is used
+- `image`: name of an image file in the same folder, or "" for using the default destination image
+
+#### Example
+
+```yaml
+---
+name: Seatown
+description: >-
+  Seatown is completely build on bridges that span the jagged rocky
+  coastline. Staircases, stelts and copper lines form a jungle below
+  the neon-lit houses.
+position: [0, 5]
+detour: 6
+entry: inn
+image: seatown.jpg
+```
+
+### Location File
+
+Locations are the middle-size type of places in the game. There must be at least one location in every destination.  
+The location file must have the same name as the location folder (the location ID) and contain the following items:
+
+- `name`: the location's name
+- `description`: a short description, try to stay under 200 characters
+- `position`: a list with two numbers, see "Position and Detour"
+- `detour`: a number, see "Position and Detour"
+- `entry`: ID of a room in this location, that characters start in after moving to this location. Can be "", then the (alphabetically) first room is used
+- `image`: name of an image file in the same folder, or "" for using the default location image
+
+```yaml
+---
+name: Market
+description: >-
+  The market of seatown is the highest place in town,
+  positioned on sky-high stelts with a cable tower in the center.
+  People crowd tightly together across the market square,
+  neon signs and electric humming everywhere.
+position: [0, 0]
+detour: 2
+entry: spice
+image: market.jpg
+```
+
+### Room File
+
+Rooms are the smallest type of places in the game. There must be at least one room in every location.  
+The room file must have the same name as the room folder (the room ID) and contain the following items:
+
+- `name`: the room's name
+- `description`: a short description, try to stay under 200 characters
+- `image`: name of an image file in the same folder, or "" for using the default room image
+
+*Note: rooms do not have position and detour, because all rooms are assumed nect to each other with constant amount of moving duration*
+
+```yaml
+---
+name: Spices Stand
+description: >-
+  The spice stand displays fragrant spices
+  of all colors and shapes in small boxes
+  and rainbow-colored test tubes.
+image: market.jpg
+```
+
+### State File
+
+In the current version, no state files are used, yet.
+
+### Concepts and Explanations
+
+#### Position and Detour
+
+`position` numbers are used for calculating travelling distances between locations or destinations. Imagine the position as coordinates on a map. *Morpheus* uses the mathematical distance between two positions as distance and multiplies with a book-specific factor in order to get the duration of travel. If one moves from a room to another location, the distance between the two locations is used. If one travels from a room to another destination, the distance between the two destinations is used.  
+The `detour` values of both start and end point are added to the distance. Imagine these as the difficulty of getting in or out of a place, e.g. a city in the mountains or a hut in a swamp.
+
+Example: The characters are in room "Spices Stand" in the location "Market" and want to move to the location "Inn".
+
+- position of "Market": [2, 4]
+- position of "Inn": [1, 0]
+- because the market is very crowded it has a detour of 3.
+
+Travel distance is now $\sqrt{(2-1)^2+(4-0)^2}+3 \approx 7.1$
+
+*Currently in Morpheus a location distance of 1 is equivalent to 1 minute of moving, a destination distance of 1 is equivalent to 1 hour of moving - we will make this configurable in the future*
+
+## Compiling books
+
+The *Morpheus* app does not use the book folders as described above, but one compiled file that was preprocessed and contains all necessary information in one place.  
+Currently there is no stand-alone compiler, books need to be compiled together with the main program instead - see the Morpheus repository and Readme on how to do that. However, there are plans to change this in the future, so new books can be introduces way simpler.
