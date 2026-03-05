@@ -1,0 +1,32 @@
+:root {
+  --font-text: 'Barlow';
+  --col-font: #fff;
+  --col-font-link: #607095;
+  --col-font-blur: #607095;
+  --col-font-toned: #ccc;
+  --col-font-fade: #666;
+  --col-success: #3c5;
+  --col-loader: #607095;
+  --col-loader-fade: #60709522;
+  --bg-body: #060606;
+  --bg-page: #141414;
+  --bg-navbar: #232323;
+  --bg-box: #232323;
+  --bg-boxlight: #393939;
+  --bg-system: #204990;
+  --bg-highlight: #607095;
+  --bg-light: #c0c0f0;
+  --bg-shade: rgba(0, 0, 0, 0.3);
+  --bg-darkshade: rgba(0, 0, 0, 0.7);
+  --bg-error: #c02000;
+  --bg-warning: #501010;
+  --bg-code: rgba(255, 255, 255, 0.2);
+  --bg-structural: #607095;
+  --shadow-black: #000;
+  --width-navbar: 3rem;
+  --width-navbar-extended: 12rem;
+  --width-page: 100%;
+  --text-shadow: 0 0 2px #000, 0 0 4px #000, 0 0 6px #000;
+  --center-shadow: 0 0 10px #000;
+  --drop-shadow: 2px 2px 10px #000;
+}
