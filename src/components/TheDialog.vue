@@ -1,6 +1,6 @@
 <template>
   <div class="dialog">
-    <div v-for="(message, index) in protocol.dialog" :key="index" ref="messageEls">
+    <div v-for="(message, index) in dialog" :key="index" ref="messageEls">
       <div v-if="isMajorMessage(message)" class="message" :class="messageClasses(message)">
         <header>
           <div
@@ -35,7 +35,7 @@
 </template>
 
 <script setup>
-import { watch, nextTick, ref } from 'vue'
+import { watch, nextTick, ref, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { formatTime } from '@/helpers/utils'
 import IconButton from '@/components/IconButton.vue'
@@ -52,6 +52,31 @@ const md = new MarkdownIt({
   breaks: true,
   linkify: false,
   typographer: false,
+})
+
+const dialog = computed(() => {
+  // Get messages from protocol
+  let dialog = protocol.value.filterDialog({ types: 'show' })
+
+  // remove hints for NPC only
+  const showIds = [...Object.keys(bookStore.playerCharacters), ':all']
+  dialog = dialog.filter((message) => message.type !== 'hint' || showIds.includes(message.to))
+
+  // add room changes
+  let enhancedDialog = []
+  let room = ''
+  dialog.forEach((message) => {
+    if ('room' in message && message.room != room) {
+      room = message.room
+      enhancedDialog.push({ type: 'structural', spec: 'room', room: room, undo: false })
+    }
+    enhancedDialog.push({ ...message, undo: false })
+  })
+  const lastMessage = enhancedDialog[enhancedDialog.length - 1]
+  if (lastMessage.type === 'talk') {
+    lastMessage.undo = true
+  }
+  return enhancedDialog
 })
 
 const isMajorMessage = (message) => {
@@ -127,7 +152,7 @@ const renderMarkdown = (text) => {
 // Watcher: scroll to start of new message when added
 const messageEls = ref([])
 watch(
-  () => [protocol.value.dialog.length, options.narratorRunning],
+  () => [dialog.value.length, options.narratorRunning],
   async () => {
     await nextTick()
     const messages = messageEls.value
