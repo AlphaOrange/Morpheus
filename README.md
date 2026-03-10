@@ -70,3 +70,15 @@ Then copy content of `/dist` to a web server of your choice. You might need to c
 ## Play
 
 If you run the app without putting your Google Gemini API key in an `.env` file, first go to "Options" and insert it under "API Key". _Morpheus_ will never send your key anywhere but to the Google Gemini API endpoint. However it will be included in your savegame (currently stored locally in your browser).
+
+## Customize
+
+### Impressum
+
+If your jurisdiction requires a legal notice:
+
+1. Copy `public/content/impressum.placeholder.html`
+2. Rename to `public/impressum.local.html`
+3. Replace with your own legal information
+
+Your impressum will then be shown under "About"
