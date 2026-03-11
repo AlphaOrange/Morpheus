@@ -22,7 +22,7 @@ export default class Destination {
     if (data.entry === '') {
       this.entry = Object.values(this.locations)[0]
     } else {
-      this.entry = this.locations[data.entry]
+      this.entry = this.locations[this.id + '/' + data.entry]
     }
   }
 

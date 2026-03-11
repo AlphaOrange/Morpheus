@@ -50,7 +50,7 @@ export function sampleKey(obj) {
 // Calculate distance to target and return as text
 function distanceRooms(currentRoom, targetRoom) {
   const options = useOptionsStore()
-  return options.moveDurationRoom
+  return Math.round(options.moveDurationRoom)
 }
 function distanceLocations(currentLocation, targetLocation) {
   const options = useOptionsStore()
@@ -59,7 +59,7 @@ function distanceLocations(currentLocation, targetLocation) {
       (currentLocation.position[1] - targetLocation.position[1]) ** 2,
   )
   const detour = currentLocation.detour + targetLocation.detour
-  return (route + detour) * options.moveDurationLocation
+  return Math.round((route + detour) * options.moveDurationLocation)
 }
 function distanceDestinations(currentDestination, targetDestination) {
   const options = useOptionsStore()
@@ -68,7 +68,7 @@ function distanceDestinations(currentDestination, targetDestination) {
       (currentDestination.position[1] - targetDestination.position[1]) ** 2,
   )
   const detour = currentDestination.detour + targetDestination.detour
-  return (route + detour) * options.moveDurationDestination
+  return Math.round((route + detour) * options.moveDurationDestination)
 }
 export function distancePeriod(currentRoom, target) {
   if (target instanceof Room) {

@@ -26,7 +26,7 @@ export default class Location {
     if (data.entry === '') {
       this.entry = Object.values(this.rooms)[0]
     } else {
-      this.entry = this.rooms[data.entry]
+      this.entry = this.rooms[this.id + '/' + data.entry]
     }
   }
 
