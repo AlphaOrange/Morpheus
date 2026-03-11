@@ -54,3 +54,5 @@ public/images/full/
 tmp_images/
 public/.htaccess
 src/books/
+public/content/ai_agenda.local.html
+public/content/impressum.local.html

@@ -28,6 +28,7 @@ import {
   faCircleXmark,
   faCirclePlay,
   faBookmark,
+  faHourglassHalf,
 } from '@fortawesome/free-solid-svg-icons'
 library.add(
   faPersonWalking,
@@ -45,6 +46,7 @@ library.add(
   faCircleXmark,
   faCirclePlay,
   faBookmark,
+  faHourglassHalf,
 )
 
 const app = createApp(App)

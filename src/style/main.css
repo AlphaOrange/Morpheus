@@ -64,7 +64,7 @@ img {
 
 button {
   padding: 0.5rem 1rem;
-  margin: 0 0.5rem 0.5rem 0;
+  margin: 0 0 0.5rem 0;
   border: none;
   border-radius: 0.5rem;
   background: var(--bg-box);
@@ -84,6 +84,9 @@ button:hover {
 }
 button:disabled:hover {
   background: var(--bg-box);
+}
+.button-list button {
+  margin-right: 0.5rem;
 }
 
 /* Pills */

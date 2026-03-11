@@ -19,64 +19,65 @@
     </div>
     <div class="box action-box">
       <h3>Group</h3>
-      <ActionButton
-        v-for="avRoom in room.availableRooms"
-        :key="avRoom.id"
-        @click="moveToRoom(avRoom)"
-        :text="avRoom.name"
-        icon="door-open"
-        :pill="distancePeriodText(room, avRoom)"
-        :hint="avRoom.commandId"
-      />
-      <ActionButton
-        v-for="location in room.availableLocations"
-        :key="location.id"
-        @click="moveToLocation(location)"
-        :text="location.name"
-        icon="person-walking"
-        :pill="distancePeriodText(room, location)"
-        :hint="location.commandId"
-      />
+      <div class="button-list">
+        <ActionButton
+          v-for="avRoom in room.availableRooms"
+          :key="avRoom.id"
+          @click="moveToRoom(avRoom)"
+          :text="avRoom.name"
+          icon="door-open"
+          :pill="distancePeriodText(room, avRoom)"
+          :hint="avRoom.commandId"
+        />
+        <ActionButton
+          v-for="location in room.availableLocations"
+          :key="location.id"
+          @click="moveToLocation(location)"
+          :text="location.name"
+          icon="person-walking"
+          :pill="distancePeriodText(room, location)"
+          :hint="location.commandId"
+        />
+      </div>
     </div>
     <div v-for="char in room.presentPlayerCharacters" :key="char.id" class="box action-box">
       <h3 class="hint-anchor">
         <span v-if="activePlayerID === char.id"><font-awesome-icon icon="fa-star" /></span>
         {{ char.name }}<span class="hint">{{ char.id }}</span>
       </h3>
-      <ActionButton @click="talkToAll(char)" :text="'Talk to all'" :icon="'comment'" />
-      <br v-if="room.presentAiCharacters" />
-      <ActionButton
-        v-for="partner in room.presentAiCharacters"
-        :key="partner.id"
-        @click="talkTo(char, partner)"
-        :text="`Talk to ${partner.name}`"
-        :icon="'comments'"
-      />
-      <ActionButton
-        v-for="avRoom in room.availableRooms"
-        :key="avRoom.id"
-        @click="moveCharToRoom(char, avRoom)"
-        :text="avRoom.name"
-        :icon="'door-open'"
-        :pill="distancePeriodText(room, avRoom)"
-      />
-      <ActionButton
-        v-for="location in room.availableLocations"
-        :key="location.id"
-        @click="moveCharToLocation(char, location)"
-        :text="location.name"
-        :icon="'person-walking'"
-        :pill="distancePeriodText(room, location)"
-      />
+      <div class="button-list">
+        <ActionButton @click="talkToAll(char)" :text="'Talk to all'" :icon="'comment'" />
+        <ActionButton
+          v-for="partner in room.presentAiCharacters"
+          :key="partner.id"
+          @click="talkTo(char, partner)"
+          :text="`Talk to ${partner.name}`"
+          :icon="'comments'"
+        />
+        <ActionButton
+          v-for="avRoom in room.availableRooms"
+          :key="avRoom.id"
+          @click="moveCharToRoom(char, avRoom)"
+          :text="avRoom.name"
+          :icon="'door-open'"
+          :pill="distancePeriodText(room, avRoom)"
+        />
+        <ActionButton
+          v-for="location in room.availableLocations"
+          :key="location.id"
+          @click="moveCharToLocation(char, location)"
+          :text="location.name"
+          :icon="'person-walking'"
+          :pill="distancePeriodText(room, location)"
+        />
+      </div>
     </div>
     <div class="box action-box">
       <h3>User Actions</h3>
-      <ActionButton @click="runNarrator" text="Run NPCs" icon="circle-play" />
-      <ActionButton @click="save" text="Save Book" icon="bookmark" />
-    </div>
-    <div class="box action-box">
-      <h3>// Testing Actions //</h3>
-      <ActionButton @click="debug_addTime()" :text="`+1min`" />
+      <div class="button-list">
+        <ActionButton @click="runNarrator" text="Run NPCs" icon="circle-play" />
+        <ActionButton @click="save" text="Save Book" icon="bookmark" />
+      </div>
     </div>
   </div>
 </template>
@@ -129,11 +130,6 @@ const save = () => {
 const multiroom = computed(() => activeRooms.value.length > 1)
 const movingchars = computed(() => movingPlayerCharacters.value.length > 0)
 const showTopBox = computed(() => multiroom.value || movingchars.value)
-
-// DEBUG: ADD 1 MINUTE
-const debug_addTime = () => {
-  book.addTime(60)
-}
 </script>
 
 <style scoped>
