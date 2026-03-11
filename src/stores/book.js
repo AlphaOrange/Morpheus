@@ -671,6 +671,12 @@ export const useBookStore = defineStore('book', {
         return
       }
 
+      // Wait while doing nothing
+      if (command.action === 'wait') {
+        this.addTime(command.seconds)
+        return
+      }
+
       // Check if actor is valid
       const possibleActors = [
         ...this.room.presentPlayerCharacters.map((char) => char.id),

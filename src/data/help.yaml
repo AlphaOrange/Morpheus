@@ -272,3 +272,6 @@ meta:
     `switch [number]`
     `switch [room id]`
     Switch view to another active room (i.e. there is another player-controlled character). If command is just `switch` game switches to next active room in order, if there is a number it uses the order of the switch buttons in the upper left.
+
+    `wait [minutes]`
+    Wait a certain number of minutes while doing nothing.
