@@ -192,10 +192,20 @@ export const useBookStore = defineStore('book', {
         const room = this.rooms[roomId]
         if (room.numberOfPlayers > 0) {
           const present = Object.keys(room.characters)
-          const charArrived = joinAnd(arrivals[roomId].map((char) => char.name))
+          const charArrivedAi = arrivals[roomId]
+            .filter((char) => char.controlledBy === 'ai')
+            .map((char) => char.name)
+          const charArrivedPlayer = arrivals[roomId]
+            .filter((char) => char.controlledBy === 'player')
+            .map((char) => char.name)
+          const charArrived = [...charArrivedAi, ...charArrivedPlayer]
+          const text =
+            this.time === 0
+              ? `${joinAnd(charArrivedPlayer)} just arrived at ${room.name}, ${joinAnd(charArrivedAi)} also here`
+              : `${joinAnd(charArrived)} just arrived at ${room.name}`
           this.protocol.pushHint({
             time: this.time,
-            text: `${charArrived} just arrived at ${room.name}`,
+            text: text,
             room: roomId,
             present: present,
             to: ':all',
