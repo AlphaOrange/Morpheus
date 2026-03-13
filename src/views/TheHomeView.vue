@@ -10,9 +10,11 @@
           The book '{{ bookStore.title }}' is currently loaded. If you choose another book now (or
           even the same book), all unsaved progress will be lost!
         </div>
-        <ActionButton :text="`Continue Playing`" :color="`dark`" @click="goToPlay" />
-        <ActionButton :text="`Save and Close`" :color="`dark`" @click="saveClose" />
-        <ActionButton :text="`Close without Save`" :color="`dark`" @click="justClose" />
+        <div class="button-list">
+          <ActionButton :text="`Continue Playing`" :color="`dark`" @click="goToPlay" />
+          <ActionButton :text="`Save and Close`" :color="`dark`" @click="saveClose" />
+          <ActionButton :text="`Close without Save`" :color="`dark`" @click="justClose" />
+        </div>
       </div>
       <div class="shelf horizontal-flex item-selection">
         <SavegameCover v-if="shelf.hasSaveData" :saveData="shelf.saveData" @click="loadSavegame" />

@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { safetySettings } from '@/data/llm'
 
 // these options will be stored and restored with saving/loading books
 const SAVEABLE_OPTIONS = [
@@ -9,6 +10,10 @@ const SAVEABLE_OPTIONS = [
   'aiVendor',
   'aiModel',
   'aiApiKey',
+  'aiSafetyHarassment',
+  'aiSafetyHateSpeech',
+  'aiSafetySex',
+  'aiSafetyDangerous',
   // Book Settings
   'talkDuration',
   'moveDurationRoom',
@@ -49,6 +54,10 @@ export const useOptionsStore = defineStore('options', {
     aiVendor: 'Gemini',
     aiModel: 'gemini25_flash_lite',
     aiApiKey: import.meta.env.VITE_GEMINI_API_KEY,
+    aiSafetyHarassment: safetySettings.harassment,
+    aiSafetyHateSpeech: safetySettings.hateSpeech,
+    aiSafetySex: safetySettings.sex,
+    aiSafetyDangerous: safetySettings.dangerous,
 
     // Book Settings (can be overwritten by book, e.g. ai settings)
     talkDuration: 30, // seconds that pass per talk action
@@ -56,7 +65,7 @@ export const useOptionsStore = defineStore('options', {
     moveDurationLocation: 60, // seconds / 1 distance location move
     moveDurationDestination: 3600, // seconds / 1 distance destination move
 
-    // Special Variables (e.g. user activity flags)
+    // Runtime Variables (e.g. user activity flags)
     idHintsActive: false,
     lightboxImage: null,
     narratorRunning: false,
@@ -69,6 +78,26 @@ export const useOptionsStore = defineStore('options', {
       return (
         (state.idHintsMode === 'always') | ((state.idHintsMode === 'auto') & state.idHintsActive)
       )
+    },
+    aiSafetySettingsGemini(state) {
+      return [
+        {
+          category: 'HARM_CATEGORY_HARASSMENT',
+          threshold: state.aiSafetyHarassment,
+        },
+        {
+          category: 'HARM_CATEGORY_HATE_SPEECH',
+          threshold: state.aiSafetyHateSpeech,
+        },
+        {
+          category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+          threshold: state.aiSafetySex,
+        },
+        {
+          category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
+          threshold: state.aiSafetyDangerous,
+        },
+      ]
     },
   },
 
