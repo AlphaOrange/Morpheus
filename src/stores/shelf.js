@@ -34,9 +34,21 @@ export const useShelfStore = defineStore('shelf', {
       }
     },
     saveBook() {
-      const saveString = JSON.stringify({ options: this.options, book: this.book })
-      localStorage.setItem('savegame', saveString)
-      this.saveData = JSON.parse(saveString)
+      try {
+        const saveString = JSON.stringify({ options: this.options, book: this.book })
+        localStorage.setItem('savegame', saveString)
+        this.saveData = JSON.parse(saveString)
+        this.book.protocol.pushSystem({
+          time: this.book.time,
+          text: 'Book progress successfully saved.',
+        })
+      } catch {
+        this.book.protocol.pushError({
+          time: this.book.time,
+          title: 'Save Error',
+          text: 'There was an error when trying to save the book progress.',
+        })
+      }
     },
     loadBook() {
       const saveString = localStorage.getItem('savegame')

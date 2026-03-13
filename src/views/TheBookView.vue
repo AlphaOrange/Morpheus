@@ -95,9 +95,10 @@ const manualNarrator = () => {
   runNarrator({ force: true })
 }
 
-// start/stop with Book view
+// start/stop with Book view, focus message box on entry
 onMounted(() => {
   startNpcTimer()
+  messageBox.value?.focus()
 })
 onUnmounted(() => {
   clearTimeout(npcTimeout)
