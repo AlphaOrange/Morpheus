@@ -29,7 +29,8 @@
         <font-awesome-icon class="icon" icon="fa-address-card" /><span>About</span>
       </div>
     </div>
-    <footer v-if="started" @click="router.push('/info')">
+    <footer v-if="started">
+      <!-- @click="router.push('/info')"> -->
       <img :src="coverM" class="cover" />
       <div class="book-title">
         <small>Currently playing:</small>
@@ -108,7 +109,6 @@ footer {
   bottom: 0;
   width: 100%;
   padding: 0.5rem;
-  cursor: pointer;
 }
 footer img.cover {
   position: absolute;
