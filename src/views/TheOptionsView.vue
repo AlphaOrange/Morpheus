@@ -6,20 +6,98 @@
       </div>
       <div class="box options-box">
         <h3>LLM Configuration</h3>
-        <div>Use model:</div>
+        <h4>Language Model</h4>
         <div class="input-group">
+          <span>Model Name: </span>
           <select v-model="options.aiVendor">
             <option>Gemini</option>
           </select>
           <br />
+          <span>Model Version: </span>
           <select v-model="options.aiModel">
             <option>gemini25_flash_lite</option>
             <option>gemini25_flash</option>
           </select>
         </div>
-        <div>API Key:</div>
+        <h4>API Key:</h4>
         <div class="input-group">
           <input v-model="options.aiApiKey" placeholder="insert valid key" class="long" />
+        </div>
+        <h4>Safety Settings:</h4>
+        <div class="input-group">
+          <span>Harassment: </span>
+          <select v-model="options.aiSafetyHarassment">
+            <option value="BLOCK_NONE">None</option>
+            <option value="BLOCK_ONLY_HIGH">Low</option>
+            <option value="BLOCK_MEDIUM_AND_ABOVE">Medium</option>
+            <option value="BLOCK_LOW_AND_ABOVE">High</option>
+          </select>
+          <br />
+          <span>Hate Speech: </span>
+          <select v-model="options.aiSafetyHateSpeech">
+            <option value="BLOCK_NONE">None</option>
+            <option value="BLOCK_ONLY_HIGH">Low</option>
+            <option value="BLOCK_MEDIUM_AND_ABOVE">Medium</option>
+            <option value="BLOCK_LOW_AND_ABOVE">High</option>
+          </select>
+          <br />
+          <span>Sexually Explicit: </span>
+          <select v-model="options.aiSafetySex">
+            <option value="BLOCK_NONE">None</option>
+            <option value="BLOCK_ONLY_HIGH">Low</option>
+            <option value="BLOCK_MEDIUM_AND_ABOVE">Medium</option>
+            <option value="BLOCK_LOW_AND_ABOVE">High</option>
+          </select>
+          <br />
+          <span>Dangerous Content: </span>
+          <select v-model="options.aiSafetyDangerous">
+            <option value="BLOCK_NONE">None</option>
+            <option value="BLOCK_ONLY_HIGH">Low</option>
+            <option value="BLOCK_MEDIUM_AND_ABOVE">Medium</option>
+            <option value="BLOCK_LOW_AND_ABOVE">High</option>
+          </select>
+          <p>Safety Settings work <i>in addition</i> to the inherent safety of the model in use.</p>
+        </div>
+      </div>
+      <div class="box options-box">
+        <h3>NPC Behaviour</h3>
+        <div>Run NPCs automatically</div>
+        <div class="input-group">
+          <input
+            type="radio"
+            id="idlingBeforeTriggerNpc_2"
+            value="2"
+            v-model.number="options.idlingBeforeTriggerNpc"
+          />
+          <label for="idlingBeforeTriggerNpc_2">2 seconds after player message</label><br />
+          <input
+            type="radio"
+            id="idlingBeforeTriggerNpc_4"
+            value="4"
+            v-model.number="options.idlingBeforeTriggerNpc"
+          />
+          <label for="idlingBeforeTriggerNpc_4">4 seconds after player message</label><br />
+          <input
+            type="radio"
+            id="idlingBeforeTriggerNpc_6"
+            value="6"
+            v-model.number="options.idlingBeforeTriggerNpc"
+          />
+          <label for="idlingBeforeTriggerNpc_6">6 seconds after player message</label><br />
+          <input
+            type="radio"
+            id="idlingBeforeTriggerNpc_10"
+            value="10"
+            v-model.number="options.idlingBeforeTriggerNpc"
+          />
+          <label for="idlingBeforeTriggerNpc_10">10 seconds after player message</label><br />
+          <input
+            type="radio"
+            id="idlingBeforeTriggerNpc_no"
+            value="9999"
+            v-model.number="options.idlingBeforeTriggerNpc"
+          />
+          <label for="idlingBeforeTriggerNpc_no">Never run automatically</label><br />
         </div>
       </div>
       <div class="box options-box">
