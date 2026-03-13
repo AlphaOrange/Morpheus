@@ -6,7 +6,7 @@
     <template #middleSlot>
       <div class="center">
         <div class="dialog-box">
-          <TheDialog />
+          <TheDialog ref="dialog" />
         </div>
         <TheMessageBox
           ref="messageBox"
@@ -37,6 +37,7 @@ const book = useBookStore()
 const options = useOptionsStore()
 const shelf = useShelfStore()
 
+const dialog = ref(null)
 const messageBox = ref(null)
 
 // --- Commands that manipulate the message box ---
@@ -98,6 +99,7 @@ const manualNarrator = () => {
 // start/stop with Book view, focus message box on entry
 onMounted(() => {
   startNpcTimer()
+  dialog.value?.scrollToEnd()
   messageBox.value?.focus()
 })
 onUnmounted(() => {

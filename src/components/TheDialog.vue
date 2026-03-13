@@ -149,22 +149,23 @@ const renderMarkdown = (text) => {
   return md.render(text || '')
 }
 
+const scrollToEnd = async () => {
+  await nextTick()
+  const messages = messageEls.value
+  if (!messages.length) return
+  const lastMessage = messages[messages.length - 1]
+  lastMessage.scrollIntoView({
+    behavior: 'smooth',
+    block: 'start',
+  })
+}
+
 // Watcher: scroll to start of new message when added
 const messageEls = ref([])
-watch(
-  () => [dialog.value.length, options.narratorRunning],
-  async () => {
-    await nextTick()
-    const messages = messageEls.value
-    if (!messages.length) return
-    const lastMessage = messages[messages.length - 1]
-    lastMessage.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    })
-  },
-  { flush: 'post' },
-)
+watch(() => [dialog.value.length, options.narratorRunning], scrollToEnd, { flush: 'post' })
+
+// expose scrolling to outer components
+defineExpose({ scrollToEnd })
 </script>
 
 <style scoped>
