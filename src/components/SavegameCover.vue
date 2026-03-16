@@ -4,7 +4,7 @@
       <div class="bookmark">BOOKMARK</div>
       <header>
         <div class="title">{{ saveData.book.title }}</div>
-        <div class="description">{{ truncateString(saveData.book.description, 108) }}</div>
+        <div class="description">{{ truncateString(saveData.book.saveSummary, 108) }}</div>
       </header>
       <footer>
         <div class="room" :style="{ backgroundImage: `url(${roomImage})` }">
@@ -95,8 +95,7 @@ const charImage = (char) => {
 <style scoped>
 .book {
   position: relative;
-  width: 100%;
-  max-width: 18rem;
+  width: 18rem;
   aspect-ratio: 3 / 4;
   border-radius: 0.5rem;
   background-position: center center;

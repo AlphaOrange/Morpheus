@@ -33,7 +33,8 @@ export const useShelfStore = defineStore('shelf', {
         console.error('Error fetching shelf data', error)
       }
     },
-    saveBook() {
+    async saveBook() {
+      await this.book.createSaveSummary()
       try {
         const saveString = JSON.stringify({ options: this.options, book: this.book })
         localStorage.setItem('savegame', saveString)

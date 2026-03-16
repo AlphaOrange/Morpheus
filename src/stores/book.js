@@ -4,6 +4,7 @@ import Character from '@/classes/Character'
 import Destination from '@/classes/Destination'
 import Protocol from '@/classes/Protocol'
 import Narrator from '@/classes/Narrator'
+import SavegameSummaryAgent from '@/agents/SavegameSummaryAgent'
 import {
   messageToCommand,
   distancePeriod,
@@ -25,6 +26,9 @@ export const useBookStore = defineStore('book', {
     introduction: null,
     _cover: '',
 
+    // Savegame-only Information
+    saveSummary: '',
+
     // Book State
     loaded: false, // is book data loaded?
     started: false, // is setup complete and story started?
@@ -42,8 +46,9 @@ export const useBookStore = defineStore('book', {
     // The Protocol --> if referenced make sure a reactive component is watched
     protocol: null,
 
-    // The Narrator
+    // The Narrator + Agents
     narrator: null,
+    agents: {},
 
     // Registers
     movingCharacterIDs: [],
@@ -125,6 +130,7 @@ export const useBookStore = defineStore('book', {
         id: this.id,
         title: this.title,
         description: this.description,
+        saveSummary: this.saveSummary,
         tags: this.tags,
         startTime: this.startTime,
         introduction: this.introduction,
@@ -325,6 +331,7 @@ export const useBookStore = defineStore('book', {
       this.id = data.id
       this.title = data.title
       this.description = data.description
+      this.saveSummary = data.description
       this.tags = data.tags
       this._cover = data._cover ?? data.cover
       if (data.start) {
@@ -433,6 +440,7 @@ export const useBookStore = defineStore('book', {
       this.addTime(0) // triggering arrivals and timed events at 0
       this.updateRecentPlayerIDs() // set initial active player
       this.narrator = new Narrator(this, this.protocol, this.options) // instantiate narrator
+      this.agents = { saveSummary: new SavegameSummaryAgent() } // instantiate agents
       this.activateBook()
     },
 
@@ -469,12 +477,18 @@ export const useBookStore = defineStore('book', {
 
         // instantiate narrator
         this.narrator = new Narrator(this, this.protocol, this.options)
+        this.agents = { saveSummary: new SavegameSummaryAgent() } // instantiate agents
 
         // now activate book for play
         this.activateBook()
       } catch (error) {
         console.error('Error loading book savefile', error)
       }
+    },
+
+    async createSaveSummary() {
+      const summary = await this.agents.saveSummary.run({ protocol: this.protocol })
+      this.saveSummary = summary === '' ? this.description : summary
     },
 
     // ########## Game Processing ##########

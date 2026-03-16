@@ -41,8 +41,7 @@ const cover = computed(() => {
 <style scoped>
 .book {
   position: relative;
-  width: 100%;
-  max-width: 18rem;
+  width: 18rem;
   aspect-ratio: 3 / 4;
   border-radius: 0.5rem;
   background-position: center center;

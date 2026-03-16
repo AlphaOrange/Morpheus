@@ -58,8 +58,8 @@ const allowWarning = ref(true)
 const showWarning = computed(() => allowWarning.value && bookStore.started)
 
 const goToPlay = () => router.push('/book')
-const saveClose = () => {
-  shelf.saveBook()
+const saveClose = async () => {
+  await shelf.saveBook()
   allowWarning.value = false
 }
 const justClose = () => (allowWarning.value = false)
