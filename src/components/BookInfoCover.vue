@@ -2,6 +2,7 @@
   <div class="book" :style="{ backgroundImage: `url(${cover})` }">
     <header>
       <div class="title">{{ book.title }}</div>
+      <div class="author">by {{ book.author }}</div>
       <div v-if="showDescription" class="description">{{ book.description }}</div>
     </header>
     <footer>
@@ -54,9 +55,13 @@ header {
 }
 .title {
   text-align: center;
-  margin-bottom: 0.5rem;
   font-size: 1.5rem;
   font-weight: 700;
+}
+.author {
+  text-align: center;
+  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
 }
 .description {
   text-align: center;

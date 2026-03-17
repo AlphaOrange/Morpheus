@@ -4,6 +4,7 @@
       <div class="bookmark">BOOKMARK</div>
       <header>
         <div class="title">{{ saveData.book.title }}</div>
+        <div class="author">by {{ saveData.book.author }}</div>
         <div class="description">{{ truncateString(saveData.book.saveSummary, 108) }}</div>
       </header>
       <footer>
@@ -128,9 +129,13 @@ header {
 }
 .title {
   text-align: center;
-  margin-bottom: 0.5rem;
   font-size: 1.5rem;
   font-weight: 700;
+}
+.author {
+  text-align: center;
+  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
 }
 .description {
   text-align: center;
