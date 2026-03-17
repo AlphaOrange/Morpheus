@@ -20,6 +20,7 @@ export const useBookStore = defineStore('book', {
     // Static Book Information
     id: null,
     author: null,
+    version: null,
     title: null,
     description: null,
     tags: [],
@@ -130,6 +131,7 @@ export const useBookStore = defineStore('book', {
       return {
         id: this.id,
         author: this.author,
+        version: this.version,
         title: this.title,
         description: this.description,
         saveSummary: this.saveSummary,
@@ -332,6 +334,7 @@ export const useBookStore = defineStore('book', {
     assignBaseBookData(data) {
       this.id = data.id
       this.author = data.author
+      this.version = data.version
       this.title = data.title
       this.description = data.description
       this.saveSummary = data.description

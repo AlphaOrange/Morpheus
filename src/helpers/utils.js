@@ -3,6 +3,7 @@ import Location from '@/classes/Location'
 import Destination from '@/classes/Destination'
 import { useOptionsStore } from '@/stores/options'
 import { useBookStore } from '@/stores/book'
+import semver from 'semver'
 
 // ----- General Helpers -----
 
@@ -366,4 +367,17 @@ export function getHelpData(topic) {
     text: 'No help text available.',
   }
   return helpData[topic] || fallback
+}
+
+// ----- Versioning + Compatibility -----
+
+import supportsData from '@/data/supports.yaml'
+export function checkSupported(version) {
+  if (semver.satisfies(version, supportsData.fullSupport)) {
+    return 'full'
+  } else if (semver.satisfies(version, supportsData.required)) {
+    return 'min'
+  } else {
+    return 'unsupported'
+  }
 }

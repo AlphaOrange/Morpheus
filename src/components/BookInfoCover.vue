@@ -6,16 +6,22 @@
       <div v-if="showDescription" class="description">{{ book.description }}</div>
     </header>
     <footer>
-      <span v-for="tag in book.tags" :key="tag" class="tag">
+      <span v-for="tag in tags" :key="tag" class="tag">
         {{ tag }}
       </span>
+      <div v-if="supported === 'min'" class="support-warning">
+        created for Morpheus {{ book.version.book }}, some features may be unsupported
+      </div>
+      <div v-if="supported === 'unsupported'" class="support-warning">
+        created for Morpheus {{ book.version.book }}, no longer supported
+      </div>
     </footer>
   </div>
 </template>
 
 <script setup>
 import { computed } from 'vue'
-import { genericImg, bookImg } from '@/helpers/utils'
+import { genericImg, bookImg, checkSupported } from '@/helpers/utils'
 const props = defineProps({
   book: {
     type: Object,
@@ -36,6 +42,15 @@ const cover = computed(() => {
   } else {
     return genericImg({ filename: 'generic_cover.jpg', size: 'L' })
   }
+})
+
+const tags = computed(() => {
+  const version = 'v' + props.book.version.book
+  return [version, ...props.book.tags]
+})
+
+const supported = computed(() => {
+  return checkSupported(props.book.version.book)
 })
 </script>
 
@@ -71,11 +86,20 @@ footer {
   position: absolute;
   bottom: 0.5rem;
   left: 0.5rem;
+  width: calc(100% - 1rem);
 }
 .tag {
   background: rgba(0, 0, 0, 0.5);
   padding: 0.1rem 0.3rem;
   margin-right: 0.2rem;
+  border-radius: 0.2rem;
+  color: white;
+  font-size: 0.85rem;
+}
+.support-warning {
+  background: var(--bg-warning);
+  margin-top: 0.25rem;
+  padding: 0.1rem 0.3rem;
   border-radius: 0.2rem;
   color: white;
   font-size: 0.85rem;
