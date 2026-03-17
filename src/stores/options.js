@@ -6,6 +6,7 @@ const SAVEABLE_OPTIONS = [
   // User Settings
   'idHintsMode',
   'idlingBeforeTriggerNpc',
+  'useAiForSavegameSummary',
   // AI Settings
   'aiVendor',
   'aiModel',
@@ -50,6 +51,7 @@ export const useOptionsStore = defineStore('options', {
     // Game Settings (can be changed by user, e.g. display options)
     idHintsMode: 'auto', // can be "never", "auto", "always"
     idlingBeforeTriggerNpc: 4, // seconds of idling until NPC actions are triggered
+    useAiForSavegameSummary: true, // if true use ai agent on save, otherwise use description as summary
     // AI configuration
     aiVendor: 'Gemini',
     aiModel: 'gemini25_flash_lite',

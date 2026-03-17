@@ -487,8 +487,12 @@ export const useBookStore = defineStore('book', {
     },
 
     async createSaveSummary() {
-      const summary = await this.agents.saveSummary.run({ protocol: this.protocol })
-      this.saveSummary = summary === '' ? this.description : summary
+      if (this.options.useAiForSavegameSummary) {
+        const summary = await this.agents.saveSummary.run({ protocol: this.protocol })
+        this.saveSummary = summary === '' ? this.description : summary
+      } else {
+        this.saveSummary = this.description
+      }
     },
 
     // ########## Game Processing ##########

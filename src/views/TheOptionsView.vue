@@ -101,6 +101,18 @@
         </div>
       </div>
       <div class="box options-box">
+        <h3>Optional Features</h3>
+        <div>Some of these features might have additional AI usage:</div>
+        <div class="input-group">
+          <input
+            type="checkbox"
+            id="idUseAiForSavegameSummary"
+            v-model="options.useAiForSavegameSummary"
+          />
+          <label for="idUseAiForSavegameSummary">Use AI for savegame summaries</label>
+        </div>
+      </div>
+      <div class="box options-box">
         <h3>Hints</h3>
         <div>Show id hints from characters and places:</div>
         <div class="input-group">
@@ -140,7 +152,8 @@ const options = useOptionsStore()
 .input-group {
   margin: 0.5rem;
 }
-input[type='radio'] {
+input[type='radio'],
+input[type='checkbox'] {
   margin: 0 0.5rem 0.25rem 0;
 }
 .long {
