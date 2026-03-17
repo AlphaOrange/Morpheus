@@ -7,6 +7,7 @@ const SAVEABLE_OPTIONS = [
   'idHintsMode',
   'idlingBeforeTriggerNpc',
   'useAiForSavegameSummary',
+  'useCompactButtons',
   // AI Settings
   'aiVendor',
   'aiModel',
@@ -30,6 +31,7 @@ export const useOptionsStore = defineStore('options', {
     lookbackInfo: 20, // how many messages until an Info message disappears?
     lookbackSystem: 20, // how many messages until a System message disappears?
     lookbackError: 5, // how many messages until an Error message disappears?
+    compactButtonsThreshold: 20, // number of buttons for activating compact buttons display
     // Pressure parameters
     pressure_notSpokenYet: 100,
     pressure_notAnsweredYet: 80,
@@ -53,6 +55,7 @@ export const useOptionsStore = defineStore('options', {
     idHintsMode: 'auto', // can be "never", "auto", "always"
     idlingBeforeTriggerNpc: 4, // seconds of idling until NPC actions are triggered
     useAiForSavegameSummary: true, // if true use ai agent on save, otherwise use description as summary
+    useCompactButtons: true, // use compact buttons on cluttered action bar
     // AI configuration
     aiVendor: 'Gemini',
     aiModel: 'gemini25_flash_lite',

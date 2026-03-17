@@ -3,12 +3,15 @@
     <font-awesome-icon v-if="icon" :icon="`fa-${icon}`" />
     {{ props.text }}
     <span v-if="pill" class="pill">{{ pill }}</span>
-    <span v-if="hint" class="hint">{{ props.hint }}</span>
+    <span v-if="hint" class="hint" :class="hintClass">{{ props.hint }}</span>
   </button>
 </template>
 
 <script setup>
 import { computed } from 'vue'
+import { useOptionsStore } from '@/stores/options'
+const options = useOptionsStore()
+
 const props = defineProps({
   text: {
     type: String,
@@ -34,6 +37,14 @@ const props = defineProps({
     type: String,
     default: null,
   },
+  compact: {
+    type: Boolean,
+    default: false,
+  },
+})
+
+const useCompact = computed(() => {
+  return props.compact && options.useCompactButtons
 })
 
 const cssClasses = computed(() => {
@@ -47,7 +58,18 @@ const cssClasses = computed(() => {
   if (props.hint) {
     css.push('hint-anchor')
   }
+  if (useCompact.value) {
+    css.push('compact')
+  }
   return css
+})
+
+const hintClass = computed(() => {
+  if (useCompact.value) {
+    return ['hint-small']
+  } else {
+    return []
+  }
 })
 </script>
 
@@ -60,5 +82,15 @@ const cssClasses = computed(() => {
 }
 .hint {
   top: 0.5rem;
+}
+.pill {
+  margin-right: 0;
+}
+
+/* Compact Action Buttons */
+
+.compact.icon-button {
+  padding: 0.25rem 0.5rem 0.25rem 0.25rem;
+  font-size: 85%;
 }
 </style>

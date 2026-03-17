@@ -115,7 +115,7 @@
         </div>
       </div>
       <div class="box options-box">
-        <h3>Hints</h3>
+        <h3>Display</h3>
         <div>Show id hints from characters and places:</div>
         <div class="input-group">
           <input type="radio" id="idHintsMode_never" value="never" v-model="options.idHintsMode" />
@@ -129,6 +129,11 @@
             v-model="options.idHintsMode"
           />
           <label for="idHintsMode_always">Always</label>
+        </div>
+        <div>Reduce button size if too many options available:</div>
+        <div class="input-group">
+          <input type="checkbox" id="idUseCompactButtons" v-model="options.useCompactButtons" />
+          <label for="idUseCompactButtons">Yes</label>
         </div>
       </div>
     </div>
