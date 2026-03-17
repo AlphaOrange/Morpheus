@@ -1,34 +1,63 @@
 <template>
   <div class="sidebar">
     <div class="logobox">
-      <div class="logo" :style="{ backgroundImage: `url(${logoImg})` }" @click="router.push('/')" />
+      <div
+        class="logo"
+        :style="{ backgroundImage: `url(${logoImg})` }"
+        @click="router.push('/book')"
+      />
     </div>
     <div class="main"></div>
-    <div class="bar-option" @click="router.push('/book')">
-      <div class="bar-label">
-        <font-awesome-icon class="icon" icon="fa-book-open" /><span>Play</span>
+    <RouterLink to="/">
+      <div class="bar-option">
+        <div class="bar-label">
+          <font-awesome-icon class="icon" icon="fa-flag" /><span>Home</span>
+        </div>
       </div>
-    </div>
-    <div class="bar-option" @click="router.push('/')">
-      <div class="bar-label">
-        <font-awesome-icon class="icon" icon="fa-book-atlas" /><span>Shelf</span>
+    </RouterLink>
+    <RouterLink to="/library">
+      <div class="bar-option">
+        <div class="bar-label">
+          <font-awesome-icon class="icon" icon="fa-building-columns" /><span>Library</span>
+        </div>
       </div>
-    </div>
-    <div class="bar-option" @click="router.push('/options')">
-      <div class="bar-label">
-        <font-awesome-icon class="icon" icon="fa-sliders" /><span>Options</span>
+    </RouterLink>
+    <RouterLink to="/nightstand">
+      <div class="bar-option">
+        <div class="bar-label">
+          <font-awesome-icon class="icon" icon="fa-book-bookmark" /><span>Nightstand</span>
+        </div>
       </div>
-    </div>
-    <div class="bar-option" @click="router.push('/help')">
-      <div class="bar-label">
-        <font-awesome-icon class="icon" icon="fa-circle-question" /><span>Help</span>
+    </RouterLink>
+    <RouterLink to="/book">
+      <div class="bar-option">
+        <div class="bar-label">
+          <font-awesome-icon class="icon" icon="fa-book-open-reader" /><span>Play</span>
+        </div>
       </div>
-    </div>
-    <div class="bar-option" @click="router.push('/about')">
-      <div class="bar-label">
-        <font-awesome-icon class="icon" icon="fa-address-card" /><span>About</span>
+    </RouterLink>
+    <hr />
+    <RouterLink to="/options">
+      <div class="bar-option">
+        <div class="bar-label">
+          <font-awesome-icon class="icon" icon="fa-sliders" /><span>Options</span>
+        </div>
       </div>
-    </div>
+    </RouterLink>
+    <RouterLink to="/help">
+      <div class="bar-option">
+        <div class="bar-label">
+          <font-awesome-icon class="icon" icon="fa-circle-question" /><span>Help</span>
+        </div>
+      </div>
+    </RouterLink>
+    <RouterLink to="/about">
+      <div class="bar-option">
+        <div class="bar-label">
+          <font-awesome-icon class="icon" icon="fa-signature" /><span>About</span>
+        </div>
+      </div>
+    </RouterLink>
     <footer v-if="started">
       <!-- @click="router.push('/info')"> -->
       <img :src="coverM" class="cover" />
@@ -59,6 +88,10 @@ import logoImg from '@/assets/images/logo.jpg'
   transition: all 0.25s ease-out 0.15s;
   box-shadow: 0px 0px 5px 0px #000;
 }
+hr {
+  border-color: var(--bg-shade);
+  margin: 1rem 0.25rem;
+}
 .logobox {
   height: var(--width-navbar-extended);
 }
@@ -76,14 +109,15 @@ import logoImg from '@/assets/images/logo.jpg'
 .bar-option {
   height: 2.5rem;
   width: 100%;
-  padding: 0.5rem;
-  margin: 0 0 0.5rem;
-  background: #121226;
+  padding: 0.75rem 0.5rem 2.25rem 0.5rem;
+  margin: 0;
   cursor: pointer;
   overflow: hidden;
+  color: var(--col-font-link);
 }
 
 .bar-option:hover {
+  color: var(--col-font);
   background: var(--bg-highlight);
 }
 
@@ -100,7 +134,7 @@ import logoImg from '@/assets/images/logo.jpg'
 .bar-label > span {
   opacity: 0;
   margin-left: 0.5rem;
-  transition: all 0.25s ease-out 0.15s;
+  transition: opacity 0.25s ease-out 0.15s;
 }
 
 footer {
@@ -129,6 +163,18 @@ footer .book-title {
   transition: opacity 0.25s ease-out 0.15s;
 }
 
+/* Active Link */
+
+.router-link-active .bar-option {
+  color: var(--col-font);
+}
+.router-link-active .icon {
+  transform: scale(1.3);
+}
+.router-link-active .bar-label > span {
+  margin-left: 0.75rem;
+}
+
 /* Hovering */
 
 .sidebar:hover {
@@ -142,7 +188,7 @@ footer .book-title {
 }
 .sidebar:hover .bar-label > span {
   opacity: 1;
-  transition: all 0.4s ease-in-out 0.5s;
+  transition: opacity 0.4s ease-in-out 0.5s;
 }
 .sidebar:hover footer img.cover {
   width: 8rem;

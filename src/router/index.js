@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import TheHomeView from '@/views/TheHomeView.vue'
 import { useBookStore } from '@/stores/book'
+import { useShelfStore } from '@/stores/shelf'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -12,19 +13,25 @@ const router = createRouter({
     }
   },
   routes: [
+    // Views accessible from sidebar
     {
       path: '/',
       name: 'home',
       component: TheHomeView,
     },
     {
-      path: '/setup',
-      name: 'setup',
-      component: () => import('@/views/TheSetupView.vue'),
+      path: '/library',
+      name: 'library',
+      component: () => import('@/views/TheLibraryView.vue'),
+    },
+    {
+      path: '/nightstand',
+      name: 'nightstand',
+      component: () => import('@/views/TheNightstandView.vue'),
       beforeEnter: () => {
-        const book = useBookStore()
-        if (!book.loaded) {
-          return '/'
+        const shelf = useShelfStore()
+        if (!shelf.hasSaveData) {
+          return '/library'
         }
       },
     },
@@ -35,7 +42,7 @@ const router = createRouter({
       beforeEnter: () => {
         const book = useBookStore()
         if (!book.started) {
-          return '/'
+          return '/nightstand'
         }
       },
     },
@@ -54,13 +61,14 @@ const router = createRouter({
       name: 'about',
       component: () => import('@/views/TheAboutView.vue'),
     },
+    // Additional Views
     {
-      path: '/info',
-      name: 'info',
-      component: () => import('@/views/TheInfoView.vue'),
+      path: '/setup',
+      name: 'setup',
+      component: () => import('@/views/TheSetupView.vue'),
       beforeEnter: () => {
         const book = useBookStore()
-        if (!book.started) {
+        if (!book.loaded) {
           return '/'
         }
       },
