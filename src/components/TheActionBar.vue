@@ -11,7 +11,13 @@
         />
       </div>
       <div v-if="multiroom" class="shelf horizontal-flex item-selection">
-        <div v-for="room in activeRooms" :key="room.id" class="room-button" @click="switchTo(room)">
+        <div
+          v-for="room in activeRooms"
+          :key="room.id"
+          class="room-button"
+          :class="roomButtonClass(room)"
+          @click="switchTo(room)"
+        >
           <img :src="`${room.imageS}`" alt="" />
           <div class="player-number">{{ room.numberOfPlayers }}</div>
         </div>
@@ -130,6 +136,13 @@ const save = () => {
 const multiroom = computed(() => activeRooms.value.length > 1)
 const movingchars = computed(() => movingPlayerCharacters.value.length > 0)
 const showTopBox = computed(() => multiroom.value || movingchars.value)
+const roomButtonClass = (room) => {
+  if (room.id === book.roomId) {
+    return ['selected-toned']
+  } else {
+    return []
+  }
+}
 </script>
 
 <style scoped>
