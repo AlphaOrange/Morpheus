@@ -11,6 +11,7 @@ const SAVEABLE_OPTIONS = [
   'aiVendor',
   'aiModel',
   'aiApiKey',
+  'aiApiKeyAllowSave',
   'aiSafetyHarassment',
   'aiSafetyHateSpeech',
   'aiSafetySex',
@@ -56,6 +57,7 @@ export const useOptionsStore = defineStore('options', {
     aiVendor: 'Gemini',
     aiModel: 'gemini25_flash_lite',
     aiApiKey: import.meta.env.VITE_GEMINI_API_KEY,
+    aiApiKeyAllowSave: false,
     aiSafetyHarassment: safetySettings.harassment,
     aiSafetyHateSpeech: safetySettings.hateSpeech,
     aiSafetySex: safetySettings.sex,
@@ -117,6 +119,7 @@ export const useOptionsStore = defineStore('options', {
       for (let option of SAVEABLE_OPTIONS) {
         data[option] = this[option]
       }
+      if (!this.aiApiKeyAllowSave) data.aiApiKey = ''
       return data
     },
   },

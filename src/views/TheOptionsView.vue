@@ -22,6 +22,8 @@
         <h4>API Key:</h4>
         <div class="input-group">
           <input v-model="options.aiApiKey" placeholder="insert valid key" class="long" />
+          <input type="checkbox" id="idAiApiKeyAllowSave" v-model="options.aiApiKeyAllowSave" />
+          <label for="idAiApiKeyAllowSave">Store key with savegame</label>
         </div>
         <h4>Safety Settings:</h4>
         <div class="input-group">
