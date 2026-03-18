@@ -16,10 +16,6 @@
 
 <style scoped>
 .page {
-  width: 100%;
-  height: 100vh;
-  min-height: 100vh;
-  background: var(--bg-page);
   display: grid;
   grid-template-columns: minmax(16rem, 1fr) 3fr minmax(16rem, 1fr);
 }

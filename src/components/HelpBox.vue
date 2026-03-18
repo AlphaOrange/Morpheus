@@ -1,6 +1,8 @@
 <template>
-  <div class="box help-box">
-    <h2 @click="toggle">{{ data.title }}</h2>
+  <div class="box header-box">
+    <header @click="toggle">
+      <h2>{{ data.title }}</h2>
+    </header>
     <p v-html="helpText" v-if="!isCollapsed"></p>
   </div>
 </template>
@@ -33,12 +35,6 @@ const helpText = computed(() => {
 </script>
 
 <style>
-.help-box {
-  padding: 0.5rem;
-  width: 90%;
-  max-width: 65rem;
-}
-
 h2 {
   cursor: pointer;
 }

@@ -1,11 +1,9 @@
 <template>
   <TheSingleLayout>
-    <div class="content">
-      <div class="page-header">
-        <h1>Morpheus</h1>
-      </div>
+    <template #titleSlot>Morpheus</template>
+    <template #contentSlot>
       <p>About Text</p>
-    </div>
+    </template>
   </TheSingleLayout>
 </template>
 

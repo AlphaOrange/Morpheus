@@ -1,25 +1,25 @@
 <template>
-  <TheSingleLayout>
-    <div class="content vertical-center-flex">
-      <div class="page-header">
-        <h1>Help</h1>
+  <TheTwoColumnsLayout>
+    <template #titleSlot>Help</template>
+    <template #leftSlot>
+      <div class="vertical-center-flex">
+        <HelpBox :data="getHelpData('commands')"></HelpBox>
+        <HelpBox :data="getHelpData('natural')"></HelpBox>
+        <HelpBox :data="getHelpData('short')"></HelpBox>
       </div>
-      <HelpBox :data="getHelpData('meta')"></HelpBox>
-      <HelpBox :data="getHelpData('commands')"></HelpBox>
-      <HelpBox :data="getHelpData('natural')"></HelpBox>
-      <HelpBox :data="getHelpData('short')"></HelpBox>
-    </div>
-  </TheSingleLayout>
+    </template>
+    <template #rightSlot>
+      <div class="vertical-center-flex">
+        <HelpBox :data="getHelpData('meta')"></HelpBox>
+      </div>
+    </template>
+  </TheTwoColumnsLayout>
 </template>
 
 <script setup>
-import TheSingleLayout from '@/layouts/TheSingleLayout.vue'
+import TheTwoColumnsLayout from '@/layouts/TheTwoColumnsLayout.vue'
 import { getHelpData } from '@/helpers/utils'
 import HelpBox from '@/components/HelpBox.vue'
 </script>
 
-<style scoped>
-.content {
-  width: 100%;
-}
-</style>
+<style scoped></style>

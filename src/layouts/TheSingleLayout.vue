@@ -1,6 +1,11 @@
 <template>
   <div class="page">
-    <slot></slot>
+    <div class="page-header">
+      <h1>
+        <slot name="titleSlot"></slot>
+      </h1>
+    </div>
+    <slot name="contentSlot"></slot>
   </div>
 </template>
 
@@ -8,12 +13,8 @@
 
 <style scoped>
 .page {
-  width: 100%;
-  max-width: var(--width-page);
-  min-height: 100vh;
-  background: var(--bg-page);
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-rows: auto auto;
   padding: 1rem;
 }
 </style>

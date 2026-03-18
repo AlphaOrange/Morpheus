@@ -1,5 +1,5 @@
 <template>
-  <div class="box setting-box" :class="collapsedClass" @click="toggle">
+  <div class="box narrow setting-box" :class="collapsedClass" @click="toggle">
     <header>
       <small>{{ props.hint }}</small>
       <h3 class="hint-anchor">

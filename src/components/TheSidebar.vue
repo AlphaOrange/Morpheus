@@ -84,7 +84,7 @@ import logoImg from '@/assets/images/logo.jpg'
 .sidebar {
   width: var(--width-navbar);
   height: 100vh;
-  background: #030310;
+  background: var(--bg-dark);
   transition: all 0.25s ease-out 0.15s;
   box-shadow: 0px 0px 5px 0px #000;
 }

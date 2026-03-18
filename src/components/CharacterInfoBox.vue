@@ -1,5 +1,5 @@
 <template>
-  <div class="box character-box" :class="collapsedClass" @click="toggle">
+  <div class="box narrow character-box" :class="collapsedClass" @click="toggle">
     <LightboxImage :src="props.character.imageM" class="image" />
     <div class="info-box">
       <h3 class="hint-anchor">

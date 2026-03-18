@@ -1,9 +1,7 @@
 <template>
   <TheSingleLayout>
-    <div class="content">
-      <div class="page-header">
-        <h1>Library</h1>
-      </div>
+    <template #titleSlot>Library</template>
+    <template #contentSlot>
       <div v-if="showWarning" class="box warning-box">
         <h3>Currently In Play</h3>
         <div class="warning-message">
@@ -25,7 +23,7 @@
           @click="loadBook(book)"
         />
       </div>
-    </div>
+    </template>
   </TheSingleLayout>
 </template>
 
@@ -66,9 +64,6 @@ const justClose = () => (allowWarning.value = false)
 </script>
 
 <style scoped>
-.content {
-  position: relative;
-}
 .shelf {
   justify-content: center;
 }

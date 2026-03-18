@@ -1,19 +1,24 @@
 <template>
-  <TheSingleLayout>
-    <div class="content vertical-center-flex">
-      <div class="page-header">
-        <h1>About Morpheus</h1>
+  <TheTwoColumnsLayout>
+    <template #titleSlot>About Morpheus</template>
+    <template #leftSlot>
+      <div v-html="impressum" class="box"></div>
+    </template>
+    <template #rightSlot>
+      <div class="vertical-center-flex">
+        <div class="box">
+          Morpheus Interactive Story Engine<br />
+          Version: {{ version }}
+        </div>
+        <div v-html="aiAgenda" class="box"></div>
       </div>
-      <div class="version">Version: {{ version }}</div>
-      <div v-html="impressum" class="box about-box"></div>
-      <div v-html="aiAgenda" class="box about-box"></div>
-    </div>
-  </TheSingleLayout>
+    </template>
+  </TheTwoColumnsLayout>
 </template>
 
 <script setup>
 import { computed, ref, onMounted } from 'vue'
-import TheSingleLayout from '@/layouts/TheSingleLayout.vue'
+import TheTwoColumnsLayout from '@/layouts/TheTwoColumnsLayout.vue'
 
 const version = computed(() => __APP_VERSION__)
 const impressum = ref('')
@@ -36,12 +41,4 @@ onMounted(async () => {
 })
 </script>
 
-<style scoped>
-.content {
-  width: 60%;
-  min-width: 28rem;
-}
-.about-box {
-  padding: 0.5rem;
-}
-</style>
+<style scoped></style>

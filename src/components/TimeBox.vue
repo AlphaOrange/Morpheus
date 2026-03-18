@@ -48,7 +48,6 @@ const addTime = (seconds) => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0.5rem;
 }
 .date,
 .time {

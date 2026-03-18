@@ -1,6 +1,6 @@
 <template>
   <div class="vertical-center-flex">
-    <div v-if="showTopBox" class="box action-box">
+    <div v-if="showTopBox" class="box">
       <div v-if="movingchars" class="shelf horizontal-flex">
         <CharacterMarker
           v-for="char in movingPlayerCharacters"
@@ -17,7 +17,7 @@
         </div>
       </div>
     </div>
-    <div class="box action-box">
+    <div class="box">
       <h3>Group</h3>
       <div class="button-list">
         <ActionButton
@@ -40,7 +40,7 @@
         />
       </div>
     </div>
-    <div v-for="char in room.presentPlayerCharacters" :key="char.id" class="box action-box">
+    <div v-for="char in room.presentPlayerCharacters" :key="char.id" class="box">
       <h3 class="hint-anchor">
         <span v-if="activePlayerID === char.id"><font-awesome-icon icon="fa-star" /></span>
         {{ char.name }}<span class="hint">{{ char.id }}</span>
@@ -72,7 +72,7 @@
         />
       </div>
     </div>
-    <div class="box action-box">
+    <div class="box">
       <h3>User Actions</h3>
       <div class="button-list">
         <ActionButton @click="runNarrator" text="Run NPCs" icon="circle-play" />
@@ -135,9 +135,6 @@ const showTopBox = computed(() => multiroom.value || movingchars.value)
 <style scoped>
 * {
   user-select: none;
-}
-.action-box {
-  padding: 0.5rem;
 }
 .room-button {
   position: relative;
