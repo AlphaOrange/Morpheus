@@ -27,7 +27,7 @@ export const useShelfStore = defineStore('shelf', {
   actions: {
     async loadShelf() {
       try {
-        const response = await fetch(`books/books.json`)
+        const response = await fetch(`/books/books.json`)
         this.books = await response.json()
       } catch (error) {
         console.error('Error fetching shelf data', error)

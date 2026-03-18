@@ -347,14 +347,14 @@ export function joinAnd(parts) {
 // ----- Image Helpers -----
 
 export function genericImg({ filename, size }) {
-  return `images/${size}/${filename}`
+  return `/images/${size}/${filename}`
 }
 export function bookImg({ filename, size, bookId = null }) {
   if (!bookId) {
     const book = useBookStore()
     bookId = book.id
   }
-  return `books/${bookId}/${size}/${filename}`
+  return `/books/${bookId}/${size}/${filename}`
 }
 
 // ----- Help Texts -----
