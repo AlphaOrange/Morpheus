@@ -60,7 +60,7 @@ img {
 }
 
 .tag {
-  padding: 0 0.5rem;
+  padding: 0.25rem 0.5rem;
   margin-right: 0.5rem;
   background: var(--bg-highlight);
   border-radius: 0.25rem;
