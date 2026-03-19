@@ -15,14 +15,16 @@
         </div>
       </div>
       <div class="shelf horizontal-flex item-selection">
-        <SavegameCover v-if="shelf.hasSaveData" :saveData="shelf.saveData" @click="loadSavegame" />
-        <BookInfoCover
-          v-for="book in shelf.books"
+        <div
+          class="cover"
+          v-for="book in savegames"
           :key="book.id"
-          :book="book"
-          @click="loadBook(book)"
+          :style="{ backgroundImage: `url(${cover(book)})` }"
+          @click="loadSavegame(book)"
+          @mouseover="setPreview(book)"
         />
       </div>
+      <BookPreview v-if="previewBook" :book="previewBook" :savegame="true" class="preview" />
     </template>
   </TheSingleLayout>
 </template>
@@ -30,9 +32,9 @@
 <script setup>
 import { ref, computed } from 'vue'
 import TheSingleLayout from '@/layouts/TheSingleLayout.vue'
-import BookInfoCover from '@/components/BookInfoCover.vue'
-import SavegameCover from '@/components/SavegameCover.vue'
+import BookPreview from '@/components/BookPreview.vue'
 import ActionButton from '@/components/ActionButton.vue'
+import { genericImg, bookImg } from '@/helpers/utils'
 
 import { useShelfStore } from '@/stores/shelf'
 const shelf = useShelfStore()
@@ -41,14 +43,33 @@ const bookStore = useBookStore()
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
+const previewBook = ref(null)
+const setPreview = (book) => (previewBook.value = book)
+
+// NOTE: There is a lot of workarounds here because Morpheus currently only supports one savegames
+//       But I already built this for supporting multi savegames
+
+const savegames = computed(() => {
+  if (shelf.saveData) {
+    return [shelf.saveData.book]
+  } else {
+    return []
+  }
+})
+
 // Load selected book
-const loadBook = async (book) => {
-  await bookStore.loadBook(book.id)
-  router.push('/setup')
-}
-const loadSavegame = async () => {
+const loadSavegame = async (book) => {
   shelf.loadBook()
   router.push('/book')
+}
+
+// Book cover
+const cover = (book) => {
+  if (book.cover) {
+    return bookImg({ filename: book.cover, size: 'M', bookId: book.id })
+  } else {
+    return genericImg({ filename: 'generic_cover.jpg', size: 'M' })
+  }
 }
 
 // Handling warning box
@@ -64,9 +85,6 @@ const justClose = () => (allowWarning.value = false)
 </script>
 
 <style scoped>
-.shelf {
-  justify-content: center;
-}
 .warning-box {
   max-width: 40rem;
   margin: 0 auto 1rem;
@@ -79,5 +97,29 @@ const justClose = () => (allowWarning.value = false)
 }
 .warning-message {
   margin-bottom: 1rem;
+}
+
+.shelf {
+  margin: 0 -1rem 1rem;
+  padding: 1rem;
+  justify-content: center;
+  background: var(--bg-body);
+  border-top: 0.25rem solid var(--bg-box);
+  border-bottom: 0.25rem solid var(--bg-box);
+}
+
+.cover {
+  position: relative;
+  width: 8rem;
+  aspect-ratio: 2 / 3;
+  border-radius: 0.5rem;
+  background-position: center center;
+  background-size: cover;
+  overflow: hidden;
+}
+
+.preview {
+  max-width: 50rem;
+  margin: 0 auto;
 }
 </style>

@@ -100,7 +100,7 @@ const justClose = () => (allowWarning.value = false)
 .cover {
   position: relative;
   width: 8rem;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 2 / 3;
   border-radius: 0.5rem;
   background-position: center center;
   background-size: cover;

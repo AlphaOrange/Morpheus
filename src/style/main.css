@@ -46,8 +46,8 @@ small {
   font-size: 0.75rem;
 }
 
-.sub-heading {
-  margin: -1rem 0 1rem;
+h2 + .sub-heading {
+  margin: -1rem 0 1.25rem;
   font-size: 0.75rem;
 }
 
@@ -64,6 +64,9 @@ img {
   margin-right: 0.5rem;
   background: var(--bg-highlight);
   border-radius: 0.25rem;
+}
+.tag-warning {
+  background: var(--bg-warning);
 }
 
 button {

@@ -26,7 +26,7 @@
     </template>
     <template #rightSlot>
       <div class="vertical-center-flex">
-        <BookInfoCover :book="book" :showDescription="false" />
+        <!--<BookInfoCover :book="book" :showDescription="false" />-->
         <div class="book-info">
           <span>{{ description }}</span>
           <h3>{{ world.name }}</h3>
@@ -42,7 +42,6 @@
 import { computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import TheThirdsLayout from '@/layouts/TheThirdsLayout.vue'
-import BookInfoCover from '@/components/BookInfoCover.vue'
 import CharacterInfoBox from '@/components/CharacterInfoBox.vue'
 
 import { useBookStore } from '@/stores/book'
