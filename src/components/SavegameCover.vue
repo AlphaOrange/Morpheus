@@ -4,6 +4,7 @@
       <div class="bookmark">BOOKMARK</div>
       <header>
         <div class="title">{{ saveData.book.title }}</div>
+        <div class="author">by {{ saveData.book.author }}</div>
         <div class="description">{{ truncateString(saveData.book.saveSummary, 108) }}</div>
       </header>
       <footer>
@@ -20,6 +21,12 @@
             {{ char.name }}
           </div>
         </div>
+        <div v-if="supported === 'min'" class="support-warning">
+          created for Morpheus {{ saveData.book.version.book }}, some features may be unsupported
+        </div>
+        <div v-if="supported === 'unsupported'" class="support-warning">
+          created for Morpheus {{ saveData.book.version.book }}, no longer supported
+        </div>
       </footer>
     </div>
   </div>
@@ -28,7 +35,7 @@
 <script setup>
 import { computed } from 'vue'
 import { truncateString } from '@/helpers/utils'
-import { genericImg, bookImg } from '@/helpers/utils'
+import { genericImg, bookImg, checkSupported } from '@/helpers/utils'
 
 const props = defineProps({
   saveData: {
@@ -90,6 +97,10 @@ const charImage = (char) => {
     return genericImg({ filename, size: 'S' })
   }
 }
+
+const supported = computed(() => {
+  return checkSupported(props.saveData.book.version.book)
+})
 </script>
 
 <style scoped>
@@ -128,9 +139,13 @@ header {
 }
 .title {
   text-align: center;
-  margin-bottom: 0.5rem;
   font-size: 1.5rem;
   font-weight: 700;
+}
+.author {
+  text-align: center;
+  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
 }
 .description {
   text-align: center;
@@ -140,6 +155,7 @@ footer {
   position: absolute;
   bottom: 0.5rem;
   left: 0.5rem;
+  width: calc(100% - 1rem);
 }
 .room {
   width: 8.5rem;
@@ -165,5 +181,13 @@ footer {
   align-items: flex-end;
   margin: 0 0.5rem 0 0;
   border: 2px solid var(--bg-highlight);
+}
+.support-warning {
+  clear: both;
+  background: var(--bg-warning);
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.2rem;
+  color: white;
+  font-size: 0.85rem;
 }
 </style>

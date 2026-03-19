@@ -23,6 +23,8 @@
           <h3>API Key:</h3>
           <div class="input-group">
             <input v-model="options.aiApiKey" placeholder="insert valid key" class="long" />
+            <input type="checkbox" id="idAiApiKeyAllowSave" v-model="options.aiApiKeyAllowSave" />
+            <label for="idAiApiKeyAllowSave">Store key with savegame</label>
           </div>
           <h3>Safety Settings:</h3>
           <div class="input-group">
@@ -145,6 +147,11 @@
               v-model="options.idHintsMode"
             />
             <label for="idHintsMode_always">Always</label>
+          </div>
+          <div>Reduce button size if too many options available:</div>
+          <div class="input-group">
+            <input type="checkbox" id="idUseCompactButtons" v-model="options.useCompactButtons" />
+            <label for="idUseCompactButtons">Yes</label>
           </div>
         </div>
       </div>

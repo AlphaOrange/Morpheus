@@ -198,6 +198,11 @@ button:hover .pill {
   box-shadow: 0px 0px 0.25rem 0.25rem var(--bg-light);
 }
 
+.item-selection > .selected-toned {
+  margin: 0;
+  border: 2px solid var(--bg-highlight);
+}
+
 .item-selection > *:hover,
 .item-selection > .selected:hover {
   margin: 0;

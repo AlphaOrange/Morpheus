@@ -11,7 +11,13 @@
         />
       </div>
       <div v-if="multiroom" class="shelf horizontal-flex item-selection">
-        <div v-for="room in activeRooms" :key="room.id" class="room-button" @click="switchTo(room)">
+        <div
+          v-for="room in activeRooms"
+          :key="room.id"
+          class="room-button"
+          :class="roomButtonClass(room)"
+          @click="switchTo(room)"
+        >
           <img :src="`${room.imageS}`" alt="" />
           <div class="player-number">{{ room.numberOfPlayers }}</div>
         </div>
@@ -28,6 +34,7 @@
           icon="door-open"
           :pill="distancePeriodText(room, avRoom)"
           :hint="avRoom.commandId"
+          :compact="compact"
         />
         <ActionButton
           v-for="location in room.availableLocations"
@@ -37,6 +44,7 @@
           icon="person-walking"
           :pill="distancePeriodText(room, location)"
           :hint="location.commandId"
+          :compact="compact"
         />
       </div>
     </div>
@@ -46,13 +54,19 @@
         {{ char.name }}<span class="hint">{{ char.id }}</span>
       </h3>
       <div class="button-list">
-        <ActionButton @click="talkToAll(char)" :text="'Talk to all'" :icon="'comment'" />
+        <ActionButton
+          @click="talkToAll(char)"
+          :text="'Talk to all'"
+          :icon="'comment'"
+          :compact="compact"
+        />
         <ActionButton
           v-for="partner in room.presentAiCharacters"
           :key="partner.id"
           @click="talkTo(char, partner)"
           :text="`Talk to ${partner.name}`"
           :icon="'comments'"
+          :compact="compact"
         />
         <ActionButton
           v-for="avRoom in room.availableRooms"
@@ -61,6 +75,7 @@
           :text="avRoom.name"
           :icon="'door-open'"
           :pill="distancePeriodText(room, avRoom)"
+          :compact="compact"
         />
         <ActionButton
           v-for="location in room.availableLocations"
@@ -69,14 +84,15 @@
           :text="location.name"
           :icon="'person-walking'"
           :pill="distancePeriodText(room, location)"
+          :compact="compact"
         />
       </div>
     </div>
     <div class="box">
       <h3>User Actions</h3>
       <div class="button-list">
-        <ActionButton @click="runNarrator" text="Run NPCs" icon="circle-play" />
-        <ActionButton @click="save" text="Save Book" icon="bookmark" />
+        <ActionButton @click="runNarrator" text="Run NPCs" icon="circle-play" :compact="compact" />
+        <ActionButton @click="save" text="Save Book" icon="bookmark" :compact="compact" />
       </div>
     </div>
   </div>
@@ -92,12 +108,23 @@ import ActionButton from '@/components/ActionButton.vue'
 import { useBookStore } from '@/stores/book'
 const book = useBookStore()
 
+import { useOptionsStore } from '@/stores/options'
+const options = useOptionsStore()
+
 const { activeRooms, movingPlayerCharacters, activePlayerID, time, room } = storeToRefs(book)
 const emits = defineEmits(['talk', 'move', 'runNarrator', 'save'])
 
 const switchTo = (room) => {
   book.switchTo(room)
 }
+
+const compact = computed(() => {
+  const numChars = room.value.presentPlayerCharacters.length
+  const numPlaces = room.value.availableRooms.length + room.value.availableLocations.length
+  const numNPCs = room.value.presentAiCharacters.length
+  const numButtons = (numChars + 1) * numPlaces + numChars * numNPCs
+  return numButtons >= options.compactButtonsThreshold
+})
 
 // Emit actions
 const talkToAll = (char) => {
@@ -130,6 +157,13 @@ const save = () => {
 const multiroom = computed(() => activeRooms.value.length > 1)
 const movingchars = computed(() => movingPlayerCharacters.value.length > 0)
 const showTopBox = computed(() => multiroom.value || movingchars.value)
+const roomButtonClass = (room) => {
+  if (room.id === book.roomId) {
+    return ['selected-toned']
+  } else {
+    return []
+  }
+}
 </script>
 
 <style scoped>
