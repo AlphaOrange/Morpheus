@@ -1,11 +1,7 @@
 <template>
   <div class="sidebar">
     <div class="logobox">
-      <div
-        class="logo"
-        :style="{ backgroundImage: `url(${logoImg})` }"
-        @click="router.push('/book')"
-      />
+      <div class="logo" :style="{ backgroundImage: `url(${logoImg})` }" @click="router.push('/')" />
     </div>
     <div class="main"></div>
     <RouterLink to="/">

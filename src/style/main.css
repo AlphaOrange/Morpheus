@@ -33,9 +33,10 @@ h1 {
 }
 
 h2 {
-  margin: 0 0 1rem;
+  margin: 1rem 0 0.75rem;
 }
 
+h2:first-child,
 h3:first-child,
 h4:first-child,
 h5:first-child {
@@ -44,6 +45,11 @@ h5:first-child {
 
 small {
   font-size: 0.75rem;
+}
+
+h1 + .sub-heading {
+  margin: -0.5rem auto 0rem;
+  font-size: 1rem;
 }
 
 h2 + .sub-heading {

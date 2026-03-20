@@ -65,8 +65,8 @@ const loadSavegame = async (book) => {
 
 // Book cover
 const cover = (book) => {
-  if (book.cover) {
-    return bookImg({ filename: book.cover, size: 'M', bookId: book.id })
+  if (book._cover) {
+    return bookImg({ filename: book._cover, size: 'M', bookId: book.id })
   } else {
     return genericImg({ filename: 'generic_cover.jpg', size: 'M' })
   }

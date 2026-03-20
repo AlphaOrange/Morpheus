@@ -1,7 +1,7 @@
 <template>
   <div class="book-preview">
     <img :src="cover" class="cover" />
-    <div class="bookmark">BOOKMARK</div>
+    <div v-if="savegame" class="bookmark">BOOKMARK</div>
     <div>
       <h2>
         {{ book.title }} <small>{{ book.version.book }}</small>
@@ -59,8 +59,9 @@ const cover = computed(() => {
   if (props.book.coverL) {
     return props.book.coverL
   } else if (props.book.cover) {
-    // for pre-load
     return bookImg({ filename: props.book.cover, size: 'L', bookId: props.book.id })
+  } else if (props.book._cover) {
+    return bookImg({ filename: props.book._cover, size: 'L', bookId: props.book.id })
   } else {
     return genericImg({ filename: 'generic_cover.jpg', size: 'L' })
   }
