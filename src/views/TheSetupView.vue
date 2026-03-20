@@ -26,7 +26,7 @@
     </template>
     <template #rightSlot>
       <div class="vertical-center-flex">
-        <!--<BookInfoCover :book="book" :showDescription="false" />-->
+        <img class="cover" :src="coverL" />
         <div class="book-info">
           <span>{{ description }}</span>
           <h3>{{ world.name }}</h3>
@@ -46,7 +46,7 @@ import CharacterInfoBox from '@/components/CharacterInfoBox.vue'
 
 import { useBookStore } from '@/stores/book'
 const book = useBookStore()
-const { title, description, world, playableCharacters } = storeToRefs(book)
+const { title, description, world, playableCharacters, coverL } = storeToRefs(book)
 
 import { useRouter } from 'vue-router'
 const router = useRouter()
@@ -83,10 +83,17 @@ const startBook = async () => {
 </script>
 
 <style scoped>
+.book-info {
+  white-space: pre-line;
+}
 .book-info > img {
   width: 100%;
   height: auto;
   margin-bottom: 0.5rem;
+  border-radius: 0.5rem;
+}
+.cover {
+  width: 14rem;
   border-radius: 0.5rem;
 }
 </style>
