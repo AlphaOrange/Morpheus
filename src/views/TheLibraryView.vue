@@ -2,7 +2,7 @@
   <TheSingleLayout>
     <template #titleSlot>Library</template>
     <template #contentSlot>
-      <div v-if="showWarning" class="box warning-box">
+      <div v-if="bookStore.started" class="box warning-box">
         <h3>Currently In Play</h3>
         <div class="warning-message">
           The book '{{ bookStore.title }}' is currently loaded. If you choose another book now (or
@@ -62,15 +62,12 @@ const cover = (book) => {
 }
 
 // Handling warning box
-const allowWarning = ref(true)
-const showWarning = computed(() => allowWarning.value && bookStore.started)
-
 const goToPlay = () => router.push('/book')
 const saveClose = async () => {
   await shelf.saveBook()
-  allowWarning.value = false
+  bookStore.deactivateBook()
 }
-const justClose = () => (allowWarning.value = false)
+const justClose = () => bookStore.deactivateBook()
 </script>
 
 <style scoped>
