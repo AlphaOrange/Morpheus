@@ -69,7 +69,7 @@
       <div>
         <div
           class="continue"
-          @click="loadSavegame(book)"
+          @click="loadSavegame()"
           :style="{ backgroundImage: `url(${savegameCover})` }"
         >
           <div class="image-text">Continue Now!</div>
@@ -86,6 +86,8 @@ import logoImg from '@/assets/images/logo_transparent.png'
 
 import { useShelfStore } from '@/stores/shelf'
 const shelf = useShelfStore()
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 const savegame = computed(() => {
   return shelf.saveData.book
@@ -98,6 +100,11 @@ const savegameCover = computed(() => {
     return genericImg({ filename: 'generic_cover.jpg', size: 'L' })
   }
 })
+
+const loadSavegame = async () => {
+  shelf.loadBook()
+  router.push('/book')
+}
 </script>
 
 <style scoped>
