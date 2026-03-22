@@ -93,4 +93,7 @@ const hintClass = computed(() => {
   padding: 0.25rem 0.5rem 0.25rem 0.25rem;
   font-size: 85%;
 }
+.compact.icon-button .hint {
+  top: 0.35rem;
+}
 </style>
