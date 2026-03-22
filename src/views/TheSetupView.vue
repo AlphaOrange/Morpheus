@@ -9,7 +9,7 @@
     <template #middleSlot>
       <div class="page-header">
         <h1>One more step</h1>
-        <h2>{{ title }}</h2>
+        <p class="sub-heading">{{ title }}</p>
       </div>
       <div class="page-content">
         <h3>Choose at least 1 player character:</h3>
