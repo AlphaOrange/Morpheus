@@ -68,6 +68,7 @@
       </div>
       <div>
         <div
+          v-if="savegame"
           class="continue"
           @click="loadSavegame()"
           :style="{ backgroundImage: `url(${savegameCover})` }"
@@ -90,7 +91,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const savegame = computed(() => {
-  return shelf.saveData.book
+  return shelf.saveData?.book
 })
 
 const savegameCover = computed(() => {
