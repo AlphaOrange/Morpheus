@@ -1,32 +1,40 @@
 <template>
   <div class="dialog">
-    <div v-for="(message, index) in dialog" :key="index" ref="messageEls">
-      <div v-if="isMajorMessage(message)" class="message" :class="messageClasses(message)">
-        <header>
-          <div
-            v-if="showIcon(message)"
-            class="header-icon"
-            :style="{ backgroundImage: `url(${headerIcon(message)})` }"
-          ></div>
-          <div class="header-text">
-            <span>{{ headerText(message) }}</span>
-            <div>
-              <IconButton
-                v-if="message.undo"
-                icon="circle-xmark"
-                @click="protocol.undoLastMessage()"
-              />
-              <span class="timestamp">{{ timestamp(message) }}</span>
+    <transition-group name="message" tag="div">
+      <div
+        v-for="(message, index) in dialog"
+        :key="index"
+        ref="messageEls"
+        class="entry"
+        :class="messageClasses(message)"
+      >
+        <template v-if="isMajorMessage(message)">
+          <header>
+            <div
+              v-if="showIcon(message)"
+              class="header-icon"
+              :style="{ backgroundImage: `url(${headerIcon(message)})` }"
+            ></div>
+            <div class="header-text">
+              <span>{{ headerText(message) }}</span>
+              <div>
+                <IconButton
+                  v-if="message.undo"
+                  icon="circle-xmark"
+                  @click="protocol.undoLastMessage()"
+                />
+                <span class="timestamp">{{ timestamp(message) }}</span>
+              </div>
             </div>
-          </div>
-        </header>
-        <main class="message-box" v-html="renderMarkdown(messageText(message))"></main>
+          </header>
+          <main class="message-box" v-html="renderMarkdown(messageText(message))"></main>
+        </template>
+        <template v-else>
+          <img class="minor-icon" :src="structuralIcon(message)" />
+          <span>{{ messageText(message) }}</span>
+        </template>
       </div>
-      <div v-else class="minor-message" :class="messageClasses(message)">
-        <img class="minor-icon" :src="structuralIcon(message)" />
-        <span>{{ messageText(message) }}</span>
-      </div>
-    </div>
+    </transition-group>
     <div v-if="options.narratorRunning" class="temp-message">
       <div class="loader"></div>
       {{ options.narratorRunningMessage }}
@@ -91,6 +99,11 @@ const messageClasses = (message) => {
     } else {
       classes.push('different-room')
     }
+  }
+  if (isMajorMessage(message)) {
+    classes.push('message')
+  } else {
+    classes.push('minor-message')
   }
   return classes
 }
@@ -177,18 +190,29 @@ defineExpose({ scrollToEnd })
   scrollbar-width: thin;
 }
 
-.dialog > div {
-  margin: 0 0 1rem;
-}
-
-.dialog > div:last-child {
-  margin: 0;
+.message,
+.minor-message {
+  width: 100%;
+  overflow: hidden;
+  transition: opacity 0.2s ease-out;
 }
 
 .message {
-  width: 100%;
+  margin: 0 0 1rem;
   border-radius: 0.5rem;
-  overflow: hidden;
+}
+
+.message:last-child {
+  margin: 0;
+}
+
+.minor-message {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  grid-template-rows: 1.5rem;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--col-font-toned);
 }
 
 .message-talk {
@@ -252,16 +276,6 @@ main:last-child {
   margin: 0;
 }
 
-.minor-message {
-  width: 100%;
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  grid-template-rows: 1.5rem;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--col-font-toned);
-}
-
 .minor-icon {
   display: block;
   float: left;
@@ -272,7 +286,7 @@ main:last-child {
 .temp-message {
   width: 100%;
   padding: 0.5rem;
-  margin: 0 0 1rem;
+  margin: 1rem 0 0;
   border-radius: 0.5rem;
   background: var(--bg-page);
 }

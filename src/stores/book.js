@@ -211,7 +211,7 @@ export const useBookStore = defineStore('book', {
           const charArrived = [...charArrivedAi, ...charArrivedPlayer]
           const text =
             this.time === 0
-              ? `${joinAnd(charArrivedPlayer)} just arrived at ${room.name}, ${joinAnd(charArrivedAi)} also here`
+              ? `${joinAnd(charArrivedPlayer)} just arrived at ${room.name}, ${joinAnd(charArrivedAi)} also here.`
               : `${joinAnd(charArrived)} just arrived at ${room.name}`
           this.protocol.pushHint({
             time: this.time,
