@@ -108,22 +108,22 @@ const rx = {
   switch2: /^switch ([a-z0-9_]+)$/i, // switch taproom
   switch3: /^switch$/i, // switch (next room in the room row)
   wait: /^wait ([0-9]+)$/i, // wait x minutes (max 60)
-  talk_colons: /^((?:[^:]+ ){6}.*)$/i, // after 6 spaces without colon, this is just a talk message and user may use colons
-  move_room: /^(?:([a-z0-9_]+) )?(move room |move to room )([a-z0-9_]+)(?::(.*))?$/i,
-  move_location: /^(?:([a-z0-9_]+) )?(move location |move to location )([a-z0-9_]+)(?::(.*))?$/i,
+  talk_colons: /^((?:[^:]+ ){6}.*)$/is, // after 6 spaces without colon, this is just a talk message and user may use colons
+  move_room: /^(?:([a-z0-9_]+) )?(move room |move to room )([a-z0-9_]+)(?::(.*))?$/is,
+  move_location: /^(?:([a-z0-9_]+) )?(move location |move to location )([a-z0-9_]+)(?::(.*))?$/is,
   move_destination:
-    /^(?:([a-z0-9_]+) )?(move destination |move to destination )([a-z0-9_]+)(?::(.*))?$/i,
-  move_undefined: /^(?:([a-z0-9_]+) )?(move |move to )([a-z0-9_]+)(?::(.*))?$/i,
-  move2_room: /^([a-z0-9_]+)? ?(>) ?([a-z0-9_]+)(?::(.*))?$/i,
-  move2_location: /^([a-z0-9_]+)? ?(>>) ?([a-z0-9_]+)(?::(.*))?$/i,
-  move2_destination: /^([a-z0-9_]+)? ?(>>>) ?([a-z0-9_]+)(?::(.*))?$/i,
-  talk1all: /^(?:([a-z0-9_]+) )?(talk|talk to) ?::(.+)$/i, // alice talk to:: text / talk:: text
-  talk1: /^(?:([a-z0-9_]+) )?(talk|talk to) ?(?:([a-z0-9_]+))?:(.+)$/i, // alice talk to bob: text / talk to bob: text / talk: / talk to:
-  talk2: /^([a-z0-9_]+)? ?(-) ?([a-z0-9_]+):(.+)$/i, // alice-bob: text / -bob: text
-  talk3all: /^([a-z0-9_]+)::(.+)$/i, // alice:: text
-  talk3: /^([a-z0-9_]+):(.+)$/i, // alice: text
-  talk4all: /^:: ?(.+)$/i, // :: text
-  talk4: /^:? ?(.+)$/i, // text / : text
+    /^(?:([a-z0-9_]+) )?(move destination |move to destination )([a-z0-9_]+)(?::(.*))?$/is,
+  move_undefined: /^(?:([a-z0-9_]+) )?(move |move to )([a-z0-9_]+)(?::(.*))?$/is,
+  move2_room: /^([a-z0-9_]+)? ?(>) ?([a-z0-9_]+)(?::(.*))?$/is,
+  move2_location: /^([a-z0-9_]+)? ?(>>) ?([a-z0-9_]+)(?::(.*))?$/is,
+  move2_destination: /^([a-z0-9_]+)? ?(>>>) ?([a-z0-9_]+)(?::(.*))?$/is,
+  talk1all: /^(?:([a-z0-9_]+) )?(talk|talk to) ?::(.+)$/is, // alice talk to:: text / talk:: text
+  talk1: /^(?:([a-z0-9_]+) )?(talk|talk to) ?(?:([a-z0-9_]+))?:(.+)$/is, // alice talk to bob: text / talk to bob: text / talk: / talk to:
+  talk2: /^([a-z0-9_]+)? ?(-) ?([a-z0-9_]+):(.+)$/is, // alice-bob: text / -bob: text
+  talk3all: /^([a-z0-9_]+)::(.+)$/is, // alice:: text
+  talk3: /^([a-z0-9_]+):(.+)$/is, // alice: text
+  talk4all: /^:: ?(.+)$/is, // :: text
+  talk4: /^:? ?(.+)$/is, // text / : text
 }
 
 export function messageToCommand(message) {
