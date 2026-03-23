@@ -1,8 +1,8 @@
 # Writing Books
 
-*Version 0.2*
+_For Morpheus Version 0.5.0_
 
-This documentation contains a detailed specification for book structures and files. Following these specs enables you to write your own *Morpheus* books that can be played in the *Morpheus* app for interactive story games.
+This documentation contains a detailed specification for book structures and files. Following these specs enables you to write your own _Morpheus_ books that can be played in the _Morpheus_ app for interactive story games.
 
 ### Writing YAML
 
@@ -161,7 +161,7 @@ This exemplary book setup contains one location with two destinations (inn and m
 
 ## World, Destinations, Locations and Rooms
 
-*Morpheus* features four different types of "places":
+_Morpheus_ features four different types of "places":
 
 - World
 - Destinations
@@ -186,6 +186,10 @@ You could add additional entries, which would then just be ignored in book compi
 
 There must be exactly one book file and it must be named `book.yaml`. The book file contains general descriptions and settings for your book. This file must contain the following items:
 
+- `version`: an object with the following two items:
+  - `book`: version number (x.y.z) of your book - increase with every update
+  - `morpheus`: version number (x.y.z) of morpheus your book was built for
+- `author`: your name (or synonym)
 - `title`: the game title
 - `description`: a short description, try to stay under 200 characters
 - `tags`: a list of one-word tags that classify your book (e.g. "thrilling")
@@ -195,7 +199,7 @@ There must be exactly one book file and it must be named `book.yaml`. The book f
   - `location`: ID of location where the player starts
   - `room`: ID of room where the player starts
   - `datetime`: valid datetime of when the story starts in-game (e.g. '2020-03-01 10:00:00')
-  - `introduction`: an introduction text for the *user* (not readable for the *characters*) at the very start of the story
+  - `introduction`: an introduction text for the _user_ (not readable for the _characters_) at the very start of the story
 
 Make sure the IDs in `start` do not contradict each other.
 
@@ -203,7 +207,11 @@ Make sure the IDs in `start` do not contradict each other.
 
 ```yaml
 ---
+version:
 title: Electric City
+  book: 1.0.0
+  morpheus: 0.5.0
+author: Stefan Tewes
 description: >-
   You explore the Electric City of the year 2077, a place,
   where everything is connected.
@@ -254,31 +262,31 @@ The character file must have the same name as the character folder (the characte
 
 - `name`: character name
 - `isPlayable`: if "true" the player can choose to control this character, otherwise set to "false"
-- `isNPC`: if "true" the character will appear as an NPC in the game (if not playable *and* chosen by the player)  
-- `description`: a short description only to be seen by the *player*
-- `gender`: *any* text  
-  *Be aware that some future game mechanics might only work for "male" and "female" characters*
+- `isNPC`: if "true" the character will appear as an NPC in the game (if not playable _and_ chosen by the player)
+- `description`: a short description only to be seen by the _player_
+- `gender`: _any_ text  
+  _Be aware that some future game mechanics might only work for "male" and "female" characters_
 - `age`: age as a number
 - `image`: name of an image file in the same folder, or "" for default character image  
-  *Morpheus contains three default images: one for male gender, one for female gender and one for any other entry as gender*
+  _Morpheus contains three default images: one for male gender, one for female gender and one for any other entry as gender_
 - `profession`: short name of the characters' profession
 - `body`: comprehensive description of distinctive body features, such as body type, eye color or hairstyle, preferrably as brief list
 - `mind`: comprehensive description of character traits, preferrably as brief list
 - `language`: comprehensive description of how the character speaks, such as dialect, tone, or words often used, preferrably as brief list
 - `clothing`: comprehensive description of what the character wears right now, preferrably as brief list
-- `appearance`: comprehensive description of *how* the character looks: is he well-groomed or exhausted and disheveled, do the clothes look brand-new or well-worn, preferrably as brief list
+- `appearance`: comprehensive description of _how_ the character looks: is he well-groomed or exhausted and disheveled, do the clothes look brand-new or well-worn, preferrably as brief list
 - `background`: short description of the character's background story, only a few sentences mentioned what really matters for the character in the game
 - `wants`: short description of what drives the character, what do they want to achieve in life, what is their motto in life, what are they striving for
 - `load_states`: list of IDs of states defined in the "states" folder in the top-level folder, that should be used for this character, in addition to those defined in the character's "states" folder  
-  *Note: states are not yet implemented in the game, use an empty list [] for now*
+  _Note: states are not yet implemented in the game, use an empty list [] for now_
 - `load_agendas`: list of IDs of agendas defined in the "agendas" folder in the top-level folder, that should be used for this character, in addition to those defined in the character's "agendas" folder
-  *Note: agendas are not yet implemented in the game, use an empty list [] for now*
+  _Note: agendas are not yet implemented in the game, use an empty list [] for now_
 - `start`: an object with the following items:
   - `destination`: ID of destination where the character starts
   - `location`: ID of location where the character starts
   - `room`: ID of room where the character starts
 
-  *Not needed if "isNPC = false", because for player characters the starting point from the book file will be used)*
+  _Not needed if "isNPC = false", because for player characters the starting point from the book file will be used)_
 
 Note: Of the descriptive items, only `description` will ever be displayed for the player to read. All others (like `body`, `mind`, `background`) are only for the AI to use. Keep them precise, short and concise, you don't need to flesh out whole polished sentences.
 
@@ -306,7 +314,7 @@ background: >-
   in life through your own efforts
 wants: you want to help others in need, so they have it easier in life than you did
 load_states:
-- energy
+  - energy
 load_agendas: []
 start:
   destination: seatown
@@ -376,7 +384,7 @@ The room file must have the same name as the room folder (the room ID) and conta
 - `description`: a short description, try to stay under 200 characters
 - `image`: name of an image file in the same folder, or "" for using the default room image
 
-*Note: rooms do not have position and detour, because all rooms are assumed nect to each other with constant amount of moving duration*
+_Note: rooms do not have position and detour, because all rooms are assumed nect to each other with constant amount of moving duration_
 
 ```yaml
 ---
@@ -396,7 +404,7 @@ In the current version, no state files are used, yet.
 
 #### Position and Detour
 
-`position` numbers are used for calculating travelling distances between locations or destinations. Imagine the position as coordinates on a map. *Morpheus* uses the mathematical distance between two positions as distance and multiplies with a book-specific factor in order to get the duration of travel. If one moves from a room to another location, the distance between the two locations is used. If one travels from a room to another destination, the distance between the two destinations is used.  
+`position` numbers are used for calculating travelling distances between locations or destinations. Imagine the position as coordinates on a map. _Morpheus_ uses the mathematical distance between two positions as distance and multiplies with a book-specific factor in order to get the duration of travel. If one moves from a room to another location, the distance between the two locations is used. If one travels from a room to another destination, the distance between the two destinations is used.  
 The `detour` values of both start and end point are added to the distance. Imagine these as the difficulty of getting in or out of a place, e.g. a city in the mountains or a hut in a swamp.
 
 Example: The characters are in room "Spices Stand" in the location "Market" and want to move to the location "Inn".
@@ -407,9 +415,9 @@ Example: The characters are in room "Spices Stand" in the location "Market" and 
 
 Travel distance is now $\sqrt{(2-1)^2+(4-0)^2}+3 \approx 7.1$
 
-*Currently in Morpheus a location distance of 1 is equivalent to 1 minute of moving, a destination distance of 1 is equivalent to 1 hour of moving - we will make this configurable in the future*
+_Currently in Morpheus a location distance of 1 is equivalent to 1 minute of moving, a destination distance of 1 is equivalent to 1 hour of moving - we will make this configurable in the future_
 
 ## Compiling books
 
-The *Morpheus* app does not use the book folders as described above, but one compiled file that was preprocessed and contains all necessary information in one place.  
+The _Morpheus_ app does not use the book folders as described above, but one compiled file that was preprocessed and contains all necessary information in one place.  
 Currently there is no stand-alone compiler, books need to be compiled together with the main program instead - see the Morpheus repository and Readme on how to do that. However, there are plans to change this in the future, so new books can be introduces way simpler.
