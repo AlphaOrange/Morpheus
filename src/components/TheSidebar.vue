@@ -66,6 +66,7 @@
 </template>
 
 <script setup>
+import { markRaw } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useBookStore } from '@/stores/book'
 import BookPreview from '@/components/BookPreview.vue'
@@ -82,7 +83,7 @@ const router = useRouter()
 
 const showInfo = () => {
   options.lightbox = {
-    component: BookPreview,
+    component: markRaw(BookPreview),
     props: {
       book: bookStore,
       lightbox: true,

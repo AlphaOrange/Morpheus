@@ -6,6 +6,7 @@
 </template>
 
 <script setup>
+import { markRaw } from 'vue'
 import { useOptionsStore } from '@/stores/options'
 import TheLightboxImage from '@/components/TheLightboxImage.vue'
 const options = useOptionsStore()
@@ -20,7 +21,7 @@ const props = defineProps({
 const lightbox = () => {
   const fullSrc = props.src.replace(/\/[SML]\//, '/full/') // use full image
   options.lightbox = {
-    component: TheLightboxImage,
+    component: markRaw(TheLightboxImage),
     props: {
       src: fullSrc,
     },

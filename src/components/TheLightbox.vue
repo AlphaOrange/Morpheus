@@ -2,7 +2,7 @@
   <div class="darkpane" @click.self="emits('hide')">
     <div class="area" @click.self="emits('hide')">
       <div class="lightbox">
-        <component :is="component" v-bind="cp" />
+        <component :is="component" v-bind="contentProps" />
       </div>
     </div>
   </div>
@@ -19,10 +19,6 @@ const props = defineProps({
     type: Object,
     default: () => ({}),
   },
-})
-const cp = computed(() => {
-  console.log(props.contentProps)
-  return props.contentProps
 })
 const emits = defineEmits(['hide'])
 </script>

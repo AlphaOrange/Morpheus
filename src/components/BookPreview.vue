@@ -67,7 +67,6 @@ const baseClass = computed(() => {
 })
 
 const cover = computed(() => {
-  console.log(props.book)
   if (props.book.coverL) {
     return props.book.coverL
   } else if (props.book.cover) {

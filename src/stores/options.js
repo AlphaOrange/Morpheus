@@ -115,7 +115,6 @@ export const useOptionsStore = defineStore('options', {
     // restore from savefile json
     restoreOptions(data) {
       for (let option of SAVEABLE_OPTIONS) {
-        console.log(`restore ${option}`)
         this[option] = data[option]
       }
     },
