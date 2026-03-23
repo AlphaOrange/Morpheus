@@ -2,8 +2,9 @@
   <div class="body" :class="flags">
     <Transition name="lightbox">
       <TheLightbox
-        v-if="options.lightboxImage"
-        :image="options.lightboxImage"
+        v-if="options.lightbox.component"
+        :component="options.lightbox.component"
+        :contentProps="options.lightbox.props"
         @hide="hideSidebar"
       />
     </Transition>
@@ -31,7 +32,8 @@ const flags = computed(() => {
 })
 
 const hideSidebar = () => {
-  options.lightboxImage = null
+  options.lightbox.component = null
+  options.lightbox.props = {}
 }
 </script>
 

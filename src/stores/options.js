@@ -74,7 +74,10 @@ export const useOptionsStore = defineStore('options', {
 
     // Runtime Variables (e.g. user activity flags)
     idHintsActive: false,
-    lightboxImage: null,
+    lightbox: {
+      component: null,
+      props: {},
+    },
     narratorRunning: false,
     narratorRunningMessage: '',
   }),

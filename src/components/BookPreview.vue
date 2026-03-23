@@ -1,5 +1,5 @@
 <template>
-  <div class="book-preview">
+  <div class="book-preview" :class="baseClass">
     <img :src="cover" class="cover" />
     <div v-if="savegame" class="bookmark">BOOKMARK</div>
     <div>
@@ -52,6 +52,18 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  lightbox: {
+    type: Boolean,
+    default: false,
+  },
+})
+
+const baseClass = computed(() => {
+  if (props.lightbox) {
+    return ['lightbox']
+  } else {
+    return []
+  }
 })
 
 const cover = computed(() => {
@@ -133,9 +145,10 @@ const charImage = (char) => {
 .book-preview {
   position: relative;
   width: 100%;
+  max-width: 72rem;
   text-align: left;
   display: grid;
-  grid-template-columns: 30% 70%;
+  grid-template-columns: 3fr 7fr;
   column-gap: 1rem;
 }
 .cover {
@@ -182,5 +195,8 @@ const charImage = (char) => {
   display: flex;
   justify-content: center;
   align-items: flex-end;
+}
+.lightbox h2 {
+  margin-top: 1rem;
 }
 </style>

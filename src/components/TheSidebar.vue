@@ -54,8 +54,7 @@
         </div>
       </div>
     </RouterLink>
-    <footer v-if="started">
-      <!-- @click="router.push('/info')"> -->
+    <footer v-if="started" @click="showInfo">
       <img :src="coverM" class="cover" />
       <div class="book-title">
         <small>Currently playing:</small>
@@ -69,11 +68,27 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useBookStore } from '@/stores/book'
+import BookPreview from '@/components/BookPreview.vue'
+import logoImg from '@/assets/images/logo.jpg'
+
 const bookStore = useBookStore()
 const { title, coverM, started } = storeToRefs(bookStore)
+import { useOptionsStore } from '@/stores/options'
+
+const options = useOptionsStore()
 import { useRouter } from 'vue-router'
+
 const router = useRouter()
-import logoImg from '@/assets/images/logo.jpg'
+
+const showInfo = () => {
+  options.lightbox = {
+    component: BookPreview,
+    props: {
+      book: bookStore,
+      lightbox: true,
+    },
+  }
+}
 </script>
 
 <style scoped>
@@ -139,6 +154,7 @@ footer {
   bottom: 0;
   width: 100%;
   padding: 0.5rem;
+  cursor: pointer;
 }
 footer img.cover {
   position: absolute;

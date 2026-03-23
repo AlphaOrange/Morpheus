@@ -7,6 +7,7 @@
 
 <script setup>
 import { useOptionsStore } from '@/stores/options'
+import TheLightboxImage from '@/components/TheLightboxImage.vue'
 const options = useOptionsStore()
 
 const props = defineProps({
@@ -18,7 +19,12 @@ const props = defineProps({
 
 const lightbox = () => {
   const fullSrc = props.src.replace(/\/[SML]\//, '/full/') // use full image
-  options.lightboxImage = fullSrc
+  options.lightbox = {
+    component: TheLightboxImage,
+    props: {
+      src: fullSrc,
+    },
+  }
 }
 </script>
 
