@@ -1,6 +1,6 @@
 # Writing Books
 
-_For Morpheus Version 0.5.0_
+_For Morpheus Version 0.6.0_
 
 This documentation contains a detailed specification for book structures and files. Following these specs enables you to write your own _Morpheus_ books that can be played in the _Morpheus_ app for interactive story games.
 
@@ -64,7 +64,7 @@ A book is organized in a specific structure of folders and subfolders that conta
 
 ### Minimal Requirements
 
-Your books needs a `book.yaml` file, a `world.yaml` file and at least one of each of these:
+Your book needs a `book.yaml` file, a `world.yaml` file and at least one of each of these:
 
 - characters
 - destinations
@@ -179,7 +179,7 @@ The most important difference in terms of dimensions is: Only destinations and l
 
 ## File Specifications
 
-Each .yaml file must follow the specifications for the type of game element it defines. You must define everything that is not marked optional. We will implement more default values, making more features optional in the future.  
+Each .yaml file must follow the specifications for the type of game element it defines. You must define everything that is not marked optional.
 You could add additional entries, which would then just be ignored in book compiling, but it is strongly advised not to do so, because this can break the book in future game updates.
 
 ### Book File
@@ -261,25 +261,38 @@ Each character in the game has their own folder and character file. A character 
 The character file must have the same name as the character folder (the character ID) and contain the following items:
 
 - `name`: character name
-- `isPlayable`: if "true" the player can choose to control this character, otherwise set to "false"
-- `isNPC`: if "true" the character will appear as an NPC in the game (if not playable _and_ chosen by the player)
-- `description`: a short description only to be seen by the _player_
+- `isPlayable`: if "true" the player can choose to control this character, otherwise set to "false"  
+  _(optional - default: false)_
+- `isNPC`: if "true" the character will appear as an NPC in the game (if not playable _and_ chosen by the player)  
+  _(optional - default: true)_
+- `description`: a short description only to be seen by the _player_  
+  _(optional - default: "No description")_
 - `gender`: _any_ text  
   _Be aware that some future game mechanics might only work for "male" and "female" characters_
 - `age`: age as a number
 - `image`: name of an image file in the same folder, or "" for default character image  
+  _(optional - default: "")_  
   _Morpheus contains three default images: one for male gender, one for female gender and one for any other entry as gender_
-- `profession`: short name of the characters' profession
-- `body`: comprehensive description of distinctive body features, such as body type, eye color or hairstyle, preferrably as brief list
-- `mind`: comprehensive description of character traits, preferrably as brief list
+- `profession`: short name of the characters' profession  
+  _(optional - default: "Employed")_
+- `body`: comprehensive description of distinctive body features, such as body type, eye color or hairstyle, preferrably as brief list  
+  _(optional - default: "Average body")_
+- `mind`: comprehensive description of character traits, preferrably as brief list  
+  _(optional - default: "Friendly")_
 - `language`: comprehensive description of how the character speaks, such as dialect, tone, or words often used, preferrably as brief list
-- `clothing`: comprehensive description of what the character wears right now, preferrably as brief list
-- `appearance`: comprehensive description of _how_ the character looks: is he well-groomed or exhausted and disheveled, do the clothes look brand-new or well-worn, preferrably as brief list
-- `background`: short description of the character's background story, only a few sentences mentioned what really matters for the character in the game
-- `wants`: short description of what drives the character, what do they want to achieve in life, what is their motto in life, what are they striving for
+- `clothing`: comprehensive description of what the character wears right now, preferrably as brief list  
+  _(optional - default: "Casual outfit")_
+- `appearance`: comprehensive description of _how_ the character looks: is he well-groomed or exhausted and disheveled, do the clothes look brand-new or well-worn, preferrably as brief list  
+  _(optional - default: "Normal appearance")_
+- `background`: short description of the character's background story, only a few sentences mentioned what really matters for the character in the game  
+  _(optional - default: "")_
+- `wants`: short description of what drives the character, what do they want to achieve in life, what is their motto in life, what are they striving for  
+  _(optional - default: "You like engaging conversations.")_
 - `load_states`: list of IDs of states defined in the "states" folder in the top-level folder, that should be used for this character, in addition to those defined in the character's "states" folder  
+  _(optional - default: [])_  
   _Note: states are not yet implemented in the game, use an empty list [] for now_
-- `load_agendas`: list of IDs of agendas defined in the "agendas" folder in the top-level folder, that should be used for this character, in addition to those defined in the character's "agendas" folder
+- `load_agendas`: list of IDs of agendas defined in the "agendas" folder in the top-level folder, that should be used for this character, in addition to those defined in the character's "agendas" folder  
+  _(optional - default: [])_
   _Note: agendas are not yet implemented in the game, use an empty list [] for now_
 - `start`: an object with the following items:
   - `destination`: ID of destination where the character starts
@@ -290,7 +303,7 @@ The character file must have the same name as the character folder (the characte
 
 Note: Of the descriptive items, only `description` will ever be displayed for the player to read. All others (like `body`, `mind`, `background`) are only for the AI to use. Keep them precise, short and concise, you don't need to flesh out whole polished sentences.
 
-#### Example
+#### Full Example
 
 ```yaml
 ---

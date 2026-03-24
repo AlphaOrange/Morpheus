@@ -1,4 +1,6 @@
 # Version Requirements for Savegames
+# required: which version of Morpheus needs to be supported to run
+# fullSupport: which version of Morpheus needs to be supported for all current Morpheus features to work?
 ---
 required: '>=0.4.0'
 fullSupport: '>=0.5.0'
