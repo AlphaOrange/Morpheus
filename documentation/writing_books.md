@@ -240,9 +240,12 @@ start:
 
 There must be exactly one world file and it must be named `world.yaml`. The world file contains a description of the world your book is set. Currently this file is not used by any game mechanics and its content is only displayed to the user for information. This file must contain the following items:
 
-- `name`: the world's name
-- `description`: a short description, try to stay under 200 characters
-- `image`: name of an image file in the same folder, or "" for using the default world image
+- `name`: the world's name  
+  _(optional - default: "Unnamed World")_
+- `description`: a short description, try to stay under 200 characters  
+  _(optional - default: "No description")_
+- `image`: name of an image file in the same folder, or "" for using the default world image  
+  _(optional - default: "")_
 
 #### Example
 

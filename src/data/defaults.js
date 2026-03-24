@@ -8,6 +8,12 @@ export const defaultsBookStart = {
   introduction: 'Your story starts now!',
 }
 
+export const defaultsWorld = {
+  name: 'Unnamed World',
+  description: 'No description',
+  image: '',
+}
+
 export const defaultsCharacter = {
   isPlayable: false,
   isNPC: true,

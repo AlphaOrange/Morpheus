@@ -1,7 +1,9 @@
 import { genericImg, bookImg } from '@/helpers/utils'
+import { defaultsWorld } from '@/data/defaults'
 
 export default class World {
-  constructor(data) {
+  constructor(rawData) {
+    const data = { ...defaultsWorld, ...rawData }
     ;['id', 'name', 'description'].forEach((key) => (this[key] = data[key]))
     this._image = data.image
   }
