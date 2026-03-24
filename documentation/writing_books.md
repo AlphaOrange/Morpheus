@@ -191,15 +191,20 @@ There must be exactly one book file and it must be named `book.yaml`. The book f
   - `morpheus`: version number (x.y.z) of morpheus your book was built for
 - `author`: your name (or synonym)
 - `title`: the game title
-- `description`: a short description, try to stay under 200 characters
-- `tags`: a list of one-word tags that classify your book (e.g. "thrilling")
-- `cover`: name of an image file in the same folder, or "" for Morpheus default cover
+- `description`: a short description, try to stay under 200 characters  
+  _(optional - default: "An Interactive Morpheus Book")_
+- `tags`: a list of one-word tags that classify your book (e.g. "thrilling")  
+  _(optional - default: [])_
+- `cover`: name of an image file in the same folder, or "" for Morpheus default cover  
+  _(optional - default: "")_
 - `start`: an object with the following items:
   - `destination`: ID of destination where the player starts
   - `location`: ID of location where the player starts
   - `room`: ID of room where the player starts
-  - `datetime`: valid datetime of when the story starts in-game (e.g. '2020-03-01 10:00:00')
-  - `introduction`: an introduction text for the _user_ (not readable for the _characters_) at the very start of the story
+  - `datetime`: valid datetime of when the story starts in-game (e.g. '2020-03-01 10:00:00')  
+    _(optional - default: "2020-01-01 12:00:00")_
+  - `introduction`: an introduction text for the _user_ (not readable for the _characters_) at the very start of the story  
+    _(optional - default: "Your story starts now!")_
 
 Make sure the IDs in `start` do not contradict each other.
 

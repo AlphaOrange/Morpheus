@@ -13,6 +13,7 @@ import {
   genericImg,
   bookImg,
 } from '@/helpers/utils'
+import { defaultsBook, defaultsBookStart } from '@/data/defaults'
 import { useOptionsStore } from '@/stores/options'
 
 export const useBookStore = defineStore('book', {
@@ -331,7 +332,12 @@ export const useBookStore = defineStore('book', {
     },
 
     // Helper for load and restore
-    assignBaseBookData(data) {
+    assignBaseBookData(rawData) {
+      console.log(rawData)
+      const data = { ...defaultsBook, ...rawData }
+      data.start = { ...defaultsBookStart, ...data.start }
+      console.log(data)
+
       this.id = data.id
       this.author = data.author
       this.version = data.version

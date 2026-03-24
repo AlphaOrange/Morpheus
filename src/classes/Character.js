@@ -7,8 +7,8 @@ export default class Character {
   arrivalTime = 0
   arrivalTarget = null
 
-  constructor(data) {
-    const enhancedData = { ...defaultsCharacter, ...data }
+  constructor(rawData) {
+    const data = { ...defaultsCharacter, ...rawData }
     ;[
       'id',
       'name',
@@ -24,18 +24,14 @@ export default class Character {
       'appearance',
       'background',
       'wants',
-    ].forEach((key) => (this[key] = enhancedData[key]))
-    this._image = enhancedData.image
-    this.start = enhancedData.start
-      ? enhancedData.start.destination +
-        '/' +
-        enhancedData.start.location +
-        '/' +
-        enhancedData.start.room
+    ].forEach((key) => (this[key] = data[key]))
+    this._image = data.image
+    this.start = data.start
+      ? data.start.destination + '/' + data.start.location + '/' + data.start.room
       : null
-    this.language = enhancedData?.language
-    // enhancedData.load_states
-    // enhancedData.load_agendas
+    this.language = data?.language
+    // data.load_states
+    // data.load_agendas
   }
   static fromJSON(data) {
     data.image = data._image

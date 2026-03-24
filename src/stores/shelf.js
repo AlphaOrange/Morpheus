@@ -1,3 +1,4 @@
+import { defaultsBook } from '@/data/defaults'
 import { defineStore } from 'pinia'
 import { useOptionsStore } from '@/stores/options'
 import { useBookStore } from '@/stores/book'
@@ -29,6 +30,9 @@ export const useShelfStore = defineStore('shelf', {
       try {
         const response = await fetch(`/books/books.json`)
         this.books = await response.json()
+        for (let bookId of Object.keys(this.books)) {
+          this.books[bookId] = { ...defaultsBook, ...this.books[bookId] }
+        }
       } catch (error) {
         console.error('Error fetching shelf data', error)
       }

@@ -1,3 +1,13 @@
+export const defaultsBook = {
+  description: 'An Interactive Morpheus Book',
+  tags: [],
+  cover: '',
+}
+export const defaultsBookStart = {
+  datetime: '2020-01-01 12:00:00',
+  introduction: 'Your story starts now!',
+}
+
 export const defaultsCharacter = {
   isPlayable: false,
   isNPC: true,
