@@ -349,11 +349,16 @@ Destinations are the largest type of places in the game. There must be at least 
 The destination file must have the same name as the destination folder (the destination ID) and contain the following items:
 
 - `name`: the destination's name
-- `description`: a short description, try to stay under 200 characters
-- `position`: a list with two numbers, see "Position and Detour"
-- `detour`: a number, see "Position and Detour"
-- `entry`: ID of a location in this destination, that characters start in after travelling to this destination. Can be "", then the (alphabetically) first location is used
-- `image`: name of an image file in the same folder, or "" for using the default destination image
+- `description`: a short description, try to stay under 200 characters  
+  _(optional - default: "No description")_
+- `position`: a list with two numbers, see "Position and Detour"  
+  _(optional - default: [0, 0])_
+- `detour`: a number, see "Position and Detour"  
+  _(optional - default: 0)_
+- `entry`: ID of a location in this destination, that characters start in after travelling to this destination. Can be "", then the (alphabetically) first location is used  
+  _(optional - default: "")_
+- `image`: name of an image file in the same folder, or "" for using the default destination image  
+  _(optional - default: "")_
 
 #### Example
 
@@ -376,11 +381,16 @@ Locations are the middle-size type of places in the game. There must be at least
 The location file must have the same name as the location folder (the location ID) and contain the following items:
 
 - `name`: the location's name
-- `description`: a short description, try to stay under 200 characters
-- `position`: a list with two numbers, see "Position and Detour"
-- `detour`: a number, see "Position and Detour"
-- `entry`: ID of a room in this location, that characters start in after moving to this location. Can be "", then the (alphabetically) first room is used
-- `image`: name of an image file in the same folder, or "" for using the default location image
+- `description`: a short description, try to stay under 200 characters  
+  _(optional - default: "No description")_
+- `position`: a list with two numbers, see "Position and Detour"  
+  _(optional - default: [0, 0])_
+- `detour`: a number, see "Position and Detour"  
+  _(optional - default: 0)_
+- `entry`: ID of a room in this location, that characters start in after moving to this location. Can be "", then the (alphabetically) first room is used  
+  _(optional - default: "")_
+- `image`: name of an image file in the same folder, or "" for using the default location image  
+  _(optional - default: "")_
 
 ```yaml
 ---
@@ -402,8 +412,10 @@ Rooms are the smallest type of places in the game. There must be at least one ro
 The room file must have the same name as the room folder (the room ID) and contain the following items:
 
 - `name`: the room's name
-- `description`: a short description, try to stay under 200 characters
-- `image`: name of an image file in the same folder, or "" for using the default room image
+- `description`: a short description, try to stay under 200 characters  
+  _(optional - default: "No description")_
+- `image`: name of an image file in the same folder, or "" for using the default room image  
+  _(optional - default: "")_
 
 _Note: rooms do not have position and detour, because all rooms are assumed nect to each other with constant amount of moving duration_
 

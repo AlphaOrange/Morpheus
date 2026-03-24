@@ -1,4 +1,5 @@
 import { genericImg, bookImg } from '@/helpers/utils'
+import { defaultsDestination } from '@/data/defaults'
 import Location from '@/classes/Location'
 
 export default class Destination {
@@ -6,7 +7,8 @@ export default class Destination {
   locations = {}
   entry = null
 
-  constructor(data, full = true) {
+  constructor(rawData, full = true) {
+    const data = { ...defaultsDestination, ...rawData }
     ;['id', 'name', 'description', 'position', 'detour'].forEach((key) => (this[key] = data[key]))
     this.commandId = data.id // for destinations commandId = id on purpose
     this._image = data.image

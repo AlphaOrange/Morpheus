@@ -29,3 +29,24 @@ export const defaultsCharacter = {
   load_states: [],
   load_agendas: [],
 }
+
+export const defaultsDestination = {
+  description: 'No description',
+  position: [0, 0],
+  detour: 0,
+  entry: '',
+  image: '',
+}
+
+export const defaultsLocation = {
+  description: 'No description',
+  position: [0, 0],
+  detour: 0,
+  entry: '',
+  image: '',
+}
+
+export const defaultsRoom = {
+  description: 'No description',
+  image: '',
+}

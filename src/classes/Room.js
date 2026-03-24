@@ -1,11 +1,13 @@
 import { genericImg, bookImg } from '@/helpers/utils'
 import { distancePeriodText } from '@/helpers/utils'
+import { defaultsRoom } from '@/data/defaults'
 
 export default class Room {
   type = 'room'
   characters = {}
 
-  constructor(data, location, full = true) {
+  constructor(rawData, location, full = true) {
+    const data = { ...defaultsRoom, ...rawData }
     ;['name', 'description'].forEach((key) => (this[key] = data[key]))
 
     // Derive unique ID from location

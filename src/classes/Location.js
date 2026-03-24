@@ -1,4 +1,5 @@
 import { genericImg, bookImg } from '@/helpers/utils'
+import { defaultsLocation } from '@/data/defaults'
 import Room from '@/classes/Room'
 
 export default class Location {
@@ -6,7 +7,8 @@ export default class Location {
   rooms = {}
   entry = null
 
-  constructor(data, destination, full = true) {
+  constructor(rawData, destination, full = true) {
+    const data = { ...defaultsLocation, ...rawData }
     ;['name', 'description', 'position', 'detour'].forEach((key) => (this[key] = data[key]))
 
     // Derive unique ID from destination
