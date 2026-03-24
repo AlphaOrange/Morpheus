@@ -23,7 +23,7 @@
         </div>
       </div>
     </div>
-    <div class="box">
+    <div v-if="room.presentPlayerCharacters.length > 1" class="box">
       <h3>Group</h3>
       <div class="button-list">
         <ActionButton
