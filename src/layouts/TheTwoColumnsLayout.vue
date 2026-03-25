@@ -20,6 +20,9 @@
 
 <style scoped>
 .page {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto auto;
@@ -27,7 +30,6 @@
     'header header'
     'left right';
   column-gap: 1rem;
-  padding: 1rem;
 }
 
 .header {
