@@ -96,7 +96,15 @@ Invalid:
 
 ### Image files
 
-All folders may contain image files that can be referenced in .yaml files in the same folder. Supported image formats are JPEG (.jpg or .jpeg) and PNG (.png).
+Images referenced in the .yaml files can be in the same folder as the file or in the root folder. Supported image formats are JPEG (.jpg or .jpeg) and PNG (.png).
+
+If you want to reference an image in the same folder, just use the filename:
+
+- `image: alice.jpg`
+
+If you want to reference an image in the root folder (the folder with your `book.yaml`), prepend with a slash `/`:
+
+- `image: /alice.jpg`
 
 ### Additional YAML files
 

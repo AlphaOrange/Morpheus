@@ -23,6 +23,11 @@ function _prefixImages(json, prefix) {
 
   // If the value is a string → check if it's an image filename
   if (typeof json === 'string') {
+    // If begins with /, just remove at and do not prefix
+    if (json.match(/\/.+\.(jpg|jpeg|png)$/i)) {
+      return json.substring(1)
+    }
+    // Otherwse prefix image filenames
     if (json.match(/\.(jpg|jpeg|png)$/i)) {
       return prefix + json
     }

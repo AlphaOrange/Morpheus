@@ -122,7 +122,8 @@ const compact = computed(() => {
   const numChars = room.value.presentPlayerCharacters.length
   const numPlaces = room.value.availableRooms.length + room.value.availableLocations.length
   const numNPCs = room.value.presentAiCharacters.length
-  const numButtons = (numChars + 1) * numPlaces + numChars * numNPCs
+  const group = room.value.presentPlayerCharacters.length > 1 ? 1 : 0
+  const numButtons = (numChars + group) * numPlaces + numChars * numNPCs
   return numButtons >= options.compactButtonsThreshold
 })
 
