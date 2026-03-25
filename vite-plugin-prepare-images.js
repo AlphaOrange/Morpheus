@@ -1,5 +1,5 @@
 // vite-plugin-prepare-images.js
-import { readdirSync, mkdirSync } from 'fs'
+import { readdirSync, mkdirSync, rmSync } from 'fs'
 import { resolve, join, extname, dirname } from 'path'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
@@ -179,6 +179,7 @@ export default function prepareImagesPlugin(options = {}) {
     // Only run in build
     buildStart() {
       if (isBuild) {
+        rmSync(genericsPath, { recursive: true, force: true })
         runPrepareImages()
       }
     },
@@ -187,6 +188,7 @@ export default function prepareImagesPlugin(options = {}) {
     configureServer() {
       if (!isBuild) {
         if (!hasProcessedOnce) {
+          rmSync(genericsPath, { recursive: true, force: true })
           runPrepareImages()
           hasProcessedOnce = true
         }

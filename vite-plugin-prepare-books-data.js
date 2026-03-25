@@ -1,5 +1,5 @@
 // vite-plugin-prepare-books-data.js
-import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'fs'
+import { readdirSync, readFileSync, writeFileSync, mkdirSync, rmSync } from 'fs'
 import { resolve, join, extname, basename } from 'path'
 import { fileURLToPath } from 'url'
 import yaml from 'js-yaml'
@@ -161,6 +161,7 @@ export default function prepareBooksDataPlugin(options = {}) {
     // Only run in build
     buildStart() {
       if (isBuild) {
+        rmSync(outputDataDir, { recursive: true, force: true })
         runPrepareBooks()
       }
     },
@@ -169,6 +170,7 @@ export default function prepareBooksDataPlugin(options = {}) {
     configureServer() {
       if (!isBuild) {
         if (!hasProcessedOnce) {
+          rmSync(outputDataDir, { recursive: true, force: true })
           runPrepareBooks()
           hasProcessedOnce = true
         }
