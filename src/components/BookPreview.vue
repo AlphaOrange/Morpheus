@@ -17,12 +17,21 @@
           created for Morpheus {{ book.version.book }}, no longer supported
         </span>
       </p>
-      <p>
+      <div class="tags">
         <span v-for="tag in book.tags" :key="tag" class="tag">
           {{ tag }}
         </span>
-      </p>
+      </div>
       <p class="description">{{ description }}</p>
+      <div v-if="book.features.length > 0">
+        <h3>Supported Features</h3>
+        <div class="features">
+          <div v-for="feature in book.features" :key="feature">
+            <span class="tag tag-system">{{ feature }}</span
+            >{{ featureDescription(feature) }}
+          </div>
+        </div>
+      </div>
       <div v-if="savegame" class="state">
         <div class="room" :style="{ backgroundImage: `url(${roomImage})` }">
           {{ roomData.name }}
@@ -43,6 +52,7 @@
 <script setup>
 import { computed } from 'vue'
 import { genericImg, bookImg, checkSupported } from '@/helpers/utils'
+import supportsData from '@/data/supports.yaml'
 const props = defineProps({
   book: {
     type: Object,
@@ -81,6 +91,14 @@ const cover = computed(() => {
 const supported = computed(() => {
   return checkSupported(props.book.version.book)
 })
+
+const featureDescription = (feature) => {
+  if (feature in supportsData.features) {
+    return supportsData.features[feature]
+  } else {
+    return ''
+  }
+}
 
 const description = computed(() => {
   if (props.savegame) {
@@ -154,9 +172,19 @@ const charImage = (char) => {
   width: 100%;
   border-radius: 0.5rem;
 }
+.tags {
+  display: flex;
+  gap: 0.5rem;
+}
 .description {
-  margin-top: 1.5rem;
+  margin-top: 1rem;
   white-space: pre-line;
+}
+.features > div {
+  margin-bottom: 0.5rem;
+}
+.features > div > span {
+  margin-right: 0.5rem;
 }
 .bookmark {
   width: 2.5rem;

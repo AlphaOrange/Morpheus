@@ -1,6 +1,7 @@
 export const defaultsBook = {
   description: 'An Interactive Morpheus Book',
   tags: [],
+  features: [],
   cover: '',
 }
 export const defaultsBookStart = {

@@ -197,6 +197,7 @@ There must be exactly one book file and it must be named `book.yaml`. The book f
 - `version`: an object with the following two items:
   - `book`: version number (x.y.z) of your book - increase with every update
   - `morpheus`: version number (x.y.z) of morpheus your book was built for
+- `features`: a list of _Morpheus_ standard features that the book supports, see "Supported Features"
 - `author`: your name (or synonym)
 - `title`: the game title
 - `description`: a short description, try to stay under 200 characters  
@@ -224,13 +225,16 @@ version:
 title: Electric City
   book: 1.0.0
   morpheus: 0.5.0
+features:
+  - move
+  - talk
 author: Stefan Tewes
 description: >-
   You explore the Electric City of the year 2077, a place,
   where everything is connected.
 tags:
-- scifi
-- cyborg
+  - scifi
+  - cyborg
 cover: cover.jpg
 start:
   destination: electric_city
@@ -457,6 +461,13 @@ Example: The characters are in room "Spices Stand" in the location "Market" and 
 Travel distance is now $\sqrt{(2-1)^2+(4-0)^2}+3 \approx 7.1$
 
 _Currently in Morpheus a location distance of 1 is equivalent to 1 minute of moving, a destination distance of 1 is equivalent to 1 hour of moving - we will make this configurable in the future_
+
+#### Supported Features
+
+In your book you can give a list of supported features, so users can directly see of which _Morpheus_ features a book makes use. Later there will also be filter options so users can search for books supporting specific features. In your list use the exact names out of this list of currently supported features if the book meets the requirements:
+
+- "move": Player must be able to move to at least one other room from the starting location.
+- "talk": In every configuration of the book there must be at least one NPC you can meet (and talk to).
 
 ## Compiling books
 
