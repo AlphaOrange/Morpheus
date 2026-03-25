@@ -466,6 +466,7 @@ _Currently in Morpheus a location distance of 1 is equivalent to 1 minute of mov
 
 In your book you can give a list of supported features, so users can directly see of which _Morpheus_ features a book makes use. Later there will also be filter options so users can search for books supporting specific features. In your list use the exact names out of this list of currently supported features if the book meets the requirements:
 
+- "maps": Map positions are used for distance calculation, i.e. there is at least one destination or location with position other than [0, 0] or detour other than 0.
 - "move": Player must be able to move to at least one other room from the starting location.
 - "talk": In every configuration of the book there must be at least one NPC you can meet (and talk to).
 
