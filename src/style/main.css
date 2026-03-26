@@ -90,6 +90,9 @@ button {
   text-align: left;
   cursor: pointer;
 }
+button:last-child {
+  margin: 0;
+}
 button.centered {
   text-align: center;
 }
@@ -132,13 +135,18 @@ button:hover .pill {
   gap: 0.5rem;
 }
 
+.vertical-flex,
 .vertical-center-flex {
   display: flex;
   width: 100%;
   flex-direction: column;
-  align-items: center;
   gap: 1rem;
 }
+
+.vertical-center-flex {
+  align-items: center;
+}
+.box .vertical-flex,
 .box .vertical-center-flex {
   gap: 0.5rem;
 }
@@ -226,14 +234,83 @@ button:hover .pill {
 /* HTML Input Elements */
 
 .input-group {
-  margin: 0.5rem;
+  margin: 0.5rem 0.5rem 1rem;
 }
+
+input {
+  appearance: none;
+}
+input.long,
+select.long {
+  width: 100%;
+}
+
+input[type='text'],
+select {
+  margin: 0 0 0.5rem;
+  padding: 0.25rem 0.5rem;
+  border: none;
+  border-radius: 0.25rem;
+  color: var(--col-font);
+  background: var(--bg-boxlight);
+}
+
+input[type='text']:focus,
+select:focus {
+  outline: 2px solid var(--bg-highlight);
+}
+
+select {
+  margin: 0.25rem 0 0.5rem;
+  display: block;
+}
+
 input[type='radio'],
 input[type='checkbox'] {
   margin: 0 0.5rem 0.25rem 0;
 }
-input.long {
-  width: 100%;
+
+/* Checkboxes */
+
+input[type='radio'],
+input[type='checkbox'] {
+  position: relative;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid var(--bg-boxlight);
+  vertical-align: -6px;
+  color: var(--col-font);
+  cursor: pointer;
+}
+input[type='radio'] {
+  border-radius: 50%;
+}
+
+input[type='radio']::before,
+input[type='checkbox']::before {
+  position: absolute;
+  font-size: 1.2em;
+  right: -1px;
+  top: -0.3em;
+  visibility: hidden;
+}
+input[type='radio']::before {
+  content: '✖';
+}
+input[type='checkbox']::before {
+  content: '✔';
+}
+
+input[type='radio']:checked::before,
+input[type='checkbox']:checked::before {
+  visibility: visible;
+}
+
+input[type='radio']:disabled,
+input[type='checkbox']:disabled {
+  border-color: black;
+  background: #dddddd;
+  color: gray;
 }
 
 /* Animations */

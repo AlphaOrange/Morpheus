@@ -1,13 +1,39 @@
 <template>
   <TheThirdsLayout>
     <template #leftSlot>
-      <RouterLink to="/library">
-        <ActionButton text="Back To Library" icon="arrow-left" />
-      </RouterLink>
-      <h3>Book Settings</h3>
-      Currently no settings available.
-      <br /><br />
-      <button @click="startBook" :disabled="!checkConditions">Start Book</button>
+      <div class="vertical-flex">
+        <RouterLink to="/library">
+          <ActionButton text="Back To Library" icon="arrow-left" />
+        </RouterLink>
+        <div class="box">
+          <h3>AI Configuration</h3>
+          <div class="input-group">
+            <label for="selectAiVendor">Model Name:</label>
+            <select v-model="options.aiVendor" id="selectAiVendor" class="long">
+              <option>Gemini</option>
+            </select>
+            <label for="selectAiVersion">Model Version:</label>
+            <select v-model="options.aiModel" id="selectAiVersion" class="long">
+              <option>gemini25_flash_lite</option>
+              <option>gemini25_flash</option>
+            </select>
+          </div>
+          <h3>API Key:</h3>
+          <div class="input-group">
+            <input
+              type="text"
+              v-model="options.aiApiKey"
+              placeholder="insert valid key"
+              class="long"
+            />
+            <input type="checkbox" id="idAiApiKeyAllowSave" v-model="options.aiApiKeyAllowSave" />
+            <label for="idAiApiKeyAllowSave">Store key with savegame</label>
+          </div>
+        </div>
+        <div>
+          <button @click="startBook" :disabled="!checkConditions">Start Book</button>
+        </div>
+      </div>
     </template>
     <template #middleSlot>
       <div class="page-header">
@@ -51,6 +77,9 @@ import ActionButton from '@/components/ActionButton.vue'
 import { useBookStore } from '@/stores/book'
 const book = useBookStore()
 const { title, description, world, playableCharacters, coverL } = storeToRefs(book)
+
+import { useOptionsStore } from '@/stores/options'
+const options = useOptionsStore()
 
 import { useRouter } from 'vue-router'
 const router = useRouter()

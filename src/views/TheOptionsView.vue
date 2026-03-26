@@ -7,53 +7,54 @@
           <header>
             <h2>LLM Configuration</h2>
           </header>
-          <h3>Language Model</h3>
+          <h3>AI Configuration</h3>
           <div class="input-group">
-            <span>Model Name: </span>
-            <select v-model="options.aiVendor">
+            <label for="selectAiVendor">Model Name:</label>
+            <select v-model="options.aiVendor" id="selectAiVendor" class="long">
               <option>Gemini</option>
             </select>
-            <br />
-            <span>Model Version: </span>
-            <select v-model="options.aiModel">
+            <label for="selectAiVersion">Model Version:</label>
+            <select v-model="options.aiModel" id="selectAiVersion" class="long">
               <option>gemini25_flash_lite</option>
               <option>gemini25_flash</option>
             </select>
           </div>
           <h3>API Key:</h3>
           <div class="input-group">
-            <input v-model="options.aiApiKey" placeholder="insert valid key" class="long" />
+            <input
+              type="text"
+              v-model="options.aiApiKey"
+              placeholder="insert valid key"
+              class="long"
+            />
             <input type="checkbox" id="idAiApiKeyAllowSave" v-model="options.aiApiKeyAllowSave" />
             <label for="idAiApiKeyAllowSave">Store key with savegame</label>
           </div>
           <h3>Safety Settings:</h3>
           <div class="input-group">
-            <span>Harassment: </span>
-            <select v-model="options.aiSafetyHarassment">
+            <label for="selectAiSafetyHarassment">Harassment:</label>
+            <select v-model="options.aiSafetyHarassment" id="selectAiSafetyHarassment">
               <option value="BLOCK_NONE">None</option>
               <option value="BLOCK_ONLY_HIGH">Low</option>
               <option value="BLOCK_MEDIUM_AND_ABOVE">Medium</option>
               <option value="BLOCK_LOW_AND_ABOVE">High</option>
             </select>
-            <br />
-            <span>Hate Speech: </span>
-            <select v-model="options.aiSafetyHateSpeech">
+            <label for="selectAiSafetyHateSpeech">Hate Speech:</label>
+            <select v-model="options.aiSafetyHateSpeech" id="selectAiSafetyHateSpeech">
               <option value="BLOCK_NONE">None</option>
               <option value="BLOCK_ONLY_HIGH">Low</option>
               <option value="BLOCK_MEDIUM_AND_ABOVE">Medium</option>
               <option value="BLOCK_LOW_AND_ABOVE">High</option>
             </select>
-            <br />
-            <span>Sexually Explicit: </span>
-            <select v-model="options.aiSafetySex">
+            <label for="selectAiSafetySexual">Sexually Explicit: </label>
+            <select v-model="options.aiSafetySex" id="selectAiSafetySexual">
               <option value="BLOCK_NONE">None</option>
               <option value="BLOCK_ONLY_HIGH">Low</option>
               <option value="BLOCK_MEDIUM_AND_ABOVE">Medium</option>
               <option value="BLOCK_LOW_AND_ABOVE">High</option>
             </select>
-            <br />
-            <span>Dangerous Content: </span>
-            <select v-model="options.aiSafetyDangerous">
+            <label for="selectAiSafetyDangerous">Dangerous Content: </label>
+            <select v-model="options.aiSafetyDangerous" id="selectAiSafetyDangerous">
               <option value="BLOCK_NONE">None</option>
               <option value="BLOCK_ONLY_HIGH">Low</option>
               <option value="BLOCK_MEDIUM_AND_ABOVE">Medium</option>
