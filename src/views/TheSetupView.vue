@@ -1,6 +1,9 @@
 <template>
   <TheThirdsLayout>
     <template #leftSlot>
+      <RouterLink to="/library">
+        <ActionButton text="Back To Library" icon="arrow-left" />
+      </RouterLink>
       <h3>Book Settings</h3>
       Currently no settings available.
       <br /><br />
@@ -43,6 +46,7 @@ import { computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import TheThirdsLayout from '@/layouts/TheThirdsLayout.vue'
 import CharacterInfoBox from '@/components/CharacterInfoBox.vue'
+import ActionButton from '@/components/ActionButton.vue'
 
 import { useBookStore } from '@/stores/book'
 const book = useBookStore()
