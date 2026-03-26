@@ -133,6 +133,7 @@ export const useBookStore = defineStore('book', {
         id: this.id,
         author: this.author,
         version: this.version,
+        features: this.features,
         title: this.title,
         description: this.description,
         saveSummary: this.saveSummary,
@@ -341,6 +342,7 @@ export const useBookStore = defineStore('book', {
       this.id = data.id
       this.author = data.author
       this.version = data.version
+      this.features = data.features
       this.title = data.title
       this.description = data.description
       this.saveSummary = data.description
