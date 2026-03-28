@@ -57,8 +57,8 @@ export const useOptionsStore = defineStore('options', {
     useAiForSavegameSummary: true, // if true use ai agent on save, otherwise use description as summary
     useCompactButtons: true, // use compact buttons on cluttered action bar
     // AI configuration
-    aiVendor: 'Gemini',
-    aiModel: 'gemini25_flash_lite',
+    aiVendor: 'Google',
+    aiModel: 'gemini-2.5-flash-lite',
     aiApiKey: import.meta.env.VITE_GEMINI_API_KEY,
     aiApiKeyAllowSave: false,
     aiSafetyHarassment: safetySettings.harassment,

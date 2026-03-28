@@ -1,23 +1,43 @@
-import axios from 'axios'
+import { GoogleGenAI } from '@google/genai'
 import { useOptionsStore } from '@/stores/options'
-import { API } from '@/data/llm'
-
-const generationConfig = {
-  temperature: 0.7,
-}
 
 export default class Agent {
   // Super Agent
   // This is the Agent top-level class to be inherited from
   // This class provides all AI handling, evaluation, data cleaning and checking
 
+  // Agent Prompt
   systemPrompt = 'You are a super-helpful AI assistent.'
   responseFormat = null
   responseExample = null
-  timeout = 30000
-  options = useOptionsStore()
 
-  async query(prompt) {
+  // Options
+  options = useOptionsStore()
+  timeout = 30000
+  aiKey = ''
+
+  // Google AI
+  generationConfig = {
+    temperature: 0.7,
+  }
+  googleAi = null
+
+  // AI lazy init
+  getGoogleAi() {
+    if (!this.options.aiApiKey) {
+      throw new Error('Missing API key')
+    }
+    if (!this.googleAi || this.aiKey !== this.options.aiApiKey) {
+      this.googleAi = new GoogleGenAI({
+        apiKey: this.options.aiApiKey,
+      })
+      this.aiKey = this.options.aiApiKey
+    }
+    return this.googleAi
+  }
+
+  // Extend prompt with format and example if available
+  enhance_prompt(prompt) {
     if (this.responseFormat) {
       prompt = `${prompt}
 
@@ -32,25 +52,45 @@ ${this.responseFormat}`
 
 ${this.responseExample}`
     }
-    console.log(`== PROMPT ==\n${prompt}`)
-    const body = {
-      systemInstruction: { role: 'system', parts: [{ text: this.systemPrompt }] },
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+    return prompt
+  }
+
+  // Run on Google API
+  async query_google(prompt) {
+    // For Google models directly attach system and user prompt
+    prompt = `${this.systemPrompt}\n\n${prompt}`
+
+    // Generate response
+    const response = await this.getGoogleAi().models.generateContent({
+      model: this.options.aiModel,
+      contents: [
+        {
+          role: 'user',
+          parts: [{ text: prompt }],
+        },
+      ],
+      generationConfig: this.generationConfig,
       safetySettings: this.options.aiSafetySettingsGemini,
-      generationConfig,
-    }
+    })
+
+    // Parse result
+    console.log(`== RESPONSE ==\n${response.text}`)
+    const jsonText = response.text.substring(
+      response.text.indexOf('{'),
+      response.text.lastIndexOf('}') + 1,
+    )
+    console.log(`== JSON ==\n${jsonText}`)
+    const json = JSON.parse(jsonText)
+    return json
+  }
+
+  async query(prompt) {
+    prompt = this.enhance_prompt(prompt)
+    console.log(`== PROMPT ==\n${prompt}`)
     try {
-      const apiCall = API[this.options.aiModel] + this.options.aiApiKey
-      const response = await axios.post(apiCall, body, {
-        headers: { 'Content-Type': 'application/json' },
-        timeout: this.timeout,
-      })
-      let text = response.data?.candidates?.[0]?.content?.parts?.[0]?.text ?? null
-      console.log(`== RESPONSE ==\n${text}`)
-      text = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1)
-      console.log(`== CLEAN RESPONSE ==\n${text}`)
-      const json = JSON.parse(text)
-      return json
+      if (this.options.aiVendor === 'Google') {
+        return await this.query_google(prompt)
+      }
     } catch (err) {
       const errorMessage = err.response?.data?.error?.message || err.message || 'Unknown error'
       console.log(`ERROR: ${errorMessage}`)

@@ -10,12 +10,12 @@
           <div class="input-group">
             <label for="selectAiVendor">Model Name:</label>
             <select v-model="options.aiVendor" id="selectAiVendor" class="long">
-              <option>Gemini</option>
+              <option>Google</option>
             </select>
             <label for="selectAiVersion">Model Version:</label>
             <select v-model="options.aiModel" id="selectAiVersion" class="long">
-              <option>gemini25_flash_lite</option>
-              <option>gemini25_flash</option>
+              <option>gemini-2.5-flash</option>
+              <option>gemini-2.5-flash-lite</option>
             </select>
           </div>
           <h3>API Key:</h3>

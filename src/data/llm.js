@@ -1,6 +1,5 @@
-export const API = {
-  gemini25_flash_lite: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=`,
-  gemini25_flash: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=`,
+export const models = {
+  Google: ['gemini-2.5-flash', 'gemini-2.5-flash-lite'],
 }
 
 export const safetySettings = {
