@@ -70,7 +70,7 @@ const props = defineProps({
 
 const baseClass = computed(() => {
   if (props.lightbox) {
-    return ['lightbox']
+    return ['lightbox-preview']
   } else {
     return []
   }
@@ -223,7 +223,7 @@ const charImage = (char) => {
   justify-content: center;
   align-items: flex-end;
 }
-.lightbox h2 {
+.lightbox-preview h2 {
   margin-top: 1rem;
 }
 </style>
