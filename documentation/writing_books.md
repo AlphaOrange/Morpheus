@@ -316,7 +316,7 @@ The character file must have the same name as the character folder (the characte
   - `location`: ID of location where the character starts
   - `room`: ID of room where the character starts
 
-_If "isNPC = false", you don't need to provide a behavior description, because it will not have any effect._
+_If "isNPC = false", you don't need to provide a `behavior` description, because it will not have any effect. You also don't need to set the `start` attribute, because this is set in the book file for player characters._
 
 Note: Of the descriptive items, only `description` will ever be displayed for the player to read. All others (like `body`, `behavior`, `background`) are only for the AI to use. Keep them precise, short and concise, you don't need to flesh out whole polished sentences.
 
