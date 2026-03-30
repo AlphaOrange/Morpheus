@@ -18,18 +18,16 @@ export default class Character {
       'gender',
       'age',
       'profession',
+      'behavior',
       'body',
-      'mind',
       'clothing',
       'appearance',
       'background',
-      'wants',
     ].forEach((key) => (this[key] = data[key]))
     this._image = data.image
     this.start = data.start
       ? data.start.destination + '/' + data.start.location + '/' + data.start.room
       : null
-    this.language = data?.language
     // data.load_states
     // data.load_agendas
   }
@@ -54,12 +52,11 @@ export default class Character {
       gender: this.gender,
       age: this.age,
       profession: this.profession,
+      behavior: this.behavior,
       body: this.body,
-      mind: this.mind,
       clothing: this.clothing,
       appearance: this.appearance,
       background: this.background,
-      wants: this.wants,
       start: this.start,
       _image: this._image,
       room: this.room === null ? null : this.room.id,

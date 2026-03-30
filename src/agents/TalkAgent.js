@@ -26,10 +26,9 @@ export default class TalkAgent extends Agent {
   // Build text block: description of You
   you_profile(actor) {
     return `${actor.name}, ${actor.profession} (${actor.gender}, ${actor.age})
-${actor.background}, ${actor.wants}
+${actor.background}
 ${actor.body}, ${actor.clothing}, ${actor.appearance}
-Attributes: ${actor.mind}
-Linguistic characteristics: ${actor.language}`
+Behavioral instructions: ${actor.behavior}`
   }
 
   // Build text block: descriptions of Others

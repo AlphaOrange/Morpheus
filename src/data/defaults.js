@@ -21,12 +21,11 @@ export const defaultsCharacter = {
   description: 'No description',
   image: '',
   profession: 'Employed',
+  behavior: 'Friendly',
   body: 'Average body',
-  mind: 'Friendly',
   clothing: 'Casual outfit',
   appearance: 'Normal appearance',
   background: '',
-  wants: 'You like engaging conversations.',
   load_states: [],
   load_agendas: [],
 }
