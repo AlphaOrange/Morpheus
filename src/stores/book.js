@@ -334,10 +334,8 @@ export const useBookStore = defineStore('book', {
 
     // Helper for load and restore
     assignBaseBookData(rawData) {
-      console.log(rawData)
       const data = { ...defaultsBook, ...rawData }
       data.start = { ...defaultsBookStart, ...data.start }
-      console.log(data)
 
       this.id = data.id
       this.author = data.author
@@ -348,12 +346,12 @@ export const useBookStore = defineStore('book', {
       this.saveSummary = data.description
       this.tags = data.tags
       this._cover = data._cover ?? data.cover
-      if (data.start) {
-        this.startTime = new Date(data.start.datetime)
-        this.introduction = data.start.introduction || 'The Game Begins'
-      } else {
+      if (data.startTime) {
         this.startTime = new Date(data.startTime)
         this.introduction = data.introduction
+      } else {
+        this.startTime = new Date(data.start.datetime)
+        this.introduction = data.start.introduction || 'The Game Begins'
       }
     },
 
