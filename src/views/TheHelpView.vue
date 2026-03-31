@@ -10,6 +10,7 @@
     </template>
     <template #rightSlot>
       <div class="vertical-center-flex">
+        <HelpBox :data="getHelpData('example')"></HelpBox>
         <HelpBox :data="getHelpData('meta')"></HelpBox>
       </div>
     </template>
