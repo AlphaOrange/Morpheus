@@ -24,6 +24,9 @@ help:
     `--meta`
     All message box meta commands like saving the current book.
 
+    `--example`
+    See how to use commands in an example conversation in both natural language commands and short commands.
+
     **GAME INFO**
 
     `--ids` 🛠️
@@ -275,3 +278,42 @@ meta:
 
     `wait [minutes]`
     Wait a certain number of minutes while doing nothing.
+example:
+  title: Example Conversation
+  text: |-
+    **Natural Language Commands**
+
+    Here is an example of characters talking and acting using natural language commands.
+
+    `alice talk:: Hello everyone!`
+    (Alice talks to all)
+
+    `bob talk to alice: Good evening, Alice!`
+    (Bob talks to Alice)
+
+    `alice talk to bob: Be right back`
+    (Alice talks to Bob)
+
+    `alice move to room cloakroom`
+    (Alice move into another room, the cloakroom)
+
+    `move to livingroom`
+    (The whole group - just Alice in this example - moves back into the living room)
+
+    `Any big news?`
+    (The active player - Alice - talks to the same person again - Bob)
+
+    `bob move to location home: Sorry, I need to fetch something real quick!`
+    (Bob talks to everyone, then moves to another location)
+
+    **Short Commands**
+
+    And now the same dialog written in short commands:
+
+    `alice:: Hello everyone!`
+    `bob-alice: Good evening, Alice!`
+    `alice-bob: Be right back`
+    `alice>cloakroom`
+    `>livingroom`
+    `Any big news?`
+    `bob>>home: Sorry, I need to fetch something real quick!`

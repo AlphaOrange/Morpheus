@@ -207,6 +207,7 @@ defineExpose({ scrollToEnd })
 }
 
 .minor-message {
+  margin: 0 0 1rem;
   display: grid;
   grid-template-columns: max-content 1fr;
   grid-template-rows: 1.5rem;
