@@ -25,11 +25,13 @@ export default class SavegameSummaryAgent extends Agent {
       messages: protocol.filterDialog({ types: 'context' }),
     })
     const prompt = TEMPLATES.user.replace('%dialog%', dialog)
-    const answer = await this.query(prompt)
-    if ('error' in answer) {
+    try {
+      const answer = await this.query({ prompt, type: 'text' })
+      return answer
+    } catch (err) {
+      const errorMessage = err.response?.data?.error?.message || err.message || 'Unknown error'
+      console.log(`SAVEGAMEAGENT ERROR: ${errorMessage}`)
       return ''
-    } else {
-      return answer.summary
     }
   }
 }

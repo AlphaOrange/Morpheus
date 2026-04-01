@@ -59,15 +59,20 @@ ${char.body}, ${char.clothing}, ${char.appearance}`,
       .replace('%others_profiles%', others_profiles)
       .replace('%place_description%', place_description)
       .replace('%room%', room.name)
-    const answer = await this.query(prompt)
-    if ('error' in answer) {
-      return answer
-    } else {
+
+    try {
+      const answer = await this.query({ prompt, type: 'json' })
+      // FOR TESTING PURPOSES:
+      // const answer = { text: 'Test', to: 'alice' }
       return {
         move: answer.move,
         targetId: answer.destination,
         spec: answer.type,
       }
+    } catch (err) {
+      const errorMessage = err.response?.data?.error?.message || err.message || 'Unknown error'
+      console.log(`MOVEAGENT ERROR: ${errorMessage}`)
+      return { error: `Move Agent Error: ${errorMessage}` }
     }
   }
 }

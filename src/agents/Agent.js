@@ -73,28 +73,28 @@ ${this.responseExample}`
       safetySettings: this.options.aiSafetySettingsGemini,
     })
 
-    // Parse result
-    console.log(`== RESPONSE ==\n${response.text}`)
-    const jsonText = response.text.substring(
-      response.text.indexOf('{'),
-      response.text.lastIndexOf('}') + 1,
-    )
-    console.log(`== JSON ==\n${jsonText}`)
-    const json = JSON.parse(jsonText)
-    return json
+    return response.text
   }
 
-  async query(prompt) {
+  async query({ prompt, type = 'json' }) {
     prompt = this.enhance_prompt(prompt)
     console.log(`== PROMPT ==\n${prompt}`)
-    try {
-      if (this.options.aiVendor === 'Google') {
-        return await this.query_google(prompt)
-      }
-    } catch (err) {
-      const errorMessage = err.response?.data?.error?.message || err.message || 'Unknown error'
-      console.log(`ERROR: ${errorMessage}`)
-      return { error: errorMessage }
+
+    // Run AI Model
+    let response = null
+    if (this.options.aiVendor === 'Google') {
+      response = await this.query_google(prompt)
+    } else {
+      throw new Error('AI Vendor not supported')
     }
+    console.log(`== RESPONSE ==\n${response}`)
+
+    // Optionally parse JSON
+    if (type === 'json') {
+      const jsonText = response.substring(response.indexOf('{'), response.lastIndexOf('}') + 1)
+      response = JSON.parse(jsonText)
+    }
+
+    return response
   }
 }

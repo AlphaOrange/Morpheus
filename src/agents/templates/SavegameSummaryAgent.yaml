@@ -10,23 +10,5 @@ user: |-
   ### INSTRUCTIONS ###
 
   Write a short summary of the current situation from the dialog in no more than 50 words in plain text. Use past tense.
-format: |-
-  {
-    "summary": [summary in plain text]
-  }
 example: |-
-  {
-    "summary": "When it started raining Nina walked into the coffee shop and talked to Garrett about the weather. She learned his father was a weatherman and that he went storm-chasing as a kid. She spent him a beer and got flirty with him."
-  }
-validation: |-
-  {
-    "$id": "SavegameSummaryAgent",
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "type": "object",
-    "properties": {
-      "summary": {
-        "type": "string"
-      },
-    },
-    "required": [ "summary" ]
-  }
+  When it started raining Nina walked into the coffee shop and talked to Garrett about the weather. She learned his father was a weatherman and that he went storm-chasing as a kid. She spent him a beer and got flirty with him.

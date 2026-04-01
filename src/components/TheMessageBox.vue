@@ -19,7 +19,7 @@ import { ref, watch } from 'vue'
 import { useBookStore } from '@/stores/book'
 import { useOptionsStore } from '@/stores/options'
 
-const emits = defineEmits(['activity', 'runNarrator']) // emits if user is active
+const emits = defineEmits(['activity', 'runNarrator', 'save'])
 
 const book = useBookStore()
 const options = useOptionsStore()

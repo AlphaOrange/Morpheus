@@ -55,17 +55,20 @@ ${char.body}, ${char.clothing}, ${char.appearance}`,
       .replace('%dialog%', dialog)
       .replace('%others_profiles%', others_profiles)
       .replace('%you_profile%', you_profile)
-    const answer = await this.query(prompt)
-    // FOR TESTING PURPOSES:
-    // const answer = { text: 'Test', to: 'alice' }
-    if ('error' in answer) {
-      return answer
-    } else {
+
+    try {
+      const answer = await this.query({ prompt, type: 'json' })
+      // FOR TESTING PURPOSES:
+      // const answer = { text: 'Test', to: 'alice' }
       return {
         message: answer.text,
-        targetId: answer.to === 'all' ? ':all' : answer.to, // ai usually gets this wrong
+        targetId: answer.to === 'all' ? ':all' : answer.to, // ai often gets this wrong
         additionalAction: answer.action.toLowerCase(),
       }
+    } catch (err) {
+      const errorMessage = err.response?.data?.error?.message || err.message || 'Unknown error'
+      console.log(`TALKAGENT ERROR: ${errorMessage}`)
+      return { error: `Talk Agent Error: ${errorMessage}` }
     }
   }
 }
