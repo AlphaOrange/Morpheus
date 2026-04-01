@@ -4,6 +4,9 @@
       <h1>
         <slot name="titleSlot"></slot>
       </h1>
+      <p class="sub-heading">
+        <slot name="subtitleSlot"></slot>
+      </p>
     </div>
     <slot name="contentSlot"></slot>
   </div>

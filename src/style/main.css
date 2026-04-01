@@ -50,6 +50,7 @@ small {
 h1 + .sub-heading {
   margin: -0.5rem auto 0rem;
   font-size: 1rem;
+  text-align: center;
 }
 
 h2 + .sub-heading {

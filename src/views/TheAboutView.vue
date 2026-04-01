@@ -1,15 +1,15 @@
 <template>
   <TheTwoColumnsLayout>
     <template #titleSlot>About Morpheus</template>
+    <template #subtitleSlot>
+      Morpheus Interactive Story Engine<br />
+      Version: {{ version }}
+    </template>
     <template #leftSlot>
       <div v-html="impressum" class="box"></div>
     </template>
     <template #rightSlot>
       <div class="vertical-center-flex">
-        <div class="box">
-          Morpheus Interactive Story Engine<br />
-          Version: {{ version }}
-        </div>
         <div v-html="aiAgenda" class="box"></div>
       </div>
     </template>

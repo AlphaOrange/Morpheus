@@ -1,6 +1,7 @@
 <template>
   <TheSingleLayout>
     <template #titleSlot>Nightstand</template>
+    <template #subtitleSlot>All Your Savegames</template>
     <template #contentSlot>
       <div v-if="bookStore.started" class="box warning-box">
         <h3>Currently In Play</h3>
