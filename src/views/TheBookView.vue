@@ -1,6 +1,12 @@
 <template>
   <TheThirdsLayout>
     <template #leftSlot>
+      <div v-if="options.aiApiKey === ''" class="box warning-box">
+        <div>
+          You did not yet enter an API key. Without LLM model connection functionality is extremely
+          limited!
+        </div>
+      </div>
       <TheActionBar @talk="talk" @move="move" @runNarrator="manualNarrator" @save="save" />
     </template>
     <template #middleSlot>
@@ -108,6 +114,9 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+.warning-box {
+  margin-bottom: 1rem;
+}
 .center {
   height: 100%;
 }

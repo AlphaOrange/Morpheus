@@ -84,11 +84,7 @@ const justClose = () => bookStore.deactivateBook()
 
 <style scoped>
 .warning-box {
-  max-width: 40rem;
-  margin: 0 auto 1rem;
-  padding: 0.5rem;
-  text-align: center;
-  background: var(--bg-warning);
+  margin-bottom: 1rem;
 }
 .warning-box h3 {
   margin-bottom: 0.5rem;

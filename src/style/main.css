@@ -181,6 +181,16 @@ button:hover .pill {
   background: var(--bg-highlight);
 }
 
+/* Warning Box */
+
+.warning-box {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 0.5rem;
+  text-align: center;
+  background: var(--bg-warning);
+}
+
 /* Hints */
 
 .hint-anchor {

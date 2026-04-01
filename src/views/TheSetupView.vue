@@ -30,6 +30,12 @@
             <label for="idAiApiKeyAllowSave">Store key with savegame</label>
           </div>
         </div>
+        <div v-if="options.aiApiKey === ''" class="box warning-box">
+          <div>
+            You did not yet enter an API key. Without LLM model connection functionality is
+            extremely limited!
+          </div>
+        </div>
         <div>
           <button @click="startBook" :disabled="!checkConditions">Start Book</button>
         </div>
