@@ -670,7 +670,9 @@ export const useBookStore = defineStore('book', {
         let help
         if (command.topic === 'options') {
           // Generate dynamic topic
-          const helpText = this.options.userOptionsText
+          const helpText =
+            this.options.userOptionsText +
+            '\n\nUse `set option [name]=[value]` for changing or go to the Options tab.'
           help = { text: helpText, title: 'Current Game Settings' }
         } else {
           // otherwise get static topic

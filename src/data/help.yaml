@@ -27,6 +27,9 @@ help:
     `--example`
     See how to use commands in an example conversation in both natural language commands and short commands.
 
+    `--options`
+    Shows current game options. Use `set option [name]=[value]` for changing or go to the Options tab.
+
     **GAME INFO**
 
     `--ids` 🛠️
