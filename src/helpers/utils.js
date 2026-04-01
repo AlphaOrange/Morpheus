@@ -104,6 +104,7 @@ export function distancePeriodText(currentRoom, target) {
 
 const rx = {
   help: /^--([a-z]+)/i,
+  set_option: /^set option ([a-z]+) ?= ?([a-z0-9_\\-]+)/i,
   switch1: /^switch ([0-9]+)$/i, // switch 3 (third room in the room row)
   switch2: /^switch ([a-z0-9_]+)$/i, // switch taproom
   switch3: /^switch$/i, // switch (next room in the room row)
@@ -134,6 +135,13 @@ export function messageToCommand(message) {
   res = rx.help.exec(message)
   if (res) {
     command = { action: 'help', topic: res[1].toLowerCase() }
+    return command
+  }
+
+  // Set options
+  res = rx.set_option.exec(message)
+  if (res) {
+    command = { action: 'setOption', option: res[1], value: res[2] }
     return command
   }
 

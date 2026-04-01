@@ -24,6 +24,22 @@ const SAVEABLE_OPTIONS = [
   'moveDurationDestination',
 ]
 
+// these options are available to the user to change
+// (does not list aiApiKey to not expose in dialog)
+const USER_OPTIONS = [
+  'idHintsMode',
+  'idlingBeforeTriggerNpc',
+  'useAiForSavegameSummary',
+  'useCompactButtons',
+  'aiVendor',
+  'aiModel',
+  'aiApiKeyAllowSave',
+  'aiSafetyHarassment',
+  'aiSafetyHateSpeech',
+  'aiSafetySex',
+  'aiSafetyDangerous',
+]
+
 export const useOptionsStore = defineStore('options', {
   state: () => ({
     // Engine Parameters (cannot be changed, e.g. ui settings)
@@ -89,6 +105,13 @@ export const useOptionsStore = defineStore('options', {
         (state.idHintsMode === 'always') | ((state.idHintsMode === 'auto') & state.idHintsActive)
       )
     },
+    userOptionsText(state) {
+      let options = []
+      for (let option of USER_OPTIONS) {
+        options.push(`${option}: ${state[option]}`)
+      }
+      return options.join('\n')
+    },
     aiSafetySettingsGemini(state) {
       return [
         {
@@ -126,6 +149,23 @@ export const useOptionsStore = defineStore('options', {
       }
       if (!this.aiApiKeyAllowSave) data.aiApiKey = ''
       return data
+    },
+    // set value for option
+    setOption(option, value) {
+      if (USER_OPTIONS.includes(option)) {
+        const requiredType = typeof this[option]
+        if (requiredType === 'boolean') {
+          this[option] = value === 'true'
+        } else if (requiredType === 'number') {
+          this[option] = Number(value)
+        } else if (requiredType === 'string') {
+          this[option] = value
+        } else {
+          throw new Error('Internal Error')
+        }
+      } else {
+        throw new Error('Option name unknown or cannot be changed.')
+      }
     },
   },
 })

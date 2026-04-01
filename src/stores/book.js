@@ -667,8 +667,34 @@ export const useBookStore = defineStore('book', {
 
       // Meta commands
       if (command.action === 'help') {
-        const help = getHelpData(command.topic)
+        let help
+        if (command.topic === 'options') {
+          // Generate dynamic topic
+          const helpText = this.options.userOptionsText
+          help = { text: helpText, title: 'Current Game Settings' }
+        } else {
+          // otherwise get static topic
+          help = getHelpData(command.topic)
+        }
         this.protocol.pushInfo({ time: this.time, text: help.text, title: help.title })
+        return
+      }
+      if (command.action === 'setOption') {
+        try {
+          this.options.setOption(command.option, command.value)
+          this.protocol.pushInfo({
+            time: this.time,
+            title: 'Option changed',
+            text: `Changed option ${command.option} to value ${command.value}.`,
+          })
+        } catch (err) {
+          const message = err.message || 'Unknown error'
+          this.protocol.pushError({
+            time: this.time,
+            title: `Could not change option`,
+            text: `Error in setting ${command.option} to value ${command.value}:\n${message}`,
+          })
+        }
         return
       }
 
