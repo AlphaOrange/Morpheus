@@ -377,15 +377,20 @@ export function getHelpData(topic) {
   return helpData[topic] || fallback
 }
 
-// ----- Versioning + Compatibility -----
+// ----- Version + Compatibility Info -----
 
-import supportsData from '@/data/supports.yaml'
+import versionData from '@/data/versions.yaml'
 export function checkSupported(version) {
-  if (semver.satisfies(version, supportsData.fullSupport)) {
+  const info = versionData.versions[0]
+  if (semver.satisfies(version, info.fullSupport)) {
     return 'full'
-  } else if (semver.satisfies(version, supportsData.required)) {
+  } else if (semver.satisfies(version, info.minSupport)) {
     return 'min'
   } else {
     return 'unsupported'
   }
 }
+export const features = versionData.features
+export const changelog = versionData.versions
+  .map((v) => `### Version: ${v.version}\n\n${v.updates}`)
+  .join('\n\n')

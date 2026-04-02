@@ -51,8 +51,8 @@
 
 <script setup>
 import { computed } from 'vue'
-import { genericImg, bookImg, checkSupported } from '@/helpers/utils'
-import supportsData from '@/data/supports.yaml'
+import { genericImg, bookImg, checkSupported, features } from '@/helpers/utils'
+
 const props = defineProps({
   book: {
     type: Object,
@@ -93,8 +93,8 @@ const supported = computed(() => {
 })
 
 const featureDescription = (feature) => {
-  if (feature in supportsData.features) {
-    return supportsData.features[feature]
+  if (feature in features) {
+    return features[feature]
   } else {
     return ''
   }

@@ -1,0 +1,65 @@
+# Version Overview
+---
+features:
+  maps: Move durations depend on distance and terrain
+  move: Visit different places
+  talk: Have conversations with NPCs
+versions:
+  - version: 0.7.0
+    updates: |-
+      **Help Upgrades**
+      - add command `--example`
+      - add commands `--options` and `set option`
+
+      Layout Tweaks
+    features: [maps, move, talk]
+    fullSupport: 0.6.0
+    minSupport: 0.4.0
+  - version: 0.6.0
+    updates: |-
+      **Changes To Book Files**
+      - most attributes are now optional and have fallback values
+      - books can now reference image files in their root folder from everywhere
+      - books contain list of supported features
+      - mind and language attribute merged into behavior which is handled as more imperative
+      - background and wants merged into background
+
+      **Other Features**
+      - use Google API SDK
+      - hide group options if only one player character present
+
+      Multiple Layout Tweaks  
+      Multiple Bug Fixes
+    features: [maps, move, talk]
+    fullSupport: 0.6.0
+    minSupport: 0.4.0
+  - version: 0.5.0
+    updates: |-
+      **Layout Changes**
+      - newly styled sidebar
+      - home page
+      - shelf split into library and nightstand views
+      - lots of layout and design improvements
+
+      **New Game Features**
+      - Automatically generated savegame summaries
+      - More control over AI usage via game options
+
+      **Book Changes**
+      - new attribute: version
+      - new attribute: author
+
+      Multiple Tweaks and Bugfixes
+    features: [maps, move, talk]
+    fullSupport: 0.5.0
+    minSupport: 0.4.0
+  - version: 0.4.0
+    updates: |-
+      Initial alpha release. This version is the first fully playable, accompanied with a fleshed out example book (interactive story content), although very limited in possible actions. This version supports:
+      - Choosing book and characters
+      - Visit different places
+      - Talk to NPC
+      - Save books during play in one single save slot
+    features: [maps, move, talk]
+    fullSupport: 0.4.0
+    minSupport: 0.4.0

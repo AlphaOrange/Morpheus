@@ -6,11 +6,17 @@
       Version: {{ version }}
     </template>
     <template #leftSlot>
-      <div v-html="impressum" class="box"></div>
+      <div class="vertical-center-flex">
+        <div v-html="impressum" class="box"></div>
+        <div v-html="aiAgenda" class="box"></div>
+      </div>
     </template>
     <template #rightSlot>
       <div class="vertical-center-flex">
-        <div v-html="aiAgenda" class="box"></div>
+        <div class="box">
+          <h2>Change Log</h2>
+          <div class="changelog" v-html="renderMarkdown(changelog)"></div>
+        </div>
       </div>
     </template>
   </TheTwoColumnsLayout>
@@ -19,10 +25,22 @@
 <script setup>
 import { computed, ref, onMounted } from 'vue'
 import TheTwoColumnsLayout from '@/layouts/TheTwoColumnsLayout.vue'
+import { changelog } from '@/helpers/utils'
+import MarkdownIt from 'markdown-it'
+const md = new MarkdownIt({
+  html: true,
+  breaks: true,
+  linkify: false,
+  typographer: false,
+})
 
 const version = computed(() => __APP_VERSION__)
 const impressum = ref('')
 const aiAgenda = ref('')
+
+const renderMarkdown = (text) => {
+  return md.render(text || '')
+}
 
 onMounted(async () => {
   try {
@@ -41,4 +59,9 @@ onMounted(async () => {
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+.changelog :deep(strong) {
+  font-weight: normal;
+  text-decoration: underline;
+}
+</style>
