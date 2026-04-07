@@ -10,8 +10,13 @@ versions:
       **Help Upgrades**
       - add command `--example`
       - add commands `--options` and `set option`
+      - show changelog in About view
 
-      Layout Tweaks
+      **Legal**
+      - add privacy policy placeholder
+      - require permission for AI data transfer
+
+      Multiple Layout Tweaks
     features: [maps, move, talk]
     fullSupport: 0.6.0
     minSupport: 0.4.0

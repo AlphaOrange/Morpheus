@@ -80,6 +80,13 @@ ${this.responseExample}`
     prompt = this.enhance_prompt(prompt)
     console.log(`== PROMPT ==\n${prompt}`)
 
+    // Legal Check: did user give permission?
+    if (!this.options.legalAllowAI) {
+      throw new Error(
+        'Data submission not allowed. You need us to give permission to send your data first! Go to the Options view and see under "AI Configuration"',
+      )
+    }
+
     // Run AI Model
     let response = null
     if (this.options.aiVendor === 'Google') {

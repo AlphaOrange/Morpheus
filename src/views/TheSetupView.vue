@@ -12,6 +12,10 @@
             <select v-model="options.aiVendor" id="selectAiVendor" class="long">
               <option>Google</option>
             </select>
+            <input type="checkbox" id="idLegalAllowAI" v-model="options.legalAllowAI" />
+            <label for="idLegalAllowAI"
+              >I consent to the transfer of data to the selected AI service provider</label
+            ><br /><br />
             <label for="selectAiVersion">Model Version:</label>
             <select v-model="options.aiModel" id="selectAiVersion" class="long">
               <option>gemini-2.5-flash</option>
@@ -28,6 +32,11 @@
             />
             <input type="checkbox" id="idAiApiKeyAllowSave" v-model="options.aiApiKeyAllowSave" />
             <label for="idAiApiKeyAllowSave">Store key with savegame</label>
+          </div>
+        </div>
+        <div v-if="options.aiApiKey !== '' && !options.legalAllowAI" class="box warning-box">
+          <div>
+            You did not yet give your allowance to send your data to the AI service provider.
           </div>
         </div>
         <div v-if="options.aiApiKey === ''" class="box warning-box">

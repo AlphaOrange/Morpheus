@@ -8,6 +8,8 @@ const SAVEABLE_OPTIONS = [
   'idlingBeforeTriggerNpc',
   'useAiForSavegameSummary',
   'useCompactButtons',
+  'legalAllowAI',
+  'legalAllowLocalStorage',
   // AI Settings
   'aiVendor',
   'aiModel',
@@ -81,6 +83,9 @@ export const useOptionsStore = defineStore('options', {
     aiSafetyHateSpeech: safetySettings.hateSpeech,
     aiSafetySex: safetySettings.sex,
     aiSafetyDangerous: safetySettings.dangerous,
+    // Legal settings
+    legalAllowAI: false,
+    legalAllowLocalStorage: false,
 
     // Book Settings (can be overwritten by book, e.g. ai settings)
     talkDuration: 30, // seconds that pass per talk action
