@@ -8,6 +8,7 @@
     <template #leftSlot>
       <div class="vertical-center-flex">
         <div v-html="impressum" class="box"></div>
+        <div v-html="privacyPolicy" class="box"></div>
         <div v-html="aiAgenda" class="box"></div>
       </div>
     </template>
@@ -36,6 +37,7 @@ const md = new MarkdownIt({
 
 const version = computed(() => __APP_VERSION__)
 const impressum = ref('')
+const privacyPolicy = ref('')
 const aiAgenda = ref('')
 
 const renderMarkdown = (text) => {
@@ -50,6 +52,14 @@ onMounted(async () => {
   } catch {
     const res = await fetch('content/impressum.placeholder.html')
     impressum.value = await res.text()
+  }
+  try {
+    const res = await fetch('content/privacy_policy.local.html')
+    if (!res.ok) throw new Error()
+    privacyPolicy.value = await res.text()
+  } catch {
+    const res = await fetch('content/privacy_policy.placeholder.html')
+    privacyPolicy.value = await res.text()
   }
   try {
     const res = await fetch('content/ai_agenda.local.html')
