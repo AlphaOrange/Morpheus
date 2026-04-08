@@ -17,6 +17,9 @@ versions:
       - require permission for AI data transfer
       - require permission for using local storage
 
+      **Misc**
+      - add remove button to all error messages in dialog
+
       Multiple Layout Tweaks
     features: [maps, move, talk]
     fullSupport: 0.6.0

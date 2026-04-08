@@ -34,6 +34,7 @@ export default class Protocol {
     // this.messages = []
     this.messages = [
       {
+        id: 1,
         type: 'system',
         time: 0,
         text: 'This is the start of the game protocol.',
@@ -43,6 +44,10 @@ export default class Protocol {
   static fromJSON(data, optionsStore) {
     const proto = new Protocol(optionsStore)
     proto.messages = data.messages
+    proto.count = proto.messages.length
+    proto.scene = proto.messages.reduce((acc, msg) => Math.max(acc, msg.scene ?? 0), 0)
+    console.log(proto.count)
+    console.log(proto.scene)
     return proto
   }
 
