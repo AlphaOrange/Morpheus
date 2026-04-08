@@ -29,6 +29,7 @@ export default class Protocol {
 
   constructor(optionsStore) {
     this.options = optionsStore
+    this.count = 1
     this.scene = 0
     // this.messages = []
     this.messages = [
@@ -163,10 +164,16 @@ export default class Protocol {
     return lastMessage.scene
   }
 
+  nextId() {
+    this.count++
+    return this.count
+  }
+
   // Actions: add entries
   pushTalk({ time, text, room, present, from, to = ':all' }) {
     const scene = this.getScene({ time, room, present })
     this.messages.push({
+      id: this.nextId(),
       type: 'talk',
       scene: scene,
       time: time,
@@ -180,6 +187,7 @@ export default class Protocol {
   pushHint({ time, text, room, present, to = ':all' }) {
     const scene = this.getScene({ time, room, present })
     this.messages.push({
+      id: this.nextId(),
       type: 'hint',
       scene: scene,
       time: time,
@@ -191,6 +199,7 @@ export default class Protocol {
   }
   pushInfo({ time, text, title = 'Info', expire = this.options.lookbackInfo }) {
     this.messages.push({
+      id: this.nextId(),
       type: 'info',
       time: time,
       text: text,
@@ -200,6 +209,7 @@ export default class Protocol {
   }
   pushSystem({ time, text }) {
     this.messages.push({
+      id: this.nextId(),
       type: 'system',
       time: time,
       text: text,
@@ -207,6 +217,7 @@ export default class Protocol {
   }
   pushError({ time, text, title = 'Error' }) {
     this.messages.push({
+      id: this.nextId(),
       type: 'error',
       time: time,
       text: text,
@@ -214,9 +225,9 @@ export default class Protocol {
     })
   }
 
-  // Undo Last Message
-  undoLastMessage() {
-    this.messages.pop()
+  // Remove a message
+  remove(messageId) {
+    this.messages = this.messages.filter((msg) => msg.id != messageId)
   }
 
   // Who has character charID last spoken to

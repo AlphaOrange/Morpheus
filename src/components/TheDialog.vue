@@ -19,9 +19,9 @@
               <span>{{ headerText(message) }}</span>
               <div>
                 <IconButton
-                  v-if="message.undo"
+                  v-if="message.removable"
                   icon="circle-xmark"
-                  @click="protocol.undoLastMessage()"
+                  @click="protocol.remove(message.id)"
                 />
                 <span class="timestamp">{{ timestamp(message) }}</span>
               </div>
@@ -78,11 +78,12 @@ const dialog = computed(() => {
       room = message.room
       enhancedDialog.push({ type: 'structural', spec: 'room', room: room, undo: false })
     }
-    enhancedDialog.push({ ...message, undo: false })
+    const removable = message.type === 'error'
+    enhancedDialog.push({ ...message, removable })
   })
   const lastMessage = enhancedDialog[enhancedDialog.length - 1]
   if (lastMessage.type === 'talk') {
-    lastMessage.undo = true
+    lastMessage.removable = true
   }
   return enhancedDialog
 })
