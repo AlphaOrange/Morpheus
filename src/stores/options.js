@@ -72,20 +72,20 @@ export const useOptionsStore = defineStore('options', {
     // Game Settings (can be changed by user, e.g. display options)
     idHintsMode: 'auto', // can be "never", "auto", "always"
     idlingBeforeTriggerNpc: 4, // seconds of idling until NPC actions are triggered
-    useAiForSavegameSummary: true, // if true use ai agent on save, otherwise use description as summary
+    useAiForSavegameSummary: false, // if true use ai agent on save, otherwise use description as summary
     useCompactButtons: true, // use compact buttons on cluttered action bar
     // AI configuration
     aiVendor: 'Google',
     aiModel: 'gemini-2.5-flash-lite',
     aiApiKey: import.meta.env.VITE_GEMINI_API_KEY,
-    aiApiKeyAllowSave: false,
+    aiApiKeyAllowSave: import.meta.env.VITE_ALLOW_SAVE_KEY,
     aiSafetyHarassment: safetySettings.harassment,
     aiSafetyHateSpeech: safetySettings.hateSpeech,
     aiSafetySex: safetySettings.sex,
     aiSafetyDangerous: safetySettings.dangerous,
     // Legal settings
-    legalAllowAI: false,
-    legalAllowLocalStorage: false,
+    legalAllowAI: import.meta.env.VITE_GENERAL_CONSENT,
+    legalAllowLocalStorage: import.meta.env.VITE_GENERAL_CONSENT,
 
     // Book Settings (can be overwritten by book, e.g. ai settings)
     talkDuration: 30, // seconds that pass per talk action

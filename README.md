@@ -47,7 +47,19 @@ If you want to add your API key as preset, create a file called `.env.local`and 
 VITE_GEMINI_API_KEY=[your key]
 ```
 
-Be careful to not share your key by accidentally uploading to Git or contain it in production code.
+You can also automatically activate storing your API key with your savegames:
+
+```
+VITE_ALLOW_SAVE_KEY=true
+```
+
+And automatically skip all user consent requests (AI usage and data storage):
+
+```
+VITE_GENERAL_CONSENT=true
+```
+
+_Be careful with these options and never use publicly in production, otherwise you might experience unwanted data leakage and/or legal issues!_
 
 ### 6. Built and Run App
 

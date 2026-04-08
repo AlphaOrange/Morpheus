@@ -15,6 +15,7 @@ versions:
       **Legal**
       - add privacy policy placeholder
       - require permission for AI data transfer
+      - require permission for using local storage
 
       Multiple Layout Tweaks
     features: [maps, move, talk]
