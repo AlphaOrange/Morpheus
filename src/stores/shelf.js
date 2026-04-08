@@ -1,7 +1,9 @@
+import { markRaw } from 'vue'
 import { defaultsBook } from '@/data/defaults'
 import { defineStore } from 'pinia'
 import { useOptionsStore } from '@/stores/options'
 import { useBookStore } from '@/stores/book'
+import ThePopupLocalStorage from '@/components/ThePopupLocalStorage.vue'
 
 // Initial load of saveData
 const saveString = localStorage.getItem('savegame')
@@ -38,6 +40,14 @@ export const useShelfStore = defineStore('shelf', {
       }
     },
     async saveBook() {
+      // check if permission for localStorage was given
+      if (!this.options.legalAllowLocalStorage) {
+        this.options.lightbox = {
+          component: markRaw(ThePopupLocalStorage),
+          props: {},
+        }
+        return
+      }
       await this.book.createSaveSummary()
       try {
         const saveString = JSON.stringify({ options: this.options, book: this.book })
