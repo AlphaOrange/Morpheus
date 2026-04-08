@@ -20,6 +20,9 @@ versions:
       **Misc**
       - add remove button to all error messages in dialog
 
+      **Bugfixes**
+      - fixed issue with scene numbers not correctly restored after load
+
       Multiple Layout Tweaks
     features: [maps, move, talk]
     fullSupport: 0.6.0

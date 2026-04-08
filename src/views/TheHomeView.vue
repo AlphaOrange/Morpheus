@@ -75,6 +75,14 @@
         >
           <div class="image-text">Continue Now!</div>
         </div>
+        <div
+          v-else
+          class="continue"
+          @click="runStarter()"
+          :style="{ backgroundImage: `url(${starterCover})` }"
+        >
+          <div class="image-text">Play Now!</div>
+        </div>
       </div>
     </div>
   </div>
@@ -87,6 +95,8 @@ import logoImg from '@/assets/images/logo_transparent.png'
 
 import { useShelfStore } from '@/stores/shelf'
 const shelf = useShelfStore()
+import { useBookStore } from '@/stores/book'
+const bookStore = useBookStore()
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
@@ -105,6 +115,24 @@ const savegameCover = computed(() => {
 const loadSavegame = async () => {
   shelf.loadBook()
   router.push('/book')
+}
+
+const starterBook = computed(() => {
+  return Object.values(shelf.books)[0]
+})
+
+const starterCover = computed(() => {
+  console.log(starterBook.value)
+  if (starterBook.value.cover) {
+    return bookImg({ filename: starterBook.value.cover, size: 'M', bookId: starterBook.value.id })
+  } else {
+    return genericImg({ filename: 'generic_cover.jpg', size: 'M' })
+  }
+})
+
+const runStarter = async () => {
+  await bookStore.loadBook(starterBook.value.id)
+  router.push('/setup')
 }
 </script>
 
