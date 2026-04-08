@@ -7,42 +7,40 @@
         </RouterLink>
         <div class="box">
           <h3>AI Configuration</h3>
+          <label for="selectAiVendor">Model Name:</label>
+          <select v-model="options.aiVendor" id="selectAiVendor" class="long">
+            <option>Google</option>
+          </select>
           <div class="input-group">
-            <label for="selectAiVendor">Model Name:</label>
-            <select v-model="options.aiVendor" id="selectAiVendor" class="long">
-              <option>Google</option>
-            </select>
             <input type="checkbox" id="idLegalAllowAI" v-model="options.legalAllowAI" />
             <label for="idLegalAllowAI"
               >I consent to the transfer of data to the selected AI service provider</label
-            ><br /><br />
-            <label for="selectAiVersion">Model Version:</label>
-            <select v-model="options.aiModel" id="selectAiVersion" class="long">
-              <option>gemini-2.5-flash</option>
-              <option>gemini-2.5-flash-lite</option>
-            </select>
+            >
           </div>
+          <div v-if="options.aiApiKey !== '' && !options.legalAllowAI" class="box warning-box">
+            <div>You did not yet give permission to send your data to the AI service provider.</div>
+          </div>
+          <label for="selectAiVersion">Model Version:</label>
+          <select v-model="options.aiModel" id="selectAiVersion" class="long">
+            <option>gemini-2.5-flash</option>
+            <option>gemini-2.5-flash-lite</option>
+          </select>
           <h3>API Key:</h3>
+          <input
+            type="text"
+            v-model="options.aiApiKey"
+            placeholder="insert valid key"
+            class="long"
+          />
+          <div v-if="options.aiApiKey === ''" class="box warning-box">
+            <div>
+              You did not yet enter an API key. Without LLM model connection functionality is
+              extremely limited!
+            </div>
+          </div>
           <div class="input-group">
-            <input
-              type="text"
-              v-model="options.aiApiKey"
-              placeholder="insert valid key"
-              class="long"
-            />
             <input type="checkbox" id="idAiApiKeyAllowSave" v-model="options.aiApiKeyAllowSave" />
             <label for="idAiApiKeyAllowSave">Store key with savegame</label>
-          </div>
-        </div>
-        <div v-if="options.aiApiKey !== '' && !options.legalAllowAI" class="box warning-box">
-          <div>
-            You did not yet give your allowance to send your data to the AI service provider.
-          </div>
-        </div>
-        <div v-if="options.aiApiKey === ''" class="box warning-box">
-          <div>
-            You did not yet enter an API key. Without LLM model connection functionality is
-            extremely limited!
           </div>
         </div>
         <div>

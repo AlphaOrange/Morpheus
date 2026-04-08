@@ -191,6 +191,10 @@ button:hover .pill {
   background: var(--bg-warning);
 }
 
+.box > .warning-box {
+  margin-bottom: 1rem;
+}
+
 /* Hints */
 
 .hint-anchor {
