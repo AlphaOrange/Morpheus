@@ -17,11 +17,16 @@ versions:
       - require permission for AI data transfer
       - require permission for using local storage
 
+      **Books**
+      - new parameter `options` with new book options `minPlayerChars` and `maxPlayerChars`
+
       **Misc**
       - add remove button to all error messages in dialog
+      - no longer talk to "all" if there is only one other character
 
       **Bugfixes**
       - fixed issue with scene numbers not correctly restored after load
+      - fixed issue with inaccurate version check
 
       Multiple Layout Tweaks
     features: [maps, move, talk]

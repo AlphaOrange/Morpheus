@@ -55,6 +55,7 @@
       </h3>
       <div class="button-list">
         <ActionButton
+          v-if="room.numberOfPlayers + room.numberOfAis > 2"
           @click="talkToAll(char)"
           :text="'Talk to all'"
           :icon="'comment'"

@@ -83,6 +83,9 @@ export default class Room {
   get numberOfPlayers() {
     return this.presentPlayerCharacters.length
   }
+  get numberOfAis() {
+    return this.presentAiCharacters.length
+  }
   get active() {
     return this.numberOfPlayers > 0
   }

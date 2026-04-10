@@ -514,6 +514,15 @@ export const useBookStore = defineStore('book', {
 
     // ########## Game Processing ##########
 
+    // Helper: change :all to id if only one other char present
+    concretizeTalkTo(command) {
+      let talkTo = command.action === 'talk' ? command.target : ':all'
+      if (talkTo === ':all' && this.room.numberOfPlayers + this.room.numberOfAis === 2) {
+        talkTo = Object.keys(this.room.characters).filter((id) => id !== command.actor)
+      }
+      return talkTo
+    },
+
     // Process command (from AI or processed user message)
     async executeCommand(command) {
       const present = Object.keys(this.room.characters)
@@ -559,6 +568,9 @@ export const useBookStore = defineStore('book', {
           return
         }
 
+        // Concretize target if there is only one option
+        const talkTo = this.concretizeTalkTo(command)
+
         // Send TALK message
         this.protocol.pushTalk({
           text: command.message,
@@ -566,7 +578,7 @@ export const useBookStore = defineStore('book', {
           room: this.room.id,
           present: present,
           from: command.actor,
-          to: command.target,
+          to: talkTo,
         })
 
         // Increase time
@@ -615,6 +627,19 @@ export const useBookStore = defineStore('book', {
         }
         const infoMessage = `${charMoving} just left ${this.room.name}`
 
+        // Send TALK message
+        const talkTo = this.concretizeTalkTo(command)
+        if (command.message !== null) {
+          this.protocol.pushTalk({
+            time: this.time,
+            text: command.message,
+            room: this.room.id,
+            present: present,
+            from: command.actor,
+            to: talkTo,
+          })
+        }
+
         // Move actors
         const { targetRoom, moveDuration } = this.getMoveSpecs(command.target, command.spec)
         if (command.actor === ':group') {
@@ -626,16 +651,6 @@ export const useBookStore = defineStore('book', {
           this.moveChar(command.actor, targetRoom, moveDuration)
         }
 
-        // Send TALK message
-        if (command.message !== null) {
-          this.protocol.pushTalk({
-            time: this.time,
-            text: command.message,
-            room: this.room.id,
-            present: present,
-            from: command.actor,
-          })
-        }
         // Send INFO message
         this.protocol.pushHint({
           time: this.time,
