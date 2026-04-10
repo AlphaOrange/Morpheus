@@ -382,9 +382,9 @@ export function getHelpData(topic) {
 import versionData from '@/data/versions.yaml'
 export function checkSupported(version) {
   const info = versionData.versions[0]
-  if (semver.satisfies(version, info.fullSupport)) {
+  if (semver.satisfies(version, '>=' + info.fullSupport)) {
     return 'full'
-  } else if (semver.satisfies(version, info.minSupport)) {
+  } else if (semver.satisfies(version, '>=' + info.minSupport)) {
     return 'min'
   } else {
     return 'unsupported'

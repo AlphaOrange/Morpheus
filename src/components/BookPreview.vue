@@ -9,12 +9,12 @@
       <p class="sub-heading">by {{ book.author }}</p>
       <p v-if="supported === 'min'">
         <span class="tag tag-warning">
-          created for Morpheus {{ book.version.book }}, some features may be unsupported
+          created for Morpheus {{ book.version.morpheus }}, some features may be unsupported
         </span>
       </p>
       <p v-if="supported === 'unsupported'">
         <span class="tag tag-warning">
-          created for Morpheus {{ book.version.book }}, no longer supported
+          created for Morpheus {{ book.version.morpheus }}, no longer supported
         </span>
       </p>
       <div class="tags">
@@ -89,7 +89,7 @@ const cover = computed(() => {
 })
 
 const supported = computed(() => {
-  return checkSupported(props.book.version.book)
+  return checkSupported(props.book.version.morpheus)
 })
 
 const featureDescription = (feature) => {
