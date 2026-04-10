@@ -32,7 +32,7 @@
           @click="moveToRoom(avRoom)"
           :text="avRoom.name"
           icon="door-open"
-          :pill="distancePeriodText(room, avRoom)"
+          :pill="pilltext(distancePeriodText(room, avRoom))"
           :hint="avRoom.commandId"
           :compact="compact"
         />
@@ -42,7 +42,7 @@
           @click="moveToLocation(location)"
           :text="location.name"
           icon="person-walking"
-          :pill="distancePeriodText(room, location)"
+          :pill="pilltext(distancePeriodText(room, location))"
           :hint="location.commandId"
           :compact="compact"
         />
@@ -75,7 +75,7 @@
           @click="moveCharToRoom(char, avRoom)"
           :text="avRoom.name"
           :icon="'door-open'"
-          :pill="distancePeriodText(room, avRoom)"
+          :pill="pilltext(distancePeriodText(room, avRoom))"
           :compact="compact"
         />
         <ActionButton
@@ -84,7 +84,7 @@
           @click="moveCharToLocation(char, location)"
           :text="location.name"
           :icon="'person-walking'"
-          :pill="distancePeriodText(room, location)"
+          :pill="pilltext(distancePeriodText(room, location))"
           :compact="compact"
         />
       </div>
@@ -117,6 +117,10 @@ const emits = defineEmits(['talk', 'move', 'runNarrator', 'save'])
 
 const switchTo = (room) => {
   book.switchTo(room)
+}
+
+const pilltext = (distText) => {
+  return distText === '0s' ? null : distText
 }
 
 const compact = computed(() => {
