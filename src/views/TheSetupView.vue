@@ -61,6 +61,7 @@
             :character="char"
             :key="char"
             :class="isSelected(char.id)"
+            description="setup"
             @click="selectPlayer(char.id)"
           />
         </div>

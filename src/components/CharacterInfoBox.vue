@@ -30,6 +30,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  description: {
+    type: String,
+    default: 'default',
+  },
 })
 
 // Collapse box for better overview
@@ -41,7 +45,13 @@ const toggle = () => {
   }
 }
 
-const shortDescription = computed(() => truncateString(props.character.description, 120))
+const shortDescription = computed(() => {
+  if (props.description === 'setup') {
+    return truncateString(props.character.selectionDescription, 300)
+  } else {
+    return truncateString(props.character.description, 120)
+  }
+})
 </script>
 
 <style scoped>

@@ -292,6 +292,8 @@ The character file must have the same name as the character folder (the characte
   _(optional - default: true)_
 - `description`: a short description only to be seen by the _player_  
   _(optional - default: "No description")_
+- `description_player`: description to be shown in the "choose character" section  
+  _(optional, only used if a character is both `isPlayable` and `isNPC`)_
 - `gender`: _any_ text  
   _Be aware that some future game mechanics might only work for "male" and "female" characters_
 - `age`: age as a number
@@ -321,7 +323,8 @@ The character file must have the same name as the character folder (the characte
   - `location`: ID of location where the character starts
   - `room`: ID of room where the character starts
 
-_If "isNPC = false", you don't need to provide a `behavior` description, because it will not have any effect. You also don't need to set the `start` attribute, because this is set in the book file for player characters._
+_If "isNPC = false", you don't need to provide a `behavior` description, because it will not have any effect. You also don't need to set the `start` attribute, because this is set in the book file for player characters._  
+_If "isPlayable = false", the `description_player` parameter has no effect. If "isPlayable = true" and "isNPC = false" you can also omit `description_player`, because `description` will be used as fallback anyway._
 
 Note: Of the descriptive items, only `description` will ever be displayed for the player to read. All others (like `body`, `behavior`, `background`) are only for the AI to use. Keep them precise, short and concise, you don't need to flesh out whole polished sentences.
 
@@ -333,8 +336,10 @@ name: Bob
 isPlayable: true
 isNPC: true
 description: >-
+  A rather silent nurse, hiding half of his face behind a mask.
+description_player: >-
   Bob treats everything from minor scratches to severe blowtorch
-  wounds, and always with a smile behind his mark.
+  wounds, and always with a smile behind his mask.
 gender: male
 age: 32
 image: bob.jpg

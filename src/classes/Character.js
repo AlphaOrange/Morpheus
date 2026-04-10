@@ -15,6 +15,7 @@ export default class Character {
       'isPlayable',
       'isNPC',
       'description',
+      'description_player',
       'gender',
       'age',
       'profession',
@@ -49,6 +50,7 @@ export default class Character {
       isPlayable: this.isPlayable,
       isNPC: this.isNPC,
       description: this.description,
+      description_player: this.description_player,
       gender: this.gender,
       age: this.age,
       profession: this.profession,
@@ -104,6 +106,11 @@ export default class Character {
       demo = '♀'
     }
     return demo + this.age
+  }
+
+  // Getter: Description for selection menu
+  get selectionDescription() {
+    return this.description_player === '' ? this.description : this.description_player
   }
 
   // Move character to another room

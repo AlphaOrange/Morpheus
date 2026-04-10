@@ -23,6 +23,7 @@ export const defaultsCharacter = {
   isPlayable: false,
   isNPC: true,
   description: 'No description',
+  description_player: '',
   image: '',
   profession: 'Employed',
   behavior: 'Friendly',
