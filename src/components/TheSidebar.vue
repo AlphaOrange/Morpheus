@@ -163,17 +163,20 @@ footer img.cover {
   height: auto;
   bottom: 0;
   left: 0;
+  border-radius: 0 0.25rem 0 0;
   box-shadow: var(--drop-shadow);
   z-index: 1000;
   transition: all 0.25s ease-out 0.15s;
 }
 footer .book-title {
   position: relative;
-  text-align: center;
+  width: var(--width-navbar-extended);
+  margin: 0 0 10rem 2rem;
   z-index: 2001;
+  color: var(--col-font-toned);
   text-shadow: var(--text-shadow);
   opacity: 0;
-  transition: opacity 0.25s ease-out 0.15s;
+  transition: opacity 0.1s ease-out 0.15s;
 }
 
 /* Active Link */
@@ -208,12 +211,13 @@ footer .book-title {
   height: auto;
   bottom: -2rem;
   left: calc(50% - 4rem);
+  border-radius: 0.5rem 0.5rem 0 0;
   box-shadow: var(--drop-shadow);
   transform: rotate(-4deg);
   transition: all 0.4s ease-in-out 0.5s;
 }
 .sidebar:hover footer .book-title {
   opacity: 1;
-  transition: opacity 0.4s ease-in-out 0.5s;
+  transition: opacity 0.1s ease-in-out 0.8s;
 }
 </style>
