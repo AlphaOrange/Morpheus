@@ -20,11 +20,13 @@ versions:
 
       **Books**
       - new parameter `options` with new book options `minPlayerChars` and `maxPlayerChars`
+      - new parameter `description_player` allows for different description in character selection menu
 
       **Misc**
       - add remove button to all error messages in dialog
       - no longer talk to "all" if there is only one other character
       - can show session's total token count
+      - reduce move time between rooms to 0 seconds
 
       **Bugfixes**
       - fixed issue with scene numbers not correctly restored after load
