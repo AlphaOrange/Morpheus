@@ -2,6 +2,7 @@ import 'normalize.css'
 import '@/style/fonts.css'
 import '@/style/vars.css'
 import '@/style/main.css'
+import '@/style/inputs.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'

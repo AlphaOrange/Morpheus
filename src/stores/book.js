@@ -212,7 +212,7 @@ export const useBookStore = defineStore('book', {
             .map((char) => char.name)
           const charArrived = [...charArrivedAi, ...charArrivedPlayer]
           const text =
-            this.time === 0
+            this.time === 0 && charArrivedAi.length > 0
               ? `${joinAnd(charArrivedPlayer)} just arrived at ${room.name}, ${joinAnd(charArrivedAi)} also here.`
               : `${joinAnd(charArrived)} just arrived at ${room.name}`
           this.protocol.pushHint({
@@ -638,6 +638,9 @@ export const useBookStore = defineStore('book', {
           room: this.room.id,
           present: present,
         })
+
+        // Add time of 0 for instant arrivals (books without maps)
+        this.addTime(0)
 
         // If current room now empty move to next room with players
         if (this.room.numberOfPlayers === 0) {

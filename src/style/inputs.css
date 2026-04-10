@@ -1,0 +1,130 @@
+/* Input Collections */
+
+.input-group {
+  margin: 0.5rem 0.5rem 1rem;
+}
+
+.button-list button {
+  margin-right: 0.5rem;
+}
+
+/* Buttons */
+
+button {
+  padding: 0.5rem 1rem;
+  margin: 0 0 0.5rem 0;
+  border: none;
+  border-radius: 0.5rem;
+  background: var(--bg-box);
+  color: var(--col-font);
+  text-align: left;
+  cursor: pointer;
+}
+button:last-child {
+  margin: 0;
+}
+button.centered {
+  text-align: center;
+}
+button:disabled {
+  color: var(--col-font-fade);
+  cursor: not-allowed;
+}
+button:hover {
+  background: var(--bg-highlight);
+}
+button:disabled:hover {
+  background: var(--bg-box);
+}
+
+/* Input Elements */
+
+input {
+  appearance: none;
+}
+
+input.long,
+select.long {
+  width: 100%;
+}
+
+/* Text Input + Select Elements */
+
+input[type='text'],
+select {
+  margin: 0 0 0.5rem;
+  padding: 0.25rem 0.5rem;
+  border: none;
+  border-radius: 0.25rem;
+  color: var(--col-font);
+  background: var(--bg-boxlight);
+}
+
+input[type='text']:focus,
+select:focus {
+  outline: 2px solid var(--bg-highlight);
+}
+
+select {
+  margin: 0.25rem 0 0.5rem;
+  display: block;
+}
+
+/* Checkboxes + Radio Buttons */
+
+input[type='radio'],
+input[type='checkbox'] {
+  position: relative;
+  margin: 0 0.5rem 0.25rem 0;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid var(--bg-boxlight);
+  vertical-align: -6px;
+  color: var(--col-font);
+  cursor: pointer;
+}
+input[type='radio'] {
+  border-radius: 50%;
+}
+
+input[type='radio']::before,
+input[type='checkbox']::before {
+  position: absolute;
+  font-size: 1.2em;
+  right: -1px;
+  top: -0.3em;
+  visibility: hidden;
+}
+input[type='radio']::before {
+  content: '✖';
+}
+input[type='checkbox']::before {
+  content: '✔';
+}
+
+input[type='radio']:checked::before,
+input[type='checkbox']:checked::before {
+  visibility: visible;
+}
+
+input[type='radio']:disabled,
+input[type='checkbox']:disabled {
+  border-color: black;
+  background: #dddddd;
+  color: gray;
+}
+
+/* Buttons in Boxes */
+
+.box button {
+  background: var(--bg-boxlight);
+}
+.box button:hover {
+  background: var(--bg-highlight);
+}
+
+/* Button Pills */
+
+button:hover .pill {
+  background: var(--bg-light);
+}
