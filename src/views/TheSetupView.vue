@@ -54,7 +54,7 @@
         <p class="sub-heading">{{ title }}</p>
       </div>
       <div class="page-content">
-        <h3>Choose at least 1 player character:</h3>
+        <h3>{{ headlineChooseChars }}</h3>
         <div class="horizontal-flex item-selection">
           <CharacterInfoBox
             v-for="char in playableCharacters"
@@ -117,8 +117,34 @@ const isSelected = (id) => {
   }
 }
 
+// Character Choosing headline depending on allowed number of characters
+const headlineChooseChars = computed(() => {
+  if (options.minPlayerChars === options.maxPlayerChars) {
+    if (options.minPlayerChars === 1) {
+      return 'Choose your player character:'
+    } else {
+      return `Choose ${options.minPlayerChars} player characters:`
+    }
+  } else {
+    if (options.maxPlayerChars === 99) {
+      if (options.minPlayerChars === 1) {
+        return `Choose at least 1 player character:`
+      } else {
+        return `Choose at least ${options.minPlayerChars} player characters:`
+      }
+    } else {
+      return `Choose ${options.minPlayerChars} to ${options.maxPlayerChars} player characters:`
+    }
+  }
+})
+
 // Check if settings are okay and user may start book
-const checkConditions = computed(() => playerSelection.value.size > 0)
+const checkConditions = computed(() => {
+  return (
+    playerSelection.value.size >= options.minPlayerChars &&
+    playerSelection.value.size <= options.maxPlayerChars
+  )
+})
 
 // Start the book
 const startBook = async () => {

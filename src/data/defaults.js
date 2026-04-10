@@ -8,6 +8,10 @@ export const defaultsBookStart = {
   datetime: '2020-01-01 12:00:00',
   introduction: 'Your story starts now!',
 }
+export const defaultsBookOptions = {
+  minPlayerChars: 1,
+  maxPlayerChars: 99,
+}
 
 export const defaultsWorld = {
   name: 'Unnamed World',

@@ -92,6 +92,8 @@ export const useOptionsStore = defineStore('options', {
     moveDurationRoom: 60, // seconds to adjacent room
     moveDurationLocation: 60, // seconds / 1 distance location move
     moveDurationDestination: 3600, // seconds / 1 distance destination move
+    minPlayerChars: 1, // min number of characters player must choose to control
+    maxPlayerChars: 99, // max number of characters player may choose to control
 
     // Runtime Variables (e.g. user activity flags)
     idHintsActive: false,

@@ -214,6 +214,8 @@ There must be exactly one book file and it must be named `book.yaml`. The book f
     _(optional - default: "2020-01-01 12:00:00")_
   - `introduction`: an introduction text for the _user_ (not readable for the _characters_) at the very start of the story  
     _(optional - default: "Your story starts now!")_
+- `options`: an object with book options - see "Book Options"  
+  _(completely optional, all options entries optional - see "Book Options" for defaults)_
 
 Make sure the IDs in `start` do not contradict each other.
 
@@ -246,6 +248,9 @@ start:
     you arrived at the Electric City in the morning.
     The town is full of lights and buzzing noises, but the streets
     are empty, so you enter the first building, the casino.
+options:
+  minPlayerChars: 1
+  maxPlayerChars: 2
 ```
 
 ### World File
@@ -466,6 +471,14 @@ In your book you can give a list of supported features, so users can directly se
 - "maps": Map positions are used for distance calculation, i.e. there is at least one destination or location with position other than [0, 0] or detour other than 0.
 - "move": Player must be able to move to at least one other room from the starting location.
 - "talk": In every configuration of the book there must be at least one NPC you can meet (and talk to).
+
+#### Book Options
+
+In the book file you can define options for your book. The following options are available:
+
+- `minPlayerChars` (Default: 1): The minimum number of characters a user must choose to control
+- `maxPlayerChars` (Default: 99): The maximum number of characters a player may choose to control  
+  _(99 basically means "unlimited")_
 
 ## Compiling books
 

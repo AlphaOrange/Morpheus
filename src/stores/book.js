@@ -13,7 +13,7 @@ import {
   genericImg,
   bookImg,
 } from '@/helpers/utils'
-import { defaultsBook, defaultsBookStart } from '@/data/defaults'
+import { defaultsBook, defaultsBookStart, defaultsBookOptions } from '@/data/defaults'
 import { useOptionsStore } from '@/stores/options'
 
 export const useBookStore = defineStore('book', {
@@ -336,6 +336,7 @@ export const useBookStore = defineStore('book', {
     assignBaseBookData(rawData) {
       const data = { ...defaultsBook, ...rawData }
       data.start = { ...defaultsBookStart, ...data.start }
+      data.options = { ...defaultsBookOptions, ...(data.options ?? {}) }
 
       this.id = data.id
       this.author = data.author
@@ -353,6 +354,10 @@ export const useBookStore = defineStore('book', {
         this.startTime = new Date(data.start.datetime)
         this.introduction = data.start.introduction || 'The Game Begins'
       }
+      // Set book options
+      ;['minPlayerChars', 'maxPlayerChars'].forEach(
+        (key) => (this.options[key] = data.options[key]),
+      )
     },
 
     // Helper for collecting all rooms by id
