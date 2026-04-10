@@ -1,4 +1,5 @@
 import { GoogleGenAI } from '@google/genai'
+import { useShelfStore } from '@/stores/shelf'
 import { useOptionsStore } from '@/stores/options'
 
 export default class Agent {
@@ -12,6 +13,7 @@ export default class Agent {
   responseExample = null
 
   // Options
+  shelf = useShelfStore()
   options = useOptionsStore()
   timeout = 30000
   aiKey = ''
@@ -73,7 +75,7 @@ ${this.responseExample}`
       safetySettings: this.options.aiSafetySettingsGemini,
     })
 
-    return response.text
+    return { text: response.text, tokens: response.usageMetadata.totalTokenCount }
   }
 
   async query({ prompt, type = 'json' }) {
@@ -94,14 +96,17 @@ ${this.responseExample}`
     } else {
       throw new Error('AI Vendor not supported')
     }
-    console.log(`== RESPONSE ==\n${response}`)
+    this.shelf.tokenUsage = this.shelf.tokenUsage + response.tokens
 
-    // Optionally parse JSON
+    // Return text or JSON
+    let responseText = response.text
     if (type === 'json') {
-      const jsonText = response.substring(response.indexOf('{'), response.lastIndexOf('}') + 1)
-      response = JSON.parse(jsonText)
+      const jsonText = responseText.substring(
+        responseText.indexOf('{'),
+        responseText.lastIndexOf('}') + 1,
+      )
+      return JSON.parse(jsonText)
     }
-
-    return response
+    return responseText
   }
 }

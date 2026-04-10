@@ -22,10 +22,15 @@ export function formatDate(datetime) {
   return `${d}. ${m}. ${y}`
 }
 
-export function formatTime(datetime) {
+export function formatTime({ datetime, ampm = false }) {
   const h = String(datetime.getHours()).padStart(2, '0')
   const min = String(datetime.getMinutes()).padStart(2, '0')
-  return `${h}:${min}`
+  if (ampm) {
+    const suffix = datetime.getHours() >= 12 ? 'pm' : 'am'
+    return `${h}:${min}${suffix}`
+  } else {
+    return `${h}:${min}`
+  }
 }
 
 // return a key from object using keys as relative probabilities
@@ -314,12 +319,12 @@ export function formatDialog({ messages, perspective }) {
       scene = message.scene
       time = message.time
       const roomName = book.rooms[message.room].name
-      const gameTime = formatTime(book.toGametime(message.time))
+      const gameTime = formatTime({ datetime: book.toGametime(message.time), ampm: true })
       dialog.push(`(Place: ${roomName} | Time: ${gameTime})`)
     }
     if (message.time - time >= options.repeatTimestampAfterSeconds) {
       time = message.time
-      const gameTime = formatTime(book.toGametime(message.time))
+      const gameTime = formatTime({ datetime: book.toGametime(message.time), ampm: true })
       dialog.push(`(Time: ${gameTime})`)
     }
     if (message.type === 'talk') {

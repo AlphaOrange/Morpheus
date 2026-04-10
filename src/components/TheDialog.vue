@@ -155,7 +155,7 @@ const messageText = (message) => {
   }
 }
 const timestamp = (message) => {
-  return formatTime(bookStore.toGametime(message.time))
+  return formatTime({ datetime: bookStore.toGametime(message.time) })
 }
 
 // Render conversation texts from Markdown to HTML

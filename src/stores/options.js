@@ -8,6 +8,7 @@ const SAVEABLE_OPTIONS = [
   'idlingBeforeTriggerNpc',
   'useAiForSavegameSummary',
   'useCompactButtons',
+  'showTokenUsage',
   'legalAllowAI',
   'legalAllowLocalStorage',
   // AI Settings
@@ -33,6 +34,7 @@ const USER_OPTIONS = [
   'idlingBeforeTriggerNpc',
   'useAiForSavegameSummary',
   'useCompactButtons',
+  'showTokenUsage',
   'aiVendor',
   'aiModel',
   'aiApiKeyAllowSave',
@@ -74,6 +76,7 @@ export const useOptionsStore = defineStore('options', {
     idlingBeforeTriggerNpc: 4, // seconds of idling until NPC actions are triggered
     useAiForSavegameSummary: false, // if true use ai agent on save, otherwise use description as summary
     useCompactButtons: true, // use compact buttons on cluttered action bar
+    showTokenUsage: false, // show number of tokens (in + out) used in this session
     // AI configuration
     aiVendor: 'Google',
     aiModel: 'gemini-2.5-flash-lite',

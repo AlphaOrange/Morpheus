@@ -4,6 +4,7 @@ features:
   maps: Move durations depend on distance and terrain
   move: Visit different places
   talk: Have conversations with NPCs
+  visual: Has images for characters and/or places
 versions:
   - version: 0.7.0
     updates: |-
@@ -23,6 +24,7 @@ versions:
       **Misc**
       - add remove button to all error messages in dialog
       - no longer talk to "all" if there is only one other character
+      - can show session's total token count
 
       **Bugfixes**
       - fixed issue with scene numbers not correctly restored after load

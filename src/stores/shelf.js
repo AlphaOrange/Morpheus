@@ -13,6 +13,7 @@ export const useShelfStore = defineStore('shelf', {
   state: () => ({
     books: [],
     saveData: saveData,
+    tokenUsage: 0,
   }),
 
   getters: {

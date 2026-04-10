@@ -28,7 +28,7 @@ const theDate = computed(() => {
   return formatDate(datetime.value)
 })
 const theTime = computed(() => {
-  return formatTime(datetime.value)
+  return formatTime({ datetime: datetime.value })
 })
 
 const addTime = (seconds) => {

@@ -22,6 +22,8 @@
               <option>gemini-2.5-flash</option>
               <option>gemini-2.5-flash-lite</option>
             </select>
+            <input type="checkbox" id="idShowUsage" v-model="options.showTokenUsage" />
+            <label for="idShowUsage">Permanently display number of tokens used in session</label>
           </div>
           <h3>API Key:</h3>
           <div class="input-group">

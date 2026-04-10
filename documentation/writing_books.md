@@ -471,6 +471,7 @@ In your book you can give a list of supported features, so users can directly se
 - "maps": Map positions are used for distance calculation, i.e. there is at least one destination or location with position other than [0, 0] or detour other than 0.
 - "move": Player must be able to move to at least one other room from the starting location.
 - "talk": In every configuration of the book there must be at least one NPC you can meet (and talk to).
+- "visual": There are any custom images for places or characters.
 
 #### Book Options
 
