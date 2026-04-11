@@ -1,5 +1,5 @@
 // vite-plugin-prepare-images.js
-import { readdirSync, mkdirSync, rmSync } from 'fs'
+import { readdirSync, mkdirSync, copyFileSync, rmSync } from 'fs'
 import { resolve, join, extname, dirname } from 'path'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
@@ -58,6 +58,31 @@ const SIZES = {
   },
 }
 
+// Copy images from books to public folder
+function _collectImages(inputBookDir, trace, outputImageDir) {
+  const inputDir = join(inputBookDir, ...trace)
+  const entries = readdirSync(inputDir, { withFileTypes: true }).filter(
+    (entry) => !entry.name.startsWith('.'),
+  )
+
+  entries.forEach((entry) => {
+    if (entry.isDirectory()) {
+      _collectImages(inputBookDir, [...trace, entry.name], outputImageDir)
+    } else if (entry.isFile()) {
+      const ext = extname(entry.name).toLowerCase()
+      if (['.png', '.jpg', '.jpeg'].includes(ext)) {
+        const srcPath = join(inputDir, entry.name)
+        const destFilename = [...trace, entry.name].join('_')
+        const destPath = join(outputImageDir, destFilename)
+        mkdirSync(outputImageDir, { recursive: true })
+        copyFileSync(srcPath, destPath)
+        console.log(`🖼 Copied image: ${srcPath} => ${destPath}`)
+      }
+    }
+  })
+}
+
+// Deep walk return list of relative paths of files
 function walkDir(baseDir, currentDir = '') {
   const fullPath = join(baseDir, currentDir)
   const entries = readdirSync(fullPath, { withFileTypes: true })
@@ -88,34 +113,56 @@ const RATIOS = TYPES.map((type) => SIZES[type].ratio)
 export default function prepareImagesPlugin(options = {}) {
   // Fill in default options
   const {
-    genericsDirFrom = 'src/images',
-    booksDirFrom = 'tmp_images/books',
-    genericsDir = 'public/images',
-    booksDir = 'public/images/books',
+    inputDir = 'src/books',
+    inputGenerics = 'src/images',
+    tmpDir = 'tmp_images/books',
+    outputDir = 'public/images/books',
+    outputGenerics = 'public/images',
   } = options
 
   // Generate absolute paths
   const __dirname = fileURLToPath(new URL('.', import.meta.url))
-  const genericsPathFrom = resolve(__dirname, genericsDirFrom)
-  const booksPathFrom = resolve(__dirname, booksDirFrom)
-  const genericsPath = resolve(__dirname, genericsDir)
-  const booksPath = resolve(__dirname, booksDir)
+  const pathInputDir = resolve(__dirname, inputDir) // path: book source folders
+  const pathInputGenerics = resolve(__dirname, inputGenerics)
+  const pathTmpDir = resolve(__dirname, tmpDir)
+  const pathOutputDir = resolve(__dirname, outputDir)
+  const pathOutputGenerics = resolve(__dirname, outputGenerics)
 
-  // Flag to ensure we only run once
-  let hasRun = false
-  let isBuild = false
+  // Plugin function: process book images
+  let hasCollected = false
+  async function runCollectImages() {
+    if (hasCollected) return
+    hasCollected = true
 
-  // Loop through all folders, images and sizes
-  async function runPrepareImages() {
-    if (hasRun) return
-    hasRun = true
-    const bookIDs = readdirSync(booksPathFrom, { withFileTypes: true })
+    // Clear output folders
+    rmSync(pathTmpDir, { recursive: true, force: true })
+    mkdirSync(pathTmpDir, { recursive: true })
+
+    // Find all directories
+    const bookIDs = readdirSync(pathInputDir, { withFileTypes: true })
       .filter((entry) => !entry.name.startsWith('.'))
       .filter((entry) => entry.isDirectory())
       .map((entry) => entry.name)
-    const allPathsFrom = [genericsPathFrom, ...bookIDs.map((id) => join(booksPathFrom, id))]
-    const allPathsTo = [genericsPath, ...bookIDs.map((id) => join(booksPath, id))]
-    allPathsFrom.forEach(async (from, index) => {
+
+    // Process all books
+    bookIDs.forEach((bookID) =>
+      _collectImages(join(pathInputDir, bookID), [], join(pathTmpDir, bookID)),
+    )
+  }
+
+  // Loop through all folders, images and sizes
+  let hasProcessed = false
+  async function runProcessImages() {
+    if (hasProcessed) return
+    hasProcessed = true
+    const bookIDs = readdirSync(pathTmpDir, { withFileTypes: true })
+      .filter((entry) => !entry.name.startsWith('.'))
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name)
+    const allPathsFrom = [pathInputGenerics, ...bookIDs.map((id) => join(pathTmpDir, id))]
+    const allPathsTo = [pathOutputGenerics, ...bookIDs.map((id) => join(pathOutputDir, id))]
+    for (let index = 0; index < allPathsFrom.length; index++) {
+      const from = allPathsFrom[index]
       let to = allPathsTo[index]
       const files = walkDir(from)
       for (const size of ['L', 'M', 'S', 'full']) {
@@ -162,9 +209,11 @@ export default function prepareImagesPlugin(options = {}) {
           .jpeg({ quality: 80 })
           .toFile(join(to, 'full', outName))
       }
-    })
+    }
   }
 
+  // Flag to ensure we only run once
+  let isBuild = false
   let hasProcessedOnce = false
 
   return {
@@ -177,19 +226,21 @@ export default function prepareImagesPlugin(options = {}) {
     },
 
     // Only run in build
-    buildStart() {
+    async buildStart() {
       if (isBuild) {
-        rmSync(genericsPath, { recursive: true, force: true })
-        runPrepareImages()
+        await runCollectImages()
+        rmSync(pathOutputGenerics, { recursive: true, force: true })
+        await runProcessImages()
       }
     },
 
     // Only run in dev server
-    configureServer() {
+    async configureServer() {
       if (!isBuild) {
         if (!hasProcessedOnce) {
-          rmSync(genericsPath, { recursive: true, force: true })
-          runPrepareImages()
+          await runCollectImages()
+          rmSync(pathOutputGenerics, { recursive: true, force: true })
+          await runProcessImages()
           hasProcessedOnce = true
         }
       }

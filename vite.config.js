@@ -6,7 +6,6 @@ import pkg from './package.json'
 import yaml from '@rollup/plugin-yaml'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import prepareBooksDataPlugin from './vite-plugin-prepare-books-data.js'
-import collectImagesPlugin from './vite-plugin-collect-images.js'
 import prepareImagesPlugin from './vite-plugin-prepare-images.js'
 
 // https://vite.dev/config/
@@ -20,15 +19,12 @@ export default defineConfig({
       outputDir: 'public/books',
       watch: true, // watch changes in dev mode
     }),
-    collectImagesPlugin({
-      inputDir: 'src/books',
-      outputDir: 'tmp_images/books',
-    }),
     prepareImagesPlugin({
-      genericsDirFrom: 'src/images',
-      booksDirFrom: 'tmp_images/books',
-      genericsDir: 'public/images',
-      booksDir: 'public/books',
+      inputDir: 'src/books',
+      inputGenerics: 'src/images',
+      tmpDir: 'tmp_images/books',
+      outputDir: 'public/books',
+      outputGenerics: 'public/images',
     }),
   ],
   define: {
