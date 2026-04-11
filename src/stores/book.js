@@ -16,6 +16,16 @@ import {
 import { defaultsBook, defaultsBookStart, defaultsBookOptions } from '@/data/defaults'
 import { useOptionsStore } from '@/stores/options'
 
+// These options get stored in OptionsStore on load
+const BOOK_OPTIONS = [
+  'minPlayerChars',
+  'maxPlayerChars',
+  'talkDuration',
+  'moveDurationRoom',
+  'moveDurationLocation',
+  'moveDurationDestination',
+]
+
 export const useBookStore = defineStore('book', {
   state: () => ({
     // Static Book Information
@@ -354,10 +364,8 @@ export const useBookStore = defineStore('book', {
         this.startTime = new Date(data.start.datetime)
         this.introduction = data.start.introduction || 'The Game Begins'
       }
-      // Set book options
-      ;['minPlayerChars', 'maxPlayerChars'].forEach(
-        (key) => (this.options[key] = data.options[key]),
-      )
+      // Set book options in options
+      BOOK_OPTIONS.forEach((key) => (this.options[key] = data.options[key]))
     },
 
     // Helper for collecting all rooms by id

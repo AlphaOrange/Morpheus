@@ -482,9 +482,20 @@ In your book you can give a list of supported features, so users can directly se
 
 In the book file you can define options for your book. The following options are available:
 
+##### Playable Number of Characters
+
 - `minPlayerChars` (Default: 1): The minimum number of characters a user must choose to control
 - `maxPlayerChars` (Default: 99): The maximum number of characters a player may choose to control  
   _(99 basically means "unlimited")_
+
+##### Duration of Game Actions
+
+- `talkDuration` (Default: 30): Seconds that pass for each talk action, regardless of text length
+- `moveDurationRoom` (Default: 0): Time in seconds until character arrives in adjacent room (i.e. room of same location)
+- `moveDurationLocation` (Default: 60): Time in seconds required for arriving in adjacent location (i.e. location of same destination) per travel distance unit -> see "Position and Detour" for calculation details
+- `moveDurationDestination` (Default: 3600) # Time in seconds required for arriving in another destination per travel distance unit -> see "Position and Detour" for calculation details
+
+_Example: Moving from a location at `position = [0, 0]` and `detour = 0` to another location at `position = [2, 0]` with `detour = 1` with `moveDurationLocation = 60` (default value) takes `3 * 60 = 180` seconds, so 3 minutes of in-game time._
 
 ## Compiling books
 

@@ -11,6 +11,10 @@ export const defaultsBookStart = {
 export const defaultsBookOptions = {
   minPlayerChars: 1,
   maxPlayerChars: 99,
+  talkDuration: 30,
+  moveDurationRoom: 0,
+  moveDurationLocation: 60,
+  moveDurationDestination: 3600,
 }
 
 export const defaultsWorld = {
