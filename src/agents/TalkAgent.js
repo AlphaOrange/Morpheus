@@ -25,7 +25,7 @@ export default class TalkAgent extends Agent {
 
   // Build text block: description of You
   you_profile(actor) {
-    return `${actor.name}, ${actor.profession} (${actor.gender}, ${actor.age})
+    return `${actor.name} (${actor.gender}, ${actor.age}, ${actor.profession})
 ${actor.background}
 ${actor.body}, ${actor.clothing}, ${actor.appearance}
 Behavioral instructions: ${actor.behavior}`
@@ -36,7 +36,7 @@ Behavioral instructions: ${actor.behavior}`
     return Object.values(actor.room.characters)
       .filter((char) => char.id != actor.id)
       .map(
-        (char) => `${char.name}, ${char.profession} (ID: ${char.id})
+        (char) => `${char.name} (ID: ${char.id}), ${char.profession}
 ${char.body}, ${char.clothing}, ${char.appearance}`,
       )
       .join('\n\n')
