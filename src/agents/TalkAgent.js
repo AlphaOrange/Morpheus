@@ -23,22 +23,11 @@ export default class TalkAgent extends Agent {
     this.responseExample = TEMPLATES.example
   }
 
-  // Build text block: description of You
-  you_profile(actor) {
-    return `${actor.name} (${actor.gender}, ${actor.age}, ${actor.profession})
-${actor.background}
-${actor.body}, ${actor.clothing}, ${actor.appearance}
-Behavioral instructions: ${actor.behavior}`
-  }
-
   // Build text block: descriptions of Others
   others_profiles({ actor }) {
     return Object.values(actor.room.characters)
       .filter((char) => char.id != actor.id)
-      .map(
-        (char) => `${char.name} (ID: ${char.id}), ${char.profession}
-${char.body}, ${char.clothing}, ${char.appearance}`,
-      )
+      .map((char) => char.externalDescription)
       .join('\n\n')
   }
 
@@ -48,7 +37,7 @@ ${char.body}, ${char.clothing}, ${char.appearance}`,
       messages: protocol.filterDialog({ types: 'context', present: actor }),
       perspective: actor.id,
     })
-    const you_profile = this.you_profile(actor)
+    const you_profile = actor.selfDescription
     const others_profiles = this.others_profiles({ actor: actor })
     const prompt = TEMPLATES.user
       .replaceAll('%you%', actor.name)

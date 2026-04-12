@@ -108,9 +108,22 @@ export default class Character {
     return demo + this.age
   }
 
-  // Getter: Description for selection menu
+  // Getter: Descriptions
   get selectionDescription() {
+    // for selection menu
     return this.description_player === '' ? this.description : this.description_player
+  }
+  get selfDescription() {
+    // for this character's prompts
+    return `${this.name} (${this.gender}, ${this.age}, ${this.profession})
+${this.background}
+${this.body}, ${this.clothing}, ${this.appearance}
+Behavioral instructions: ${this.behavior}`
+  }
+  get externalDescription() {
+    // for other character's prompts
+    return `${this.name} (ID: ${this.id}), ${this.profession}
+${this.body}, ${this.clothing}, ${this.appearance}`
   }
 
   // Move character to another room
