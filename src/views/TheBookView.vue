@@ -7,7 +7,13 @@
           limited!
         </div>
       </div>
-      <TheActionBar @talk="talk" @move="move" @runNarrator="manualNarrator" @save="save" />
+      <TheActionBar
+        @talk="talk"
+        @move="move"
+        @rest="rest"
+        @runNarrator="manualNarrator"
+        @save="save"
+      />
     </template>
     <template #middleSlot>
       <div class="center">
@@ -68,6 +74,11 @@ const move = function ({ location = null, room = null, chars = [] } = {}) {
       ? chars[0].id + ' move to room ' + room.commandId
       : 'move to room ' + room.commandId
   }
+  if (text) messageBox.value?.setMessage(text)
+}
+
+const rest = function ({ char, duration }) {
+  const text = char ? `${char.id} rest ${duration}` : `rest ${duration}`
   if (text) messageBox.value?.setMessage(text)
 }
 

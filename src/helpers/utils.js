@@ -114,6 +114,7 @@ const rx = {
   switch2: /^switch ([a-z0-9_]+)$/i, // switch taproom
   switch3: /^switch$/i, // switch (next room in the room row)
   wait: /^wait ([0-9]+)$/i, // wait x minutes (max 60)
+  rest: /^(?:([a-z0-9_]+) )?rest ([0-9]+)$/i, // rest x minutes (max 720)
   talk_colons: /^((?:[^:]+ ){6}.*)$/is, // after 6 spaces without colon, this is just a talk message and user may use colons
   move_room: /^(?:([a-z0-9_]+) )?(move room |move to room )([a-z0-9_]+)(?::(.*))?$/is,
   move_location: /^(?:([a-z0-9_]+) )?(move location |move to location )([a-z0-9_]+)(?::(.*))?$/is,
@@ -172,6 +173,15 @@ export function messageToCommand(message) {
   if (res) {
     const waitSeconds = Math.min(res[1], 60) * 60
     command = { action: 'wait', seconds: waitSeconds }
+    return command
+  }
+
+  // Rest for x minutes (max 720)
+  res = rx.rest.exec(message)
+  if (res) {
+    const actor = res[1] || ':group'
+    const restSeconds = Math.min(res[2], 720) * 60
+    command = { action: 'rest', actor: actor, seconds: restSeconds }
     return command
   }
 

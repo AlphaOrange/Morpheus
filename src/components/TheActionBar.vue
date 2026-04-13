@@ -7,7 +7,7 @@
           :key="char.id"
           :character="char"
           :icon="`person-walking`"
-          :text="periodText(char.arrivalTime - time)"
+          :text="periodText(char.action.until - time)"
         />
       </div>
       <div v-if="multiroom" class="shelf horizontal-flex item-selection">
@@ -44,6 +44,14 @@
           icon="person-walking"
           :pill="pilltext(distancePeriodText(room, location))"
           :hint="location.commandId"
+          :compact="compact"
+        />
+        <ActionButton
+          v-if="room.hasAction('rest')"
+          @click="rest60()"
+          text="Rest 1 Hour"
+          icon="moon"
+          pill="1h"
           :compact="compact"
         />
       </div>
@@ -87,6 +95,14 @@
           :pill="pilltext(distancePeriodText(room, location))"
           :compact="compact"
         />
+        <ActionButton
+          v-if="room.hasAction('rest')"
+          @click="rest60(char)"
+          text="Rest 1 Hour"
+          icon="moon"
+          pill="1h"
+          :compact="compact"
+        />
       </div>
     </div>
     <div class="box">
@@ -113,7 +129,7 @@ import { useOptionsStore } from '@/stores/options'
 const options = useOptionsStore()
 
 const { activeRooms, movingPlayerCharacters, activePlayerID, time, room } = storeToRefs(book)
-const emits = defineEmits(['talk', 'move', 'runNarrator', 'save'])
+const emits = defineEmits(['talk', 'move', 'rest', 'runNarrator', 'save'])
 
 const switchTo = (room) => {
   book.switchTo(room)
@@ -150,6 +166,9 @@ const moveCharToRoom = (char, room) => {
 }
 const moveCharToLocation = (char, location) => {
   emits('move', { location: location, chars: [char] })
+}
+const rest60 = (char = null) => {
+  emits('rest', { char, duration: 60 })
 }
 
 // Emit meta commands

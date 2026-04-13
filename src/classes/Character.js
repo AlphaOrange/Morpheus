@@ -134,14 +134,15 @@ ${this.body}, ${this.clothing}, ${this.appearance}`
 
   // Move character to another room
   moveToRoom(room, arrivalTime = 0) {
+    if (this.action.type !== '') return
     if (this.room) {
       this.room.removeCharacter(this)
     }
     this.room = null
     if (room) {
       this.action.type = 'move'
-      this.action.target = room
       this.action.until = arrivalTime
+      this.action.target = room
     }
   }
   checkForArrival(time) {
@@ -149,6 +150,20 @@ ${this.body}, ${this.clothing}, ${this.appearance}`
       this.room = this.action.target
       this.action.type = ''
       this.room.addCharacter(this)
+      return true
+    }
+    return false
+  }
+
+  // Rest character
+  rest(until = 0) {
+    if (this.action.type !== '') return
+    this.action.type = 'rest'
+    this.action.until = until
+  }
+  checkForAwaking(time) {
+    if (this.action.type === 'rest' && time >= this.action.until) {
+      this.action.type = ''
       return true
     }
     return false

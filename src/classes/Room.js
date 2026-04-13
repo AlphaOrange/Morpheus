@@ -8,7 +8,7 @@ export default class Room {
 
   constructor(rawData, location, full = true) {
     const data = { ...defaultsRoom, ...rawData }
-    ;['name', 'description'].forEach((key) => (this[key] = data[key]))
+    ;['name', 'description', 'actions'].forEach((key) => (this[key] = data[key]))
 
     // Derive unique ID from location
     this.location = location
@@ -41,6 +41,7 @@ export default class Room {
       commandId: this.commandId,
       name: this.name,
       description: this.description,
+      actions: this.actions,
       location: this.location.id,
       _image: this._image,
       characters: Object.fromEntries(
@@ -134,5 +135,10 @@ ${avLocations}`
     return Object.values(this.characters)
       .map((char) => char.id)
       .includes(charID)
+  }
+
+  // Room Actions
+  hasAction(action) {
+    return this.actions.includes(action)
   }
 }

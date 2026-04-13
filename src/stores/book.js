@@ -65,6 +65,7 @@ export const useBookStore = defineStore('book', {
 
     // Registers
     movingCharacterIDs: [],
+    restingCharacterIDs: [],
 
     // Game State
     roomId: '',
@@ -164,6 +165,7 @@ export const useBookStore = defineStore('book', {
         agendas: this.agendas, // Do we need to save these?
         protocol: this.protocol, // stringify will convert character objects
         movingCharacterIDs: this.movingCharacterIDs,
+        restingCharacterIDs: this.restingCharacterIDs,
         roomId: this.roomId,
         time: this.time,
         recentPlayerIDs: this.recentPlayerIDs,
@@ -190,10 +192,7 @@ export const useBookStore = defineStore('book', {
       return gametime
     },
 
-    addTime(duration) {
-      // Increase time
-      this.time = this.time + duration
-      // Check Arrivals
+    checkForArrivals() {
       const arrivals = {}
       for (const charID of this.movingCharacterIDs) {
         const char = this.characters[charID]
@@ -206,7 +205,6 @@ export const useBookStore = defineStore('book', {
           } else {
             arrivals[char.room.id].push(char)
           }
-          arrivals[char.room.id]
         }
       }
       // Sent Arrive HINT message per arrival room with player character
@@ -234,6 +232,46 @@ export const useBookStore = defineStore('book', {
           })
         }
       })
+    },
+
+    checkForAwakings() {
+      const awakenings = {}
+      for (const charID of this.restingCharacterIDs) {
+        const char = this.characters[charID]
+        let awakened = char.checkForAwaking(this.time)
+        if (awakened) {
+          this.restingCharacterIDs = this.restingCharacterIDs.filter((id) => id != charID)
+          // Collect awakings per room
+          if (!(char.room.id in awakenings)) {
+            awakenings[char.room.id] = [char]
+          } else {
+            awakenings[char.room.id].push(char)
+          }
+        }
+      }
+      // Sent Awakening HINT message per room where player characters present
+      Object.keys(awakenings).forEach((roomId) => {
+        const room = this.rooms[roomId]
+        if (room.numberOfPlayers > 0) {
+          const present = Object.keys(room.characters)
+          const charsAwakened = awakenings[roomId].map((char) => char.name)
+          const text = `${joinAnd(charsAwakened)} just woke up`
+          this.protocol.pushHint({
+            time: this.time,
+            text: text,
+            room: roomId,
+            present: present,
+            to: ':all',
+          })
+        }
+      })
+    },
+
+    // Increase time
+    addTime(duration) {
+      this.time = this.time + duration
+      this.checkForArrivals()
+      this.checkForAwakings()
     },
 
     // timejump until at least one active room, switch to active room
@@ -315,6 +353,11 @@ export const useBookStore = defineStore('book', {
       duration = Math.floor(duration)
       this.characters[charID].moveToRoom(targetRoom, this.time + duration)
       this.movingCharacterIDs.push(charID)
+    },
+
+    restChar(charID, duration) {
+      this.characters[charID].rest(this.time + duration)
+      this.restingCharacterIDs.push(charID)
     },
 
     // Switch user view to different room
@@ -496,6 +539,7 @@ export const useBookStore = defineStore('book', {
         this.agendas = data.agendas
         this.protocol = Protocol.fromJSON(data.protocol, this.options)
         this.movingCharacterIDs = data.movingCharacterIDs
+        this.restingCharacterIDs = data.restingCharacterIDs
         this.roomId = data.roomId
         this.time = data.time
         this.recentPlayerIDs = data.recentPlayerIDs
@@ -678,6 +722,57 @@ export const useBookStore = defineStore('book', {
             this.jumpToArrival()
           }
         }
+        this.updateRecentPlayerIDs() // if active player is no longer in active room
+      }
+
+      if (command.action === 'rest') {
+        console.log(command)
+
+        // Check if rest is possible in this room
+        if (!this.room.hasAction('rest')) {
+          this.protocol.pushError({
+            time: this.time,
+            title: 'No resting place',
+            text: `It is not possible to rest here in ${this.room.name}. You need to go somewhere that has a place to sleep first.`,
+          })
+          return
+        }
+
+        // Construct info message
+        let charsResting
+        if (command.actor === ':group') {
+          charsResting = this.room.presentPlayerCharacters.map((char) => char.name)
+        } else {
+          charsResting = [this.characters[command.actor].name]
+        }
+        const infoMessage = `${joinAnd(charsResting)} just went to sleep`
+
+        // Start resting periods
+        if (command.actor === ':group') {
+          for (const char of this.room.presentPlayerCharacters) {
+            this.restChar(char.id, command.seconds)
+          }
+        } else {
+          this.restChar(command.actor, command.seconds)
+        }
+
+        // Send INFO message
+        this.protocol.pushHint({
+          time: this.time,
+          text: infoMessage,
+          room: this.room.id,
+          present: present,
+        })
+
+        // If current room now empty move to next room with players // TODO: need to redefine to "acting Players"
+        /*if (this.room.numberOfPlayers === 0) {
+          if (this.activeRooms.length) {
+            this.switchTo(this.activeRooms[0])
+          } else {
+            this.jumpToArrival()
+          }
+        }*/
+
         this.updateRecentPlayerIDs() // if active player is no longer in active room
       }
     },
