@@ -6,6 +6,20 @@ features:
   talk: Have conversations with NPCs
   visual: Has images for characters and/or places
 versions:
+  - version: 0.8.0
+    updates: |-
+      **Books**
+      - New parameters for action duration calculation: `talkDuration`, `moveDurationRoom`, `moveDurationLocation`, `moveDurationDestination`
+
+      **Misc**
+
+      **Bugfixes**
+
+      Improvements to AI prompting  
+      Layout Tweaks
+    features: [maps, move, talk]
+    fullSupport: 0.8.0
+    minSupport: 0.4.0
   - version: 0.7.0
     updates: |-
       **Help Upgrades**
@@ -34,7 +48,7 @@ versions:
 
       Multiple Layout Tweaks
     features: [maps, move, talk]
-    fullSupport: 0.6.0
+    fullSupport: 0.7.0
     minSupport: 0.4.0
   - version: 0.6.0
     updates: |-

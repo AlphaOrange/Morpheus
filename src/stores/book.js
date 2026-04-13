@@ -239,7 +239,7 @@ export const useBookStore = defineStore('book', {
     // timejump until at least one active room, switch to active room
     jumpToArrival() {
       const arrivalTime = this.movingCharacterIDs.reduce((acc, charID) => {
-        return Math.min(acc, this.characters[charID].arrivalTime)
+        return Math.min(acc, this.characters[charID].action.until)
       }, 99999999)
       if (arrivalTime > this.time) {
         this.addTime(arrivalTime - this.time)
@@ -388,8 +388,8 @@ export const useBookStore = defineStore('book', {
           char.room = this.rooms[char.room]
           char.room.characters[char.id] = char
         }
-        if (char.arrivalTarget) {
-          char.arrivalTarget = this.rooms[char.arrivalTarget]
+        if (char.action === 'move' && char.action.target) {
+          char.action.target = this.rooms[char.action.target]
         }
       }
     },

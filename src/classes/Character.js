@@ -4,8 +4,12 @@ import { defaultsCharacter } from '@/data/defaults'
 export default class Character {
   room = null
   controlledBy = null
-  arrivalTime = 0
-  arrivalTarget = null
+  action = {
+    // ongoing actions like 'move' or 'rest'
+    type: '',
+    until: -1,
+    target: '',
+  }
 
   constructor(rawData) {
     const data = { ...defaultsCharacter, ...rawData }
@@ -37,8 +41,7 @@ export default class Character {
     const proto = new Character(data)
     proto.room = data.room // Note: this gets rewired to room ref in book load/restore
     proto.controlledBy = data.controlledBy
-    proto.arrivalTime = data.arrivalTime
-    proto.arrivalTarget = data.arrivalTarget
+    proto.action = data.action
     return proto
   }
 
@@ -63,8 +66,11 @@ export default class Character {
       _image: this._image,
       room: this.room === null ? null : this.room.id,
       controlledBy: this.controlledBy,
-      arrivalTime: this.arrivalTime,
-      arrivalTarget: this.arrivalTarget === null ? null : this.arrivalTarget.id,
+      action: {
+        type: this.action.type,
+        until: this.action.until,
+        target: this.action.target ? this.action.target.id : '',
+      },
     }
   }
 
@@ -133,14 +139,15 @@ ${this.body}, ${this.clothing}, ${this.appearance}`
     }
     this.room = null
     if (room) {
-      this.arrivalTarget = room
-      this.arrivalTime = arrivalTime
+      this.action.type = 'move'
+      this.action.target = room
+      this.action.until = arrivalTime
     }
   }
   checkForArrival(time) {
-    if ((this.arrivalTime >= 0) & (time >= this.arrivalTime)) {
-      this.room = this.arrivalTarget
-      this.arrivalTime = -1
+    if (this.action.type === 'move' && time >= this.action.until) {
+      this.room = this.action.target
+      this.action.type = ''
       this.room.addCharacter(this)
       return true
     }
