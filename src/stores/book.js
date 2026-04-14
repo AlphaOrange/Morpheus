@@ -296,7 +296,7 @@ export const useBookStore = defineStore('book', {
     },
 
     updateRecentPlayerIDs() {
-      const presentIDs = Object.values(this.room.presentPlayerCharacters).map((char) => char.id)
+      const presentIDs = Object.values(this.room.availablePlayerCharacters).map((char) => char.id)
       const presentRecentPlayerIDs = this.recentPlayerIDs.filter((id) => presentIDs.includes(id))
       if (presentRecentPlayerIDs.length > 0) {
         this.setActivePlayerID(presentRecentPlayerIDs[0])
@@ -656,7 +656,7 @@ export const useBookStore = defineStore('book', {
         // Construct info message
         let charMoving
         if (command.actor === ':group') {
-          charMoving = joinAnd(this.room.presentPlayerCharacters.map((char) => char.name))
+          charMoving = joinAnd(this.room.availablePlayerCharacters.map((char) => char.name))
         } else {
           charMoving = this.characters[command.actor].name
         }
@@ -678,7 +678,7 @@ export const useBookStore = defineStore('book', {
         // Move actors
         const { targetRoom, moveDuration } = this.getMoveSpecs(command.target, command.spec)
         if (command.actor === ':group') {
-          for (const char of this.room.presentPlayerCharacters) {
+          for (const char of this.room.availablePlayerCharacters) {
             this.moveChar(char.id, targetRoom, moveDuration)
           }
         } else {
@@ -724,7 +724,7 @@ export const useBookStore = defineStore('book', {
         // Construct info message
         let charsResting
         if (command.actor === ':group') {
-          charsResting = this.room.presentPlayerCharacters.map((char) => char.name)
+          charsResting = this.room.availablePlayerCharacters.map((char) => char.name)
         } else {
           charsResting = [this.characters[command.actor].name]
         }
@@ -732,7 +732,7 @@ export const useBookStore = defineStore('book', {
 
         // Start resting periods
         if (command.actor === ':group') {
-          for (const char of this.room.presentPlayerCharacters) {
+          for (const char of this.room.availablePlayerCharacters) {
             this.restChar(char.id, command.seconds)
           }
         } else {
@@ -856,7 +856,7 @@ export const useBookStore = defineStore('book', {
 
       // Check if actor is valid
       const possibleActors = [
-        ...this.room.presentPlayerCharacters.map((char) => char.id),
+        ...this.room.availablePlayerCharacters.map((char) => char.id),
         ':active',
         ':group',
       ]
@@ -870,8 +870,8 @@ export const useBookStore = defineStore('book', {
       }
 
       // replace :group with actor id if only one player
-      if (command.actor === ':group' && this.room.presentPlayerCharacters.length === 1) {
-        command.actor = this.room.presentPlayerCharacters[0].id
+      if (command.actor === ':group' && this.room.availablePlayerCharacters.length === 1) {
+        command.actor = this.room.availablePlayerCharacters[0].id
       }
 
       this.executeCommand(command)

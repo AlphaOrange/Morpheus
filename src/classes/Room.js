@@ -73,19 +73,25 @@ export default class Room {
     return this.getImage('S')
   }
 
-  // Getters: Present Characters
+  // Getters: Present + Available Characters
   get presentPlayerCharacters() {
     return Object.values(this.characters).filter((char) => char.controlledBy === 'player')
   }
   get presentAiCharacters() {
     return Object.values(this.characters).filter((char) => char.controlledBy === 'ai')
   }
+  get availablePlayerCharacters() {
+    return this.presentPlayerCharacters.filter((char) => !char.busy)
+  }
+  get availableAiCharacters() {
+    return this.presentAiCharacters.filter((char) => !char.busy)
+  }
   // Has present player characters
   get numberOfPlayers() {
-    return this.presentPlayerCharacters.length
+    return this.availablePlayerCharacters.length
   }
   get numberOfAis() {
-    return this.presentAiCharacters.length
+    return this.availableAiCharacters.length
   }
   get active() {
     return this.numberOfPlayers > 0

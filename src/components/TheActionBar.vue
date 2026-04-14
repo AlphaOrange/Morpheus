@@ -23,7 +23,7 @@
         </div>
       </div>
     </div>
-    <div v-if="room.presentPlayerCharacters.length > 1" class="box">
+    <div v-if="room.availablePlayerCharacters.length > 1" class="box">
       <h3>Group</h3>
       <div class="button-list">
         <ActionButton
@@ -56,7 +56,7 @@
         />
       </div>
     </div>
-    <div v-for="char in room.presentPlayerCharacters" :key="char.id" class="box">
+    <div v-for="char in room.availablePlayerCharacters" :key="char.id" class="box">
       <h3 class="hint-anchor">
         <span v-if="activePlayerID === char.id"><font-awesome-icon icon="fa-star" /></span>
         {{ char.name }}<span class="hint">{{ char.id }}</span>
@@ -70,7 +70,7 @@
           :compact="compact"
         />
         <ActionButton
-          v-for="partner in room.presentAiCharacters"
+          v-for="partner in room.availableAiCharacters"
           :key="partner.id"
           @click="talkTo(char, partner)"
           :text="`Talk to ${partner.name}`"
@@ -140,10 +140,10 @@ const pilltext = (distText) => {
 }
 
 const compact = computed(() => {
-  const numChars = room.value.presentPlayerCharacters.length
+  const numChars = room.value.availablePlayerCharacters.length
   const numPlaces = room.value.availableRooms.length + room.value.availableLocations.length
-  const numNPCs = room.value.presentAiCharacters.length
-  const group = room.value.presentPlayerCharacters.length > 1 ? 1 : 0
+  const numNPCs = room.value.availableAiCharacters.length
+  const group = room.value.availablePlayerCharacters.length > 1 ? 1 : 0
   const numButtons = (numChars + group) * numPlaces + numChars * numNPCs
   return numButtons >= options.compactButtonsThreshold
 })

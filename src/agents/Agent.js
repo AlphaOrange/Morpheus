@@ -74,6 +74,8 @@ ${this.responseExample}`
       generationConfig: this.generationConfig,
       safetySettings: this.options.aiSafetySettingsGemini,
     })
+    console.log('== RESPONSE ==\n' + response.text)
+    console.log(response)
 
     return { text: response.text, tokens: response.usageMetadata.totalTokenCount }
   }

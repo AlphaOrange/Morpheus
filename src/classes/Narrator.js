@@ -85,7 +85,7 @@ export default class Narrator {
     const state = { roomId: this.book.roomId }
 
     // Check first if there even is an NPC present
-    if (this.book.room.presentAiCharacters.length === 0) return false
+    if (this.book.room.availableAiCharacters.length === 0) return false
 
     // Determine next actor
     let { actorId, action } = await this.nextActionAgent.run({
