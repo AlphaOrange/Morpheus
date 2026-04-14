@@ -2,11 +2,8 @@
   <div class="box narrow character-box" :class="collapsedClass" @click="toggle">
     <div class="image-box">
       <LightboxImage :src="props.character.imageM" class="image" />
-      <div class="char-busy-icon">
-        <font-awesome-icon
-          v-if="props.character.busy"
-          :icon="actionIcon(props.character.action.type)"
-        />
+      <div class="char-busy-icon" v-if="props.character.busy">
+        <font-awesome-icon :icon="actionIcon(props.character.action.type)" />
         {{ actionText(props.character.action.type) }}
       </div>
     </div>
