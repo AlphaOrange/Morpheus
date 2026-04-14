@@ -78,6 +78,14 @@
           :compact="compact"
         />
         <ActionButton
+          v-for="partner in room.busyCharacters"
+          :key="partner.id"
+          @click="wake(char, partner)"
+          :text="`Wake up ${partner.name}`"
+          icon="moon"
+          :compact="compact"
+        />
+        <ActionButton
           v-for="avRoom in room.availableRooms"
           :key="avRoom.id"
           @click="moveCharToRoom(char, avRoom)"
@@ -135,7 +143,7 @@ import { useOptionsStore } from '@/stores/options'
 const options = useOptionsStore()
 
 const { activeRooms, movingPlayerCharacters, activePlayerID, time, room } = storeToRefs(book)
-const emits = defineEmits(['talk', 'move', 'sleep', 'runNarrator', 'save'])
+const emits = defineEmits(['talk', 'move', 'sleep', 'wake', 'runNarrator', 'save'])
 
 const switchTo = (room) => {
   book.switchTo(room)
@@ -182,6 +190,9 @@ const moveCharToLocation = (char, location) => {
 }
 const sleep60 = (char = null) => {
   emits('sleep', { char, duration: 60 })
+}
+const wake = (char, partner) => {
+  emits('wake', { fromChar: char, toChar: partner })
 }
 
 // Emit meta commands

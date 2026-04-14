@@ -343,6 +343,10 @@ export const useBookStore = defineStore('book', {
       this.characters[charID].sleep(this.time + duration)
       this.busyCharacterIDs.push(charID)
     },
+    wakeChar(charID) {
+      this.characters[charID].wake()
+      this.busyCharacterIDs = this.busyCharacterIDs.filter((id) => id != charID)
+    },
 
     // Switch user view to different room
     switchTo(room) {
@@ -709,8 +713,6 @@ export const useBookStore = defineStore('book', {
       }
 
       if (command.action === 'sleep') {
-        console.log(command)
-
         // Check if sleep is possible in this room
         if (!this.room.hasAction('sleep')) {
           this.protocol.pushError({
@@ -747,16 +749,62 @@ export const useBookStore = defineStore('book', {
           present: present,
         })
 
-        // If current room now empty move to next room with players // TODO: need to redefine to "acting Players"
-        /*if (this.room.numberOfPlayers === 0) {
+        // Switch to active room
+        if (this.room.numberOfPlayers === 0) {
           if (this.activeRooms.length) {
             this.switchTo(this.activeRooms[0])
           } else {
             this.jumpToActive()
           }
-        }*/
+        }
 
         this.updateRecentPlayerIDs() // if active player is no longer in active room
+      }
+
+      if (command.action === 'wake') {
+        // Check if target is sleeping
+        if (this.characters[command.target].action.type !== 'sleep') {
+          this.protocol.pushError({
+            time: this.time,
+            title: 'Character not sleeping',
+            text: `You cannot wake up ${command.target}, because they are not asleep.`,
+          })
+          return
+        }
+
+        // Process :active actor if used
+        if (command.actor === ':active') {
+          command.actor = this.activePlayerID
+        } else {
+          this.setActivePlayerID(command.actor)
+        }
+
+        // End sleeping period
+        console.log(command.actor)
+        this.wakeChar(command.target)
+
+        // Send INFO message
+        this.protocol.pushHint({
+          time: this.time,
+          text: `${this.characters[command.actor].name} wakes up ${this.characters[command.target].name}`,
+          room: this.room.id,
+          present: present,
+        })
+
+        // Send TALK message
+        if (command.message !== null) {
+          this.protocol.pushTalk({
+            time: this.time,
+            text: command.message,
+            room: this.room.id,
+            present: present,
+            from: command.actor,
+            to: command.target,
+          })
+        }
+
+        // Increase time
+        this.addTime(this.options.talkDuration) // TODO: later replace with action duration
       }
     },
 

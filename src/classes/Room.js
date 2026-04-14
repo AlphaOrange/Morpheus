@@ -86,6 +86,9 @@ export default class Room {
   get availableAiCharacters() {
     return this.presentAiCharacters.filter((char) => !char.busy)
   }
+  get busyCharacters() {
+    return Object.values(this.characters).filter((char) => char.busy)
+  }
   get busyPlayerCharacters() {
     return this.presentPlayerCharacters.filter((char) => char.busy)
   }

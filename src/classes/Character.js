@@ -154,6 +154,10 @@ ${this.body}, ${this.clothing}, ${this.appearance}`
     this.action.type = 'sleep'
     this.action.until = until
   }
+  wake() {
+    if (this.action.type !== 'sleep') return
+    this.action.type = ''
+  }
 
   // Check if duration action is completed
   checkForCompletion(time) {

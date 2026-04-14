@@ -11,6 +11,7 @@
         @talk="talk"
         @move="move"
         @sleep="sleep"
+        @wake="wake"
         @runNarrator="manualNarrator"
         @save="save"
       />
@@ -79,7 +80,11 @@ const move = function ({ location = null, room = null, chars = [] } = {}) {
 
 const sleep = function ({ char, duration }) {
   const text = char ? `${char.id} sleep ${duration}` : `sleep ${duration}`
-  if (text) messageBox.value?.setMessage(text)
+  messageBox.value?.setMessage(text)
+}
+const wake = function ({ fromChar, toChar }) {
+  const text = fromChar.id + ' wake ' + toChar.id + ': '
+  messageBox.value?.setMessage(text)
 }
 
 // --- meta commands ---
