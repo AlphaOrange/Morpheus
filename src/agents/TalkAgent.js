@@ -52,7 +52,7 @@ export default class TalkAgent extends Agent {
       return {
         message: answer.text,
         targetId: answer.to === 'all' ? ':all' : answer.to, // ai often gets this wrong
-        additionalAction: answer.action.toLowerCase(),
+        additionalAction: answer.action?.toLowerCase(),
       }
     } catch (err) {
       const errorMessage = err.response?.data?.error?.message || err.message || 'Unknown error'

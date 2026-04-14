@@ -64,8 +64,7 @@ export const useBookStore = defineStore('book', {
     agents: {},
 
     // Registers
-    movingCharacterIDs: [],
-    restingCharacterIDs: [],
+    busyCharacterIDs: [],
 
     // Game State
     roomId: '',
@@ -120,8 +119,9 @@ export const useBookStore = defineStore('book', {
 
     // Playable characters who are currently moving + time left
     movingPlayerCharacters() {
-      const ids = this.movingCharacterIDs
-      return Object.values(this.playerCharacters).filter((char) => ids.includes(char.id))
+      return Object.values(this.playerCharacters).filter(
+        (char) => this.busyCharacterIDs.includes(char.id) && char.action.type === 'move',
+      )
     },
 
     // Available Travel Targets
@@ -164,8 +164,7 @@ export const useBookStore = defineStore('book', {
         states: this.states, // Do we need to save these?
         agendas: this.agendas, // Do we need to save these?
         protocol: this.protocol, // stringify will convert character objects
-        movingCharacterIDs: this.movingCharacterIDs,
-        restingCharacterIDs: this.restingCharacterIDs,
+        busyCharacterIDs: this.busyCharacterIDs,
         roomId: this.roomId,
         time: this.time,
         recentPlayerIDs: this.recentPlayerIDs,
@@ -192,30 +191,33 @@ export const useBookStore = defineStore('book', {
       return gametime
     },
 
-    checkForArrivals() {
-      const arrivals = {}
-      for (const charID of this.movingCharacterIDs) {
+    checkForCompletedActions() {
+      const completions = {
+        move: {},
+        rest: {},
+      }
+      for (const charID of this.busyCharacterIDs) {
         const char = this.characters[charID]
-        let arrived = char.checkForArrival(this.time)
-        if (arrived) {
-          this.movingCharacterIDs = this.movingCharacterIDs.filter((id) => id != charID)
-          // Collect arrivals per room
-          if (!(char.room.id in arrivals)) {
-            arrivals[char.room.id] = [char]
+        const completedAction = char.checkForCompletion(this.time)
+        console.log(`${charID}: ${completedAction}`)
+        if (completedAction !== '') {
+          this.busyCharacterIDs = this.busyCharacterIDs.filter((id) => id != charID)
+          if (!(char.room.id in completions[completedAction])) {
+            completions[completedAction][char.room.id] = [char]
           } else {
-            arrivals[char.room.id].push(char)
+            completions[completedAction][char.room.id].push(char)
           }
         }
       }
       // Sent Arrive HINT message per arrival room with player character
-      Object.keys(arrivals).forEach((roomId) => {
+      Object.keys(completions.move).forEach((roomId) => {
         const room = this.rooms[roomId]
         if (room.numberOfPlayers > 0) {
           const present = Object.keys(room.characters)
-          const charArrivedAi = arrivals[roomId]
+          const charArrivedAi = completions.move[roomId]
             .filter((char) => char.controlledBy === 'ai')
             .map((char) => char.name)
-          const charArrivedPlayer = arrivals[roomId]
+          const charArrivedPlayer = completions.move[roomId]
             .filter((char) => char.controlledBy === 'player')
             .map((char) => char.name)
           const charArrived = [...charArrivedAi, ...charArrivedPlayer]
@@ -232,29 +234,12 @@ export const useBookStore = defineStore('book', {
           })
         }
       })
-    },
-
-    checkForAwakings() {
-      const awakenings = {}
-      for (const charID of this.restingCharacterIDs) {
-        const char = this.characters[charID]
-        let awakened = char.checkForAwaking(this.time)
-        if (awakened) {
-          this.restingCharacterIDs = this.restingCharacterIDs.filter((id) => id != charID)
-          // Collect awakings per room
-          if (!(char.room.id in awakenings)) {
-            awakenings[char.room.id] = [char]
-          } else {
-            awakenings[char.room.id].push(char)
-          }
-        }
-      }
       // Sent Awakening HINT message per room where player characters present
-      Object.keys(awakenings).forEach((roomId) => {
+      Object.keys(completions.rest).forEach((roomId) => {
         const room = this.rooms[roomId]
         if (room.numberOfPlayers > 0) {
           const present = Object.keys(room.characters)
-          const charsAwakened = awakenings[roomId].map((char) => char.name)
+          const charsAwakened = completions.rest[roomId].map((char) => char.name)
           const text = `${joinAnd(charsAwakened)} just woke up`
           this.protocol.pushHint({
             time: this.time,
@@ -270,17 +255,16 @@ export const useBookStore = defineStore('book', {
     // Increase time
     addTime(duration) {
       this.time = this.time + duration
-      this.checkForArrivals()
-      this.checkForAwakings()
+      this.checkForCompletedActions()
     },
 
     // timejump until at least one active room, switch to active room
-    jumpToArrival() {
-      const arrivalTime = this.movingCharacterIDs.reduce((acc, charID) => {
+    jumpToActive() {
+      const finishTime = this.busyCharacterIDs.reduce((acc, charID) => {
         return Math.min(acc, this.characters[charID].action.until)
       }, 99999999)
-      if (arrivalTime > this.time) {
-        this.addTime(arrivalTime - this.time)
+      if (finishTime > this.time) {
+        this.addTime(finishTime - this.time)
         this.switchTo(this.activeRooms[0])
       } else {
         console.error('Cannot jump to point in time with active players.')
@@ -352,12 +336,12 @@ export const useBookStore = defineStore('book', {
     moveChar(charID, targetRoom, duration) {
       duration = Math.floor(duration)
       this.characters[charID].moveToRoom(targetRoom, this.time + duration)
-      this.movingCharacterIDs.push(charID)
+      this.busyCharacterIDs.push(charID)
     },
 
     restChar(charID, duration) {
       this.characters[charID].rest(this.time + duration)
-      this.restingCharacterIDs.push(charID)
+      this.busyCharacterIDs.push(charID)
     },
 
     // Switch user view to different room
@@ -538,8 +522,7 @@ export const useBookStore = defineStore('book', {
         this.states = data.states
         this.agendas = data.agendas
         this.protocol = Protocol.fromJSON(data.protocol, this.options)
-        this.movingCharacterIDs = data.movingCharacterIDs
-        this.restingCharacterIDs = data.restingCharacterIDs
+        this.busyCharacterIDs = data.busyCharacterIDs
         this.roomId = data.roomId
         this.time = data.time
         this.recentPlayerIDs = data.recentPlayerIDs
@@ -719,7 +702,7 @@ export const useBookStore = defineStore('book', {
           if (this.activeRooms.length) {
             this.switchTo(this.activeRooms[0])
           } else {
-            this.jumpToArrival()
+            this.jumpToActive()
           }
         }
         this.updateRecentPlayerIDs() // if active player is no longer in active room
@@ -769,7 +752,7 @@ export const useBookStore = defineStore('book', {
           if (this.activeRooms.length) {
             this.switchTo(this.activeRooms[0])
           } else {
-            this.jumpToArrival()
+            this.jumpToActive()
           }
         }*/
 

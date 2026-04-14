@@ -132,7 +132,11 @@ Behavioral instructions: ${this.behavior}`
 ${this.body}, ${this.clothing}, ${this.appearance}`
   }
 
-  // Move character to another room
+  get busy() {
+    return this.action.type !== ''
+  }
+
+  // Duration Actions
   moveToRoom(room, arrivalTime = 0) {
     if (this.action.type !== '') return
     if (this.room) {
@@ -145,27 +149,23 @@ ${this.body}, ${this.clothing}, ${this.appearance}`
       this.action.target = room
     }
   }
-  checkForArrival(time) {
-    if (this.action.type === 'move' && time >= this.action.until) {
-      this.room = this.action.target
-      this.action.type = ''
-      this.room.addCharacter(this)
-      return true
-    }
-    return false
-  }
-
-  // Rest character
   rest(until = 0) {
     if (this.action.type !== '') return
     this.action.type = 'rest'
     this.action.until = until
   }
-  checkForAwaking(time) {
-    if (this.action.type === 'rest' && time >= this.action.until) {
+
+  // Check if duration action is completed
+  checkForCompletion(time) {
+    if (this.action.type === 'move' && time >= this.action.until) {
+      this.room = this.action.target
       this.action.type = ''
-      return true
+      this.room.addCharacter(this)
+      return 'move'
+    } else if (this.action.type === 'rest' && time >= this.action.until) {
+      this.action.type = ''
+      return 'rest'
     }
-    return false
+    return ''
   }
 }
