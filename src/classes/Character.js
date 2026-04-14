@@ -5,7 +5,7 @@ export default class Character {
   room = null
   controlledBy = null
   action = {
-    // ongoing actions like 'move' or 'rest'
+    // ongoing actions like 'move' or 'sleep'
     type: '',
     until: -1,
     target: '',
@@ -149,9 +149,9 @@ ${this.body}, ${this.clothing}, ${this.appearance}`
       this.action.target = room
     }
   }
-  rest(until = 0) {
+  sleep(until = 0) {
     if (this.action.type !== '') return
-    this.action.type = 'rest'
+    this.action.type = 'sleep'
     this.action.until = until
   }
 
@@ -162,9 +162,9 @@ ${this.body}, ${this.clothing}, ${this.appearance}`
       this.action.type = ''
       this.room.addCharacter(this)
       return 'move'
-    } else if (this.action.type === 'rest' && time >= this.action.until) {
+    } else if (this.action.type === 'sleep' && time >= this.action.until) {
       this.action.type = ''
-      return 'rest'
+      return 'sleep'
     }
     return ''
   }

@@ -10,7 +10,7 @@
       <TheActionBar
         @talk="talk"
         @move="move"
-        @rest="rest"
+        @sleep="sleep"
         @runNarrator="manualNarrator"
         @save="save"
       />
@@ -77,8 +77,8 @@ const move = function ({ location = null, room = null, chars = [] } = {}) {
   if (text) messageBox.value?.setMessage(text)
 }
 
-const rest = function ({ char, duration }) {
-  const text = char ? `${char.id} rest ${duration}` : `rest ${duration}`
+const sleep = function ({ char, duration }) {
+  const text = char ? `${char.id} sleep ${duration}` : `sleep ${duration}`
   if (text) messageBox.value?.setMessage(text)
 }
 

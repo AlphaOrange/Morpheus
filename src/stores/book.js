@@ -194,7 +194,7 @@ export const useBookStore = defineStore('book', {
     checkForCompletedActions() {
       const completions = {
         move: {},
-        rest: {},
+        sleep: {},
       }
       for (const charID of this.busyCharacterIDs) {
         const char = this.characters[charID]
@@ -235,11 +235,11 @@ export const useBookStore = defineStore('book', {
         }
       })
       // Sent Awakening HINT message per room where player characters present
-      Object.keys(completions.rest).forEach((roomId) => {
+      Object.keys(completions.sleep).forEach((roomId) => {
         const room = this.rooms[roomId]
         if (room.numberOfPlayers > 0) {
           const present = Object.keys(room.characters)
-          const charsAwakened = completions.rest[roomId].map((char) => char.name)
+          const charsAwakened = completions.sleep[roomId].map((char) => char.name)
           const text = `${joinAnd(charsAwakened)} just woke up`
           this.protocol.pushHint({
             time: this.time,
@@ -339,8 +339,8 @@ export const useBookStore = defineStore('book', {
       this.busyCharacterIDs.push(charID)
     },
 
-    restChar(charID, duration) {
-      this.characters[charID].rest(this.time + duration)
+    sleepChar(charID, duration) {
+      this.characters[charID].sleep(this.time + duration)
       this.busyCharacterIDs.push(charID)
     },
 
@@ -708,35 +708,35 @@ export const useBookStore = defineStore('book', {
         this.updateRecentPlayerIDs() // if active player is no longer in active room
       }
 
-      if (command.action === 'rest') {
+      if (command.action === 'sleep') {
         console.log(command)
 
-        // Check if rest is possible in this room
-        if (!this.room.hasAction('rest')) {
+        // Check if sleep is possible in this room
+        if (!this.room.hasAction('sleep')) {
           this.protocol.pushError({
             time: this.time,
             title: 'No resting place',
-            text: `It is not possible to rest here in ${this.room.name}. You need to go somewhere that has a place to sleep first.`,
+            text: `It is not possible to sleep here in ${this.room.name}. You need to go somewhere that has a place to sleep first.`,
           })
           return
         }
 
         // Construct info message
-        let charsResting
+        let charsSleeping
         if (command.actor === ':group') {
-          charsResting = this.room.availablePlayerCharacters.map((char) => char.name)
+          charsSleeping = this.room.availablePlayerCharacters.map((char) => char.name)
         } else {
-          charsResting = [this.characters[command.actor].name]
+          charsSleeping = [this.characters[command.actor].name]
         }
-        const infoMessage = `${joinAnd(charsResting)} just went to sleep`
+        const infoMessage = `${joinAnd(charsSleeping)} just went to sleep`
 
-        // Start resting periods
+        // Start sleeping periods
         if (command.actor === ':group') {
           for (const char of this.room.availablePlayerCharacters) {
-            this.restChar(char.id, command.seconds)
+            this.sleepChar(char.id, command.seconds)
           }
         } else {
-          this.restChar(command.actor, command.seconds)
+          this.sleepChar(command.actor, command.seconds)
         }
 
         // Send INFO message

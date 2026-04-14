@@ -47,14 +47,14 @@ const props = defineProps({
 
 // Content for character busy indicators
 const actionIcon = (action) => {
-  if (action === 'rest') {
+  if (action === 'sleep') {
     return 'fa-moon'
   }
   return ''
 }
 const actionText = (action) => {
-  if (action === 'rest') {
-    return 'resting'
+  if (action === 'sleep') {
+    return 'sleeping'
   }
   return ''
 }

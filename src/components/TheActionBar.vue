@@ -47,9 +47,9 @@
           :compact="compact"
         />
         <ActionButton
-          v-if="room.hasAction('rest')"
-          @click="rest60()"
-          text="Rest 1 Hour"
+          v-if="room.hasAction('sleep')"
+          @click="sleep60()"
+          text="Sleep 1 Hour"
           icon="moon"
           pill="1h"
           :compact="compact"
@@ -96,14 +96,20 @@
           :compact="compact"
         />
         <ActionButton
-          v-if="room.hasAction('rest')"
-          @click="rest60(char)"
-          text="Rest 1 Hour"
+          v-if="room.hasAction('sleep')"
+          @click="sleep60(char)"
+          text="Sleep 1 Hour"
           icon="moon"
           pill="1h"
           :compact="compact"
         />
       </div>
+    </div>
+    <div v-for="char in room.busyPlayerCharacters" :key="char.id" class="box">
+      <h3 class="hint-anchor">
+        {{ char.name }}<span class="hint">{{ char.id }}</span>
+      </h3>
+      <div class="busy-info">Currently {{ busyText(char.action.type) }}</div>
     </div>
     <div class="box">
       <h3>User Actions</h3>
@@ -129,7 +135,7 @@ import { useOptionsStore } from '@/stores/options'
 const options = useOptionsStore()
 
 const { activeRooms, movingPlayerCharacters, activePlayerID, time, room } = storeToRefs(book)
-const emits = defineEmits(['talk', 'move', 'rest', 'runNarrator', 'save'])
+const emits = defineEmits(['talk', 'move', 'sleep', 'runNarrator', 'save'])
 
 const switchTo = (room) => {
   book.switchTo(room)
@@ -137,6 +143,13 @@ const switchTo = (room) => {
 
 const pilltext = (distText) => {
   return distText === '0s' ? null : distText
+}
+
+const busyText = (action) => {
+  if (action === 'sleep') {
+    return 'sleeping'
+  }
+  return ''
 }
 
 const compact = computed(() => {
@@ -167,8 +180,8 @@ const moveCharToRoom = (char, room) => {
 const moveCharToLocation = (char, location) => {
   emits('move', { location: location, chars: [char] })
 }
-const rest60 = (char = null) => {
-  emits('rest', { char, duration: 60 })
+const sleep60 = (char = null) => {
+  emits('sleep', { char, duration: 60 })
 }
 
 // Emit meta commands
@@ -217,5 +230,9 @@ const roomButtonClass = (room) => {
   font-size: 0.8rem;
   text-align: center;
   background: var(--bg-highlight);
+}
+.busy-info {
+  font-style: italic;
+  color: var(--col-font-toned);
 }
 </style>
