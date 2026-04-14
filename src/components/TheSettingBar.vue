@@ -9,7 +9,7 @@
     <SettingBox :hint="'Room'" :setting="room" :collapsed="false" />
     <div class="vertical-center-flex">
       <CharacterInfoBox
-        v-for="character in room.availableAiCharacters"
+        v-for="character in room.presentAiCharacters"
         :key="character.id"
         :character="character"
         :collapsed="true"
