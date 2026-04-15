@@ -80,6 +80,9 @@ export default class Room {
   get presentAiCharacters() {
     return Object.values(this.characters).filter((char) => char.controlledBy === 'ai')
   }
+  get availableCharacters() {
+    return Object.values(this.characters).filter((char) => !char.busy)
+  }
   get availablePlayerCharacters() {
     return this.presentPlayerCharacters.filter((char) => !char.busy)
   }
@@ -146,10 +149,8 @@ ${avLocations}`
   removeCharacter(character) {
     delete this.characters[character.id]
   }
-  isInRoom(charID) {
-    return Object.values(this.characters)
-      .map((char) => char.id)
-      .includes(charID)
+  isAvailableInRoom(charID) {
+    return this.availableCharacters.map((char) => char.id).includes(charID)
   }
 
   // Room Actions

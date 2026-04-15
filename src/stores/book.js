@@ -557,7 +557,7 @@ export const useBookStore = defineStore('book', {
     concretizeTalkTo(command) {
       let talkTo = command.action === 'talk' ? command.target : ':all'
       if (talkTo === ':all' && this.room.numberOfPlayers + this.room.numberOfAis === 2) {
-        talkTo = Object.keys(this.room.characters).filter((id) => id !== command.actor)
+        talkTo = this.room.availableCharacters.filter((char) => char.id !== command.actor)[0].id
       }
       return talkTo
     },
@@ -578,7 +578,7 @@ export const useBookStore = defineStore('book', {
         // Process :resume if used
         if (command.target === ':resume') {
           const lastSpokenToID = this.protocol.lastSpokenTo(command.actor)
-          if (lastSpokenToID && this.room.isInRoom(lastSpokenToID)) {
+          if (lastSpokenToID && this.room.isAvailableInRoom(lastSpokenToID)) {
             command.target = lastSpokenToID
           } else {
             command.target = ':all'
@@ -758,6 +758,7 @@ export const useBookStore = defineStore('book', {
           }
         }
 
+        this.addTime(this.options.talkDuration) // TODO: later replace with action duration
         this.updateRecentPlayerIDs() // if active player is no longer in active room
       }
 
