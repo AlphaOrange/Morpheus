@@ -797,7 +797,7 @@ export const useBookStore = defineStore('book', {
             time: this.time,
             text: command.message,
             room: this.room.id,
-            present: present,
+            present: [...present, command.target],
             from: command.actor,
             to: command.target,
           })
