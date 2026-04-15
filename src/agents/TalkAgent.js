@@ -1,5 +1,5 @@
 import Agent from '@/agents/Agent'
-import { formatDialog } from '@/helpers/utils'
+import { formatDialog, joinOr } from '@/helpers/utils'
 import TEMPLATES from '@/agents/templates/TalkAgent.yaml'
 
 export default class TalkAgent extends Agent {
@@ -31,19 +31,36 @@ export default class TalkAgent extends Agent {
       .join('\n\n')
   }
 
+  additional_actions({ room }) {
+    const actions = [{ type: 'MOVE', description: 'move to another room or a different location' }]
+    if (room.hasAction('sleep')) {
+      actions.push({ type: 'SLEEP', description: 'go to sleep' })
+    }
+    if (room.busyCharacters.filter((char) => char.action.type === 'sleep').length > 0) {
+      actions.push({ type: 'WAKE', description: 'wake someone up from sleeping' })
+    }
+    actions.push({ type: 'NONE', description: 'no additional action' })
+    return actions
+  }
+
   // Main Method
-  async run({ actor, protocol }) {
+  async run({ actor, room, protocol }) {
     const dialog = formatDialog({
       messages: protocol.filterDialog({ types: 'context', present: actor }),
       perspective: actor.id,
     })
     const you_profile = actor.selfDescription
-    const others_profiles = this.others_profiles({ actor: actor })
+    const others_profiles = this.others_profiles({ actor })
+    const actions = this.additional_actions({ room })
+    const additional_actions_list = actions
+      .map((action) => `- ${action.type}: ${action.description}`)
+      .join('\n')
     const prompt = TEMPLATES.user
       .replaceAll('%you%', actor.name)
       .replace('%dialog%', dialog)
       .replace('%others_profiles%', others_profiles)
       .replace('%you_profile%', you_profile)
+      .replace('%additional_actions_list%', additional_actions_list)
 
     try {
       const answer = await this.query({ prompt, type: 'json' })
