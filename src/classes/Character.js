@@ -128,8 +128,12 @@ Behavioral instructions: ${this.behavior}`
   }
   get externalDescription() {
     // for other character's prompts
-    return `${this.name} (ID: ${this.id}), ${this.profession}
+    let description = `${this.name} (ID: ${this.id}), ${this.profession}
 ${this.body}, ${this.clothing}, ${this.appearance}`
+    if (this.action.type === 'sleep') {
+      description += '\n(currently sleeping)'
+    }
+    return description
   }
 
   get busy() {
