@@ -5,22 +5,21 @@ import TEMPLATES from '@/agents/templates/MoveAgent.yaml'
 export default class MoveAgent extends Agent {
   // NPC Agent
   // This agent is performing a MOVE action
-  // Currently it does not use any AI
 
   // Agent Input
   // - Actor (Character)
-  // - Room
   // - Protocol
 
   // Agent Output
-  // - Target (ID of a room/location/destination)
-  // - Spec ("destination", "location" or "room")
+  // - move: true/false (perform MOVE action?)
+  // - targetId: Target (command ID of a room/location/destination)
+  // - spec: "destination", "location" or "room"
 
   constructor() {
     super()
     this.systemPrompt = TEMPLATES.system
     this.responseFormat = TEMPLATES.format
-    this.responseExample = TEMPLATES.example
+    this.responseExamples = TEMPLATES.examples
   }
 
   // Build text block: descriptions of Others
@@ -51,8 +50,6 @@ export default class MoveAgent extends Agent {
 
     try {
       const answer = await this.query({ prompt, type: 'json' })
-      // FOR TESTING PURPOSES:
-      // const answer = { text: 'Test', to: 'alice' }
       return {
         move: answer.move,
         targetId: answer.destination,

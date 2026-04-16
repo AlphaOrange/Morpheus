@@ -5,16 +5,14 @@ import TEMPLATES from '@/agents/templates/TalkAgent.yaml'
 export default class TalkAgent extends Agent {
   // NPC Agent
   // This agent is performing a TALK action
-  // Currently it does not use any AI
 
   // Agent Input
   // - Actor (Character)
-  // - Room
   // - Protocol
 
   // Agent Output
-  // - Target (:all or Character.id)
-  // - Message
+  // - text: Message
+  // - to: Target (:all or Character.id)
 
   constructor() {
     super()
@@ -44,14 +42,14 @@ export default class TalkAgent extends Agent {
   }
 
   // Main Method
-  async run({ actor, room, protocol }) {
+  async run({ actor, protocol }) {
     const dialog = formatDialog({
       messages: protocol.filterDialog({ types: 'context', present: actor }),
       perspective: actor.id,
     })
     const you_profile = actor.selfDescription
     const others_profiles = this.others_profiles({ actor })
-    const actions = this.additional_actions({ room })
+    const actions = this.additional_actions({ room: actor.room })
     const additional_actions_list = actions
       .map((action) => `- ${action.type}: ${action.description}`)
       .join('\n')

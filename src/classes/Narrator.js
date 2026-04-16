@@ -35,7 +35,6 @@ export default class Narrator {
     this.options.narratorRunningMessage = `${actorId} talking ...`
     const response = await this.talkAgent.run({
       actor: this.book.characters[actorId],
-      room: this.book.room,
       protocol: this.protocol,
     })
 

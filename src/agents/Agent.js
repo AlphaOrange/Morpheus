@@ -11,6 +11,7 @@ export default class Agent {
   systemPrompt = 'You are a super-helpful AI assistent.'
   responseFormat = null
   responseExample = null
+  responseExamples = null
 
   // Options
   shelf = useShelfStore()
@@ -47,10 +48,18 @@ You must exclusively use this exact json template for your answer and nothing el
 
 ${this.responseFormat}`
     }
-    if (this.responseExample) {
+    if (this.responseExamples) {
+      // Multi-Shot
       prompt = `${prompt}
 
-### EXAMPLE OUTPUT ###
+### OUTPUT EXAMPLES ###
+
+${this.responseExample}`
+    } else if (this.responseExample) {
+      // One-Shot
+      prompt = `${prompt}
+
+### OUTPUT EXAMPLE ###
 
 ${this.responseExample}`
     }
