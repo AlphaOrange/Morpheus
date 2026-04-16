@@ -81,14 +81,14 @@ export const useOptionsStore = defineStore('options', {
     aiVendor: 'Google',
     aiModel: 'gemini-2.5-flash-lite',
     aiApiKey: import.meta.env.VITE_GEMINI_API_KEY,
-    aiApiKeyAllowSave: import.meta.env.VITE_ALLOW_SAVE_KEY,
+    aiApiKeyAllowSave: import.meta.env.VITE_ALLOW_SAVE_KEY === 'true',
     aiSafetyHarassment: safetySettings.harassment,
     aiSafetyHateSpeech: safetySettings.hateSpeech,
     aiSafetySex: safetySettings.sex,
     aiSafetyDangerous: safetySettings.dangerous,
     // Legal settings
-    legalAllowAI: import.meta.env.VITE_GENERAL_CONSENT,
-    legalAllowLocalStorage: import.meta.env.VITE_GENERAL_CONSENT,
+    legalAllowAI: import.meta.env.VITE_GENERAL_CONSENT === 'true',
+    legalAllowLocalStorage: import.meta.env.VITE_GENERAL_CONSENT === 'true',
 
     // Book Settings (can be overwritten by book, e.g. ai settings)
     talkDuration: 30, // seconds that pass per talk action

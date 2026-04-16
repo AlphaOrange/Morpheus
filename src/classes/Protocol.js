@@ -1,3 +1,5 @@
+const DEV = import.meta.env.VITE_DEV === 'true'
+
 export default class Protocol {
   // messages: {type: ["talk", "hint", "info"],
   //            time: Int
@@ -19,8 +21,9 @@ export default class Protocol {
   // {type: "error", time, text, title}
 
   typeFilters = {
-    // this.showTypes = ['talk', 'info'] // show these in dialog display
-    show: ['talk', 'hint', 'info', 'error', 'system', 'summary'], // TEST MODE
+    show: DEV
+      ? ['talk', 'hint', 'info', 'error', 'system', 'summary']
+      : ['talk', 'info', 'hint', 'error', 'summary'], // show in dialog
     context: ['talk', 'hint', 'summary'], // give these to agent for historal context
     scene: ['talk', 'hint', 'summary'], // these count for scene building
     active: ['talk'], // these action make a character active
