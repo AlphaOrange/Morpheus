@@ -1,6 +1,7 @@
 import NextActionAgent from '@/agents/NextActionAgent'
 import TalkAgent from '@/agents/TalkAgent'
 import MoveAgent from '@/agents/MoveAgent'
+import SleepAgent from '@/agents/SleepAgent'
 
 export default class Narrator {
   // This class handles all AI orchestration
@@ -16,6 +17,7 @@ export default class Narrator {
     this.nextActionAgent = new NextActionAgent()
     this.talkAgent = new TalkAgent()
     this.moveAgent = new MoveAgent()
+    this.sleepAgent = new SleepAgent()
   }
 
   // Handle an agent error
@@ -79,6 +81,29 @@ export default class Narrator {
     return { command }
   }
 
+  // SLEEP Action
+  async runSleepAction({ actorId }) {
+    this.options.narratorRunningMessage = `${actorId} tiring ...`
+    const response = await this.sleepAgent.run({
+      actor: this.book.characters[actorId],
+      protocol: this.protocol,
+    })
+
+    if (response.error) {
+      this.handleError('Error in Sleep Agent', response.error)
+      return { error: response.error }
+    }
+
+    const command = {
+      action: 'sleep',
+      actor: actorId,
+      seconds: response.duration * 60,
+    }
+
+    this.options.narratorRunningMessage = ''
+    return { command }
+  }
+
   // Main Action: handle possible NPC actions
   async runNPC({ cycle = 1 }) {
     // store original state to check throughout if run still valid
@@ -107,9 +132,18 @@ export default class Narrator {
       this.book.executeCommand(response.command)
       action = response.additionalAction
     }
+
+    // return if state changed
+    if (state.roomId !== this.book.roomId) return false
+
+    // run additional action
     if (action === 'move') {
       let response = await this.runMoveAction({ actorId })
-      if (state.roomId !== this.book.roomId) return false
+      if (response.error) return false
+      this.book.executeCommand(response.command)
+    }
+    if (action === 'sleep') {
+      let response = await this.runSleepAction({ actorId })
       if (response.error) return false
       this.book.executeCommand(response.command)
     }
