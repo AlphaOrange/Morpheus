@@ -19,7 +19,7 @@ versions:
       Layout Tweaks
     features: [maps, move, talk]
     fullSupport: 0.8.0
-    minSupport: 0.4.0
+    minSupport: 0.8.0
   - version: 0.7.0
     updates: |-
       **Help Upgrades**
