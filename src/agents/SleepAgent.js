@@ -1,11 +1,11 @@
 import Agent from '@/agents/Agent'
 // import { formatDialog } from '@/helpers/utils'
-// import TEMPLATES from '@/agents/templates/MoveAgent.yaml'
+// import TEMPLATES from '@/agents/templates/SleepAgent.yaml'
 
-export default class MoveAgent extends Agent {
+export default class SleepAgent extends Agent {
   // NPC Agent
   // This agent is performing a SLEEP action
-  // CUrrently not using any AI
+  // Currently not using any AI
 
   // Agent Input
   // - Actor (Character)

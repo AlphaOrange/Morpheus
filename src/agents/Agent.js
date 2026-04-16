@@ -54,7 +54,7 @@ ${this.responseFormat}`
 
 ### OUTPUT EXAMPLES ###
 
-${this.responseExample}`
+${this.responseExamples}`
     } else if (this.responseExample) {
       // One-Shot
       prompt = `${prompt}

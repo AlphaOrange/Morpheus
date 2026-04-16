@@ -2,6 +2,7 @@ import NextActionAgent from '@/agents/NextActionAgent'
 import TalkAgent from '@/agents/TalkAgent'
 import MoveAgent from '@/agents/MoveAgent'
 import SleepAgent from '@/agents/SleepAgent'
+import WakeAgent from '@/agents/WakeAgent'
 
 export default class Narrator {
   // This class handles all AI orchestration
@@ -18,6 +19,7 @@ export default class Narrator {
     this.talkAgent = new TalkAgent()
     this.moveAgent = new MoveAgent()
     this.sleepAgent = new SleepAgent()
+    this.wakeAgent = new WakeAgent()
   }
 
   // Handle an agent error
@@ -68,6 +70,7 @@ export default class Narrator {
       this.handleError('Error in Move Agent', response.error)
       return { error: response.error }
     }
+    if (!response.move) return null
 
     const command = {
       action: 'move',
@@ -93,11 +96,37 @@ export default class Narrator {
       this.handleError('Error in Sleep Agent', response.error)
       return { error: response.error }
     }
+    if (!response.sleep) return null
 
     const command = {
       action: 'sleep',
       actor: actorId,
       seconds: response.duration * 60,
+    }
+
+    this.options.narratorRunningMessage = ''
+    return { command }
+  }
+
+  // WAKE Action
+  async runWakeAction({ actorId }) {
+    this.options.narratorRunningMessage = `${actorId} waking ...`
+    const response = await this.wakeAgent.run({
+      actor: this.book.characters[actorId],
+      protocol: this.protocol,
+    })
+
+    if (response.error) {
+      this.handleError('Error in Wake Agent', response.error)
+      return { error: response.error }
+    }
+    if (!response.wake) return null
+
+    const command = {
+      action: 'wake',
+      actor: actorId,
+      target: response.target,
+      message: null,
     }
 
     this.options.narratorRunningMessage = ''
@@ -144,6 +173,11 @@ export default class Narrator {
     }
     if (action === 'sleep') {
       let response = await this.runSleepAction({ actorId })
+      if (response.error) return false
+      this.book.executeCommand(response.command)
+    }
+    if (action === 'wake') {
+      let response = await this.runWakeAction({ actorId })
       if (response.error) return false
       this.book.executeCommand(response.command)
     }

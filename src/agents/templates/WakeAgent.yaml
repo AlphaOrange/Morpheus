@@ -1,0 +1,53 @@
+# Talk Agent: Writing a TALK command
+---
+system: |-
+  You are an expert screenwriter and improv actor who slips into a specific role for continuing a dialogue and decide on their character's actions.
+user: |-
+  ### RECENT DIALOG ###
+
+  %dialog%
+
+  ### THIS IS YOU ###
+
+  You are now %you%.
+
+  %you_profile%
+
+  ### CURRENTLY SLEEPING CHARACTERS ###
+
+  %sleepers_profiles%
+
+  ### INSTRUCTIONS ###
+
+  You, %you%, indicated you want to wake up someone in the room %room%.
+  Based the recent dialog evaluate which person you want to wake up or if I misinterpreted do not wake up anybody.
+format: |-
+  {
+    "wake": [decision of waking, can be false or true],
+    "character": [id of character to wake up or ":none" if wake == false],
+  }
+examples: |-
+  {
+    "wake": "false"
+    "character": ":none"
+  }
+
+  {
+    "wake": "true"
+    "character": "robin"
+  }
+validation: |-
+  {
+    "$id": "WakeAgent",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "wake": {
+        "type": "boolean"
+      },
+      "character": {
+        "type": "string"
+      }
+    },
+    "required": [ "wake" ]
+  }
