@@ -199,7 +199,7 @@ export const useBookStore = defineStore('book', {
       for (const charID of this.busyCharacterIDs) {
         const char = this.characters[charID]
         const completedAction = char.checkForCompletion(this.time)
-        console.log(`${charID}: ${completedAction}`)
+        console.log(`${charID} completed: ${completedAction}`)
         if (completedAction !== '') {
           this.busyCharacterIDs = this.busyCharacterIDs.filter((id) => id != charID)
           if (!(char.room.id in completions[completedAction])) {
@@ -213,7 +213,7 @@ export const useBookStore = defineStore('book', {
       Object.keys(completions.move).forEach((roomId) => {
         const room = this.rooms[roomId]
         if (room.numberOfPlayers > 0) {
-          const present = Object.keys(room.characters)
+          const present = room.availableCharacters.map((char) => char.id)
           const charArrivedAi = completions.move[roomId]
             .filter((char) => char.controlledBy === 'ai')
             .map((char) => char.name)
@@ -238,7 +238,7 @@ export const useBookStore = defineStore('book', {
       Object.keys(completions.sleep).forEach((roomId) => {
         const room = this.rooms[roomId]
         if (room.numberOfPlayers > 0) {
-          const present = Object.keys(room.characters)
+          const present = room.availableCharacters.map((char) => char.id)
           const charsAwakened = completions.sleep[roomId].map((char) => char.name)
           const text = `${joinAnd(charsAwakened)} just woke up`
           this.protocol.pushHint({
@@ -564,7 +564,7 @@ export const useBookStore = defineStore('book', {
 
     // Process command (from AI or processed user message)
     async executeCommand(command) {
-      const present = Object.keys(this.room.characters)
+      let present = this.room.availableCharacters.map((char) => char.id)
 
       // Action TALK
       if (command.action === 'talk') {
@@ -781,8 +781,8 @@ export const useBookStore = defineStore('book', {
         }
 
         // End sleeping period
-        console.log(command.actor)
         this.wakeChar(command.target)
+        present = this.room.availableCharacters.map((char) => char.id) // re-evaluate to add woken character
 
         // Send INFO message
         this.protocol.pushHint({
