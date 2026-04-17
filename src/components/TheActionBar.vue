@@ -8,6 +8,8 @@
           :character="char"
           :icon="`person-walking`"
           :text="periodText(char.arrivalTime - time)"
+          @click="showProfile(char)"
+          class="moving-marker"
         />
       </div>
       <div v-if="multiroom" class="shelf horizontal-flex item-selection">
@@ -49,7 +51,7 @@
       </div>
     </div>
     <div v-for="char in room.presentPlayerCharacters" :key="char.id" class="box">
-      <h3 class="hint-anchor">
+      <h3 class="hint-anchor char-header" @click="showProfile(char)">
         <span v-if="activePlayerID === char.id"><font-awesome-icon icon="fa-star" /></span>
         {{ char.name }}<span class="hint">{{ char.id }}</span>
       </h3>
@@ -100,11 +102,12 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, markRaw } from 'vue'
 import { storeToRefs } from 'pinia'
 import { periodText, distancePeriodText } from '@/helpers/utils'
 import CharacterMarker from '@/components/CharacterMarker.vue'
 import ActionButton from '@/components/ActionButton.vue'
+import CharacterProfile from '@/components/CharacterProfile.vue'
 
 import { useBookStore } from '@/stores/book'
 const book = useBookStore()
@@ -170,11 +173,23 @@ const roomButtonClass = (room) => {
     return []
   }
 }
+
+// Open Profile Overlay
+const showProfile = (character) => {
+  options.lightbox = {
+    component: markRaw(CharacterProfile),
+    props: { character },
+  }
+}
 </script>
 
 <style scoped>
 * {
   user-select: none;
+}
+.moving-marker,
+.char-header {
+  cursor: pointer;
 }
 .room-button {
   position: relative;
