@@ -1,112 +1,18 @@
 import { defineStore } from 'pinia'
-import { safetySettings } from '@/data/llm'
+import OPTIONS from '@/data/options'
 
 // these options will be stored and restored with saving/loading books
-const SAVEABLE_OPTIONS = [
-  // User Settings
-  'idHintsMode',
-  'idlingBeforeTriggerNpc',
-  'useAiForSavegameSummary',
-  'useCompactButtons',
-  'showTokenUsage',
-  'legalAllowAI',
-  'legalAllowLocalStorage',
-  // AI Settings
-  'aiVendor',
-  'aiModel',
-  'aiApiKey',
-  'aiApiKeyAllowSave',
-  'aiSafetyHarassment',
-  'aiSafetyHateSpeech',
-  'aiSafetySex',
-  'aiSafetyDangerous',
-  // Book Settings
-  'talkDuration',
-  'moveDurationRoom',
-  'moveDurationLocation',
-  'moveDurationDestination',
-]
+const SAVEABLE_OPTIONS = OPTIONS.filter((opt) => opt[2]).map((opt) => opt[0])
 
 // these options are available to the user to change
-// (does not list aiApiKey to not expose in dialog)
-const USER_OPTIONS = [
-  'idHintsMode',
-  'idlingBeforeTriggerNpc',
-  'useAiForSavegameSummary',
-  'useCompactButtons',
-  'showTokenUsage',
-  'aiVendor',
-  'aiModel',
-  'aiApiKeyAllowSave',
-  'aiSafetyHarassment',
-  'aiSafetyHateSpeech',
-  'aiSafetySex',
-  'aiSafetyDangerous',
-]
+const USER_OPTIONS = OPTIONS.filter((opt) => opt[3]).map((opt) => opt[0])
 
 export const useOptionsStore = defineStore('options', {
-  state: () => ({
-    // Engine Parameters (cannot be changed, e.g. ui settings)
-    // Display parameters
-    lookbackInfo: 20, // how many messages until an Info message disappears?
-    lookbackSystem: 20, // how many messages until a System message disappears?
-    lookbackError: 5, // how many messages until an Error message disappears?
-    compactButtonsThreshold: 20, // number of buttons for activating compact buttons display
-    // Pressure parameters
-    pressure_notSpokenYet: 100,
-    pressure_notAnsweredYet: 80,
-    pressure_spokenToUnresolved: -50,
-    pressure_runningDialog: 60,
-    pressure_notSpokenRounds: 15,
-    pressure_threshold: 40, // if max pressure above: ai must act
-    pressure_noActionProb: 0.5, // max probability of no-action if below threshold
-    maxRunningDialogLength: 8, // running dialog length for max pressure
-    maxNotSpokenRounds: 12, // not spoken rounds for max pressure
-    multiActionThreshold: 100, // threshold: pressure threshold to allow additional npc action
-    multiActionMaxCycles: 3, // threshold: number of max npc actions per round
-    waitBetweenNpcActions: 0.5, // wait time before executing possible next npc action (in addition to execution time!)
-    // Game Flow
-    sceneIdleLength: 3600, // seconds without action until a scene is ended
-    lookbackLastSpoken: 30, // how many messages max checking to find who actor has last spoken to
-    // AI Parameters
-    repeatTimestampAfterSeconds: 600, // seconds after which timestamp is shown again in formatted dialog
-
-    // Game Settings (can be changed by user, e.g. display options)
-    idHintsMode: 'auto', // can be "never", "auto", "always"
-    idlingBeforeTriggerNpc: 4, // seconds of idling until NPC actions are triggered
-    useAiForSavegameSummary: false, // if true use ai agent on save, otherwise use description as summary
-    useCompactButtons: true, // use compact buttons on cluttered action bar
-    showTokenUsage: false, // show number of tokens (in + out) used in this session
-    // AI configuration
-    aiVendor: 'Google',
-    aiModel: 'gemini-2.5-flash-lite',
-    aiApiKey: import.meta.env.VITE_GEMINI_API_KEY,
-    aiApiKeyAllowSave: import.meta.env.VITE_ALLOW_SAVE_KEY === 'true',
-    aiSafetyHarassment: safetySettings.harassment,
-    aiSafetyHateSpeech: safetySettings.hateSpeech,
-    aiSafetySex: safetySettings.sex,
-    aiSafetyDangerous: safetySettings.dangerous,
-    // Legal settings
-    legalAllowAI: import.meta.env.VITE_GENERAL_CONSENT === 'true',
-    legalAllowLocalStorage: import.meta.env.VITE_GENERAL_CONSENT === 'true',
-
-    // Book Settings (can be overwritten by book, e.g. ai settings)
-    talkDuration: 30, // seconds that pass per talk action
-    moveDurationRoom: 0, // seconds to adjacent room
-    moveDurationLocation: 60, // seconds / 1 distance location move
-    moveDurationDestination: 3600, // seconds / 1 distance destination move
-    minPlayerChars: 1, // min number of characters player must choose to control
-    maxPlayerChars: 99, // max number of characters player may choose to control
-
-    // Runtime Variables (e.g. user activity flags)
-    idHintsActive: false,
-    lightbox: {
-      component: null,
-      props: {},
-    },
-    narratorRunning: false,
-    narratorRunningMessage: '',
-  }),
+  state: () => {
+    const state = {}
+    OPTIONS.forEach((opt) => (state[opt[0]] = opt[1]))
+    return state
+  },
 
   getters: {
     // Display id hints? (based on idHintsMode and idHintsActive)
