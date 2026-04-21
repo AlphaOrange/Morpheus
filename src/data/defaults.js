@@ -35,8 +35,20 @@ export const defaultsCharacter = {
   clothing: 'Casual outfit',
   appearance: 'Normal appearance',
   background: '',
+  states: [],
   load_states: [],
   load_agendas: [],
+}
+
+export const defaultsState = {
+  base: 0,
+  change: {
+    hour: 0,
+    sleep: 0,
+    context: [-5, -2, +2, +5],
+  },
+  intervals: [],
+  events: [],
 }
 
 export const defaultsDestination = {

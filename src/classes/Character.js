@@ -1,8 +1,10 @@
 import { genericImg, bookImg } from '@/helpers/utils'
 import { defaultsCharacter } from '@/data/defaults'
+import State from '@/classes/State'
 
 export default class Character {
   room = null
+  states = []
   controlledBy = null
   arrivalTime = 0
   arrivalTarget = null
@@ -29,6 +31,12 @@ export default class Character {
     this.start = data.start
       ? data.start.destination + '/' + data.start.location + '/' + data.start.room
       : null
+    if (!Array.isArray(data.states)) {
+      data.states = Object.values(data.states)
+    }
+    for (let state of data.states) {
+      this.states.push(new State(state))
+    }
     // data.load_states
     // data.load_agendas
   }
@@ -62,6 +70,7 @@ export default class Character {
       start: this.start,
       _image: this._image,
       room: this.room === null ? null : this.room.id,
+      states: this.states,
       controlledBy: this.controlledBy,
       arrivalTime: this.arrivalTime,
       arrivalTarget: this.arrivalTarget === null ? null : this.arrivalTarget.id,
@@ -109,6 +118,9 @@ export default class Character {
   }
 
   // Getter: Descriptions
+  get stateEffects() {
+    return this.states.map((state) => state.effect).join(' ')
+  }
   get selectionDescription() {
     // for selection menu
     return this.description_player === '' ? this.description : this.description_player
@@ -118,7 +130,8 @@ export default class Character {
     return `${this.name} (${this.gender}, ${this.age}, ${this.profession})
 ${this.background}
 ${this.body}, ${this.clothing}, ${this.appearance}
-Behavioral instructions: ${this.behavior}`
+Behavioral instructions: ${this.behavior}
+${this.stateEffects}`
   }
   get externalDescription() {
     // for other character's prompts
