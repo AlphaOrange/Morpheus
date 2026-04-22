@@ -154,7 +154,7 @@ export default class NextActionAgent extends Agent {
     })
 
     // Check if at least one available that did not just spoke
-    let npcs = room.presentAiCharacters
+    let npcs = room.availableAiCharacters
     if (excludeLastActor) {
       const lastTalker = messages[messages.length - 1]?.from
       npcs = npcs.filter((char) => char.id !== lastTalker)

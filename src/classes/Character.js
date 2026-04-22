@@ -6,8 +6,12 @@ export default class Character {
   room = null
   states = []
   controlledBy = null
-  arrivalTime = 0
-  arrivalTarget = null
+  action = {
+    // ongoing actions like 'move' or 'sleep'
+    type: '',
+    until: -1,
+    target: '',
+  }
 
   constructor(rawData) {
     const data = { ...defaultsCharacter, ...rawData }
@@ -45,8 +49,7 @@ export default class Character {
     const proto = new Character(data)
     proto.room = data.room // Note: this gets rewired to room ref in book load/restore
     proto.controlledBy = data.controlledBy
-    proto.arrivalTime = data.arrivalTime
-    proto.arrivalTarget = data.arrivalTarget
+    proto.action = data.action
     return proto
   }
 
@@ -72,8 +75,11 @@ export default class Character {
       room: this.room === null ? null : this.room.id,
       states: this.states,
       controlledBy: this.controlledBy,
-      arrivalTime: this.arrivalTime,
-      arrivalTarget: this.arrivalTarget === null ? null : this.arrivalTarget.id,
+      action: {
+        type: this.action.type,
+        until: this.action.until,
+        target: this.action.target ? this.action.target.id : '',
+      },
     }
   }
 
@@ -135,32 +141,54 @@ ${this.stateEffects}`
   }
   get externalDescription() {
     // for other character's prompts
-    return `${this.name} (ID: ${this.id}), ${this.profession}
+    let description = `${this.name} (ID: ${this.id}), ${this.profession}
 ${this.body}, ${this.clothing}, ${this.appearance}`
+    if (this.action.type === 'sleep') {
+      description += '\n(currently sleeping)'
+    }
+    return description
   }
 
-  // Move character to another room
+  get busy() {
+    return this.action.type !== ''
+  }
+
+  // Duration Actions
   moveToRoom(room, arrivalTime = 0) {
+    if (this.action.type !== '') return
     if (this.room) {
       this.room.removeCharacter(this)
     }
     this.room = null
     if (room) {
-      this.arrivalTarget = room
-      this.arrivalTime = arrivalTime
+      this.action.type = 'move'
+      this.action.until = arrivalTime
+      this.action.target = room
     }
+  }
+  sleep(until = 0) {
+    if (this.action.type !== '') return
+    this.action.type = 'sleep'
+    this.action.until = until
+  }
+  wake() {
+    if (this.action.type !== 'sleep') return
+    this.action.type = ''
   }
 
   // Pass time and check for events
   passTime(startTime, duration) {
     const events = []
 
-    // Check for arrival
-    if ((this.arrivalTime >= 0) & (startTime + duration >= this.arrivalTime)) {
-      this.room = this.arrivalTarget
-      this.arrivalTime = -1
+    // Check for end of durational actions
+    if (this.action.type === 'move' && startTime + duration >= this.action.until) {
+      this.room = this.action.target
+      this.action.type = ''
       this.room.addCharacter(this)
       events.push({ type: 'arrival', char: this, room: this.room })
+    } else if (this.action.type === 'sleep' && startTime + duration >= this.action.until) {
+      this.action.type = ''
+      events.push({ type: 'awakening', char: this, room: this.room })
     }
 
     return events

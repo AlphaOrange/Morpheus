@@ -70,4 +70,5 @@ export const defaultsLocation = {
 export const defaultsRoom = {
   description: 'No description',
   image: '',
+  actions: [],
 }

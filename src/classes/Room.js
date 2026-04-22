@@ -8,7 +8,7 @@ export default class Room {
 
   constructor(rawData, location, full = true) {
     const data = { ...defaultsRoom, ...rawData }
-    ;['name', 'description'].forEach((key) => (this[key] = data[key]))
+    ;['name', 'description', 'actions'].forEach((key) => (this[key] = data[key]))
 
     // Derive unique ID from location
     this.location = location
@@ -41,6 +41,7 @@ export default class Room {
       commandId: this.commandId,
       name: this.name,
       description: this.description,
+      actions: this.actions,
       location: this.location.id,
       _image: this._image,
       characters: Object.fromEntries(
@@ -72,19 +73,37 @@ export default class Room {
     return this.getImage('S')
   }
 
-  // Getters: Present Characters
+  // Getters: Present + Available Characters
   get presentPlayerCharacters() {
     return Object.values(this.characters).filter((char) => char.controlledBy === 'player')
   }
   get presentAiCharacters() {
     return Object.values(this.characters).filter((char) => char.controlledBy === 'ai')
   }
+  get availableCharacters() {
+    return Object.values(this.characters).filter((char) => !char.busy)
+  }
+  get availablePlayerCharacters() {
+    return this.presentPlayerCharacters.filter((char) => !char.busy)
+  }
+  get availableAiCharacters() {
+    return this.presentAiCharacters.filter((char) => !char.busy)
+  }
+  get busyCharacters() {
+    return Object.values(this.characters).filter((char) => char.busy)
+  }
+  get busyPlayerCharacters() {
+    return this.presentPlayerCharacters.filter((char) => char.busy)
+  }
+  get busyAiCharacters() {
+    return this.presentAiCharacters.filter((char) => char.busy)
+  }
   // Has present player characters
   get numberOfPlayers() {
-    return this.presentPlayerCharacters.length
+    return this.availablePlayerCharacters.length
   }
   get numberOfAis() {
-    return this.presentAiCharacters.length
+    return this.availableAiCharacters.length
   }
   get active() {
     return this.numberOfPlayers > 0
@@ -130,9 +149,12 @@ ${avLocations}`
   removeCharacter(character) {
     delete this.characters[character.id]
   }
-  isInRoom(charID) {
-    return Object.values(this.characters)
-      .map((char) => char.id)
-      .includes(charID)
+  isAvailableInRoom(charID) {
+    return this.availableCharacters.map((char) => char.id).includes(charID)
+  }
+
+  // Room Actions
+  hasAction(action) {
+    return this.actions.includes(action)
   }
 }

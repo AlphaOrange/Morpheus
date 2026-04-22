@@ -6,6 +6,28 @@ features:
   talk: Have conversations with NPCs
   visual: Has images for characters and/or places
 versions:
+  - version: 0.8.0
+    updates: |-
+      **Sleep and Wake**
+      - New action `sleep`: sleep and regenerate for a certain number of minutes
+      - New action `wake`: wake someone before sleep period is up
+      - AI character also can use `sleep` and `wake`
+      - Player Action Bar and AI Character Profiles show sleeping state
+
+      **Books**
+      - New parameter for talk duration calculation: `talkDuration`
+      - New parameters for move duration calculation: `moveDurationRoom`, `moveDurationLocation`, `moveDurationDestination`
+
+      **Misc**
+      - Improvements to internal character action handling
+      - Improvements to AI prompting
+      - Layout Tweaks
+
+      **Bugfixes**
+      - Prevent AI fro mistaken character's profession for family name
+    features: [maps, move, talk]
+    fullSupport: 0.8.0
+    minSupport: 0.8.0
   - version: 0.7.0
     updates: |-
       **Help Upgrades**
@@ -34,7 +56,7 @@ versions:
 
       Multiple Layout Tweaks
     features: [maps, move, talk]
-    fullSupport: 0.6.0
+    fullSupport: 0.7.0
     minSupport: 0.4.0
   - version: 0.6.0
     updates: |-

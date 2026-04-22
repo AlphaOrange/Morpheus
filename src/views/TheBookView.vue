@@ -7,7 +7,14 @@
           limited!
         </div>
       </div>
-      <TheActionBar @talk="talk" @move="move" @runNarrator="manualNarrator" @save="save" />
+      <TheActionBar
+        @talk="talk"
+        @move="move"
+        @sleep="sleep"
+        @wake="wake"
+        @runNarrator="manualNarrator"
+        @save="save"
+      />
     </template>
     <template #middleSlot>
       <div class="center">
@@ -69,6 +76,15 @@ const move = function ({ location = null, room = null, chars = [] } = {}) {
       : 'move to room ' + room.commandId
   }
   if (text) messageBox.value?.setMessage(text)
+}
+
+const sleep = function ({ char, duration }) {
+  const text = char ? `${char.id} sleep ${duration}` : `sleep ${duration}`
+  messageBox.value?.setMessage(text)
+}
+const wake = function ({ fromChar, toChar }) {
+  const text = fromChar.id + ' wake ' + toChar.id + ': '
+  messageBox.value?.setMessage(text)
 }
 
 // --- meta commands ---

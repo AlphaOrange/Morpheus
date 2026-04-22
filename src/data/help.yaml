@@ -157,6 +157,24 @@ commands:
 
     `[acting char id] move to [room/location/destination id]: [message]`
     `[acting char id] move [room/location/destination id]: [message]`
+
+    **SLEEP FOR A CERTAIN AMOUNT OF TIME**
+
+    `[acting char id] sleep [minutes]`
+
+    **MAKE WHOLE GROUP SLEEP FOR A CERTAIN AMOUNT OF TIME**
+
+    `sleep [minutes]`
+
+    **WAKE SOMEONE UP (OPTIONAL TALK)**
+
+    `[acting char id] wake [sleeping char id]`
+    `[acting char id] wake [sleeping char id]: [message]`
+
+    **⭐ CHARACTER WAKES SOMEONE UP (OPTIONAL TALK)**
+
+    `wake [sleeping char id]`
+    `wake [sleeping char id]: [message]`
 natural:
   title: Natural Language Commands
   text: |-
@@ -210,6 +228,26 @@ natural:
 
     `[acting char id] move to destination [destination id]: [message]`
     Talk to all, then whole group travel to another location
+
+    **SLEEP AND WAKE UP COMMANDS**
+
+    `[acting char id] sleep [minutes]`
+    Go to sleep for certain amount of minutes
+
+    `sleep [minutes]`
+    Whole group goes to sleep for certain amount of minutes
+
+    `[acting char id] wake [sleeping char id]`
+    Wake someone up
+
+    `[acting char id] wake [sleeping char id]: [message]`
+    Wake someone up and talk to them
+
+    `wake [sleeping char id]`
+    ⭐ character wake someone up
+
+    `wake [sleeping char id]: [message]`
+    ⭐ character wake someone up and talk to them
 short:
   title: Short Commands
   text: |-
@@ -263,6 +301,8 @@ short:
 
     `[acting char id]>>>[destination id]: [message]`
     Talk to all, then whole group travel to another location
+
+    _Note: There are action without short commands that are not listed here_
 meta:
   title: Meta Commands
   text: |-

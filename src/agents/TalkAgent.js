@@ -1,20 +1,18 @@
 import Agent from '@/agents/Agent'
-import { formatDialog } from '@/helpers/utils'
+import { formatDialog, joinOr } from '@/helpers/utils'
 import TEMPLATES from '@/agents/templates/TalkAgent.yaml'
 
 export default class TalkAgent extends Agent {
   // NPC Agent
   // This agent is performing a TALK action
-  // Currently it does not use any AI
 
   // Agent Input
   // - Actor (Character)
-  // - Room
   // - Protocol
 
   // Agent Output
-  // - Target (:all or Character.id)
-  // - Message
+  // - text: Message
+  // - to: Target (:all or Character.id)
 
   constructor() {
     super()
@@ -31,6 +29,18 @@ export default class TalkAgent extends Agent {
       .join('\n\n')
   }
 
+  additional_actions({ room }) {
+    const actions = [{ type: 'MOVE', description: 'move to another room or a different location' }]
+    if (room.hasAction('sleep')) {
+      actions.push({ type: 'SLEEP', description: 'go to sleep' })
+    }
+    if (room.busyCharacters.filter((char) => char.action.type === 'sleep').length > 0) {
+      actions.push({ type: 'WAKE', description: 'wake someone up from sleeping' })
+    }
+    actions.push({ type: 'NONE', description: 'no additional action' })
+    return actions
+  }
+
   // Main Method
   async run({ actor, protocol }) {
     const dialog = formatDialog({
@@ -38,12 +48,17 @@ export default class TalkAgent extends Agent {
       perspective: actor.id,
     })
     const you_profile = actor.selfDescription
-    const others_profiles = this.others_profiles({ actor: actor })
+    const others_profiles = this.others_profiles({ actor })
+    const actions = this.additional_actions({ room: actor.room })
+    const additional_actions_list = actions
+      .map((action) => `- ${action.type}: ${action.description}`)
+      .join('\n')
     const prompt = TEMPLATES.user
       .replaceAll('%you%', actor.name)
       .replace('%dialog%', dialog)
       .replace('%others_profiles%', others_profiles)
       .replace('%you_profile%', you_profile)
+      .replace('%additional_actions_list%', additional_actions_list)
 
     try {
       const answer = await this.query({ prompt, type: 'json' })
@@ -52,7 +67,7 @@ export default class TalkAgent extends Agent {
       return {
         message: answer.text,
         targetId: answer.to === 'all' ? ':all' : answer.to, // ai often gets this wrong
-        additionalAction: answer.action.toLowerCase(),
+        additionalAction: answer.action?.toLowerCase(),
       }
     } catch (err) {
       const errorMessage = err.response?.data?.error?.message || err.message || 'Unknown error'

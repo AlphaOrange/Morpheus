@@ -47,7 +47,6 @@ examples: |-
     "type": null,
     "company": null
   }
-
 validation: |-
   {
     "$id": "TalkAgent",

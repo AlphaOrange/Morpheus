@@ -64,7 +64,7 @@ export const useBookStore = defineStore('book', {
     agents: {},
 
     // Registers
-    movingCharacterIDs: [],
+    busyCharacterIDs: [],
 
     // Game State
     roomId: '',
@@ -119,8 +119,9 @@ export const useBookStore = defineStore('book', {
 
     // Playable characters who are currently moving + time left
     movingPlayerCharacters() {
-      const ids = this.movingCharacterIDs
-      return Object.values(this.playerCharacters).filter((char) => ids.includes(char.id))
+      return Object.values(this.playerCharacters).filter(
+        (char) => this.busyCharacterIDs.includes(char.id) && char.action.type === 'move',
+      )
     },
 
     // Available Travel Targets
@@ -163,7 +164,7 @@ export const useBookStore = defineStore('book', {
         states: this.states, // Do we need to save these?
         agendas: this.agendas, // Do we need to save these?
         protocol: this.protocol, // stringify will convert character objects
-        movingCharacterIDs: this.movingCharacterIDs,
+        busyCharacterIDs: this.busyCharacterIDs,
         roomId: this.roomId,
         time: this.time,
         recentPlayerIDs: this.recentPlayerIDs,
@@ -193,24 +194,24 @@ export const useBookStore = defineStore('book', {
     handleArrivals(arrivals) {
       const roomArrivals = {}
       for (let arrival of arrivals) {
-        this.movingCharacterIDs = this.movingCharacterIDs.filter((id) => id != arrival.char.id)
+        this.busyCharacterIDs = this.busyCharacterIDs.filter((id) => id != arrival.char.id)
         if (!(arrival.room.id in roomArrivals)) {
-          roomArrivals[arrival.room.id] = [arrival.char]
+          roomArrivals[arrival.room.id] = [arrival]
         } else {
-          roomArrivals[arrival.room.id].push(arrival.char)
+          roomArrivals[arrival.room.id].push(arrival)
         }
       }
       // Sent Arrive HINT message per arrival room with player character
       Object.keys(roomArrivals).forEach((roomId) => {
         const room = this.rooms[roomId]
         if (room.numberOfPlayers > 0) {
-          const present = Object.keys(room.characters)
+          const present = room.availableCharacters.map((char) => char.id)
           const charArrivedAi = roomArrivals[roomId]
-            .filter((char) => char.controlledBy === 'ai')
-            .map((char) => char.name)
+            .filter((arrival) => arrival.char.controlledBy === 'ai')
+            .map((arrival) => arrival.char.name)
           const charArrivedPlayer = roomArrivals[roomId]
-            .filter((char) => char.controlledBy === 'player')
-            .map((char) => char.name)
+            .filter((arrival) => arrival.char.controlledBy === 'player')
+            .map((arrival) => arrival.char.name)
           const charArrived = [...charArrivedAi, ...charArrivedPlayer]
           const text =
             this.time === 0 && charArrivedAi.length > 0
@@ -227,6 +228,36 @@ export const useBookStore = defineStore('book', {
       })
     },
 
+    handleAwakenings(awakenings) {
+      const roomAwakenings = {}
+      for (let awakening of awakenings) {
+        this.busyCharacterIDs = this.busyCharacterIDs.filter((id) => id != awakening.char.id)
+        if (!(awakening.room.id in roomAwakenings)) {
+          roomAwakenings[awakening.room.id] = [awakening]
+        } else {
+          roomAwakenings[awakening.room.id].push(awakening)
+        }
+      }
+
+      // Sent Awakening HINT message per room where player characters present
+      Object.keys(roomAwakenings).forEach((roomId) => {
+        const room = this.rooms[roomId]
+        if (room.numberOfPlayers > 0) {
+          const present = room.availableCharacters.map((char) => char.id)
+          const charsAwakened = roomAwakenings[roomId].map((awakening) => awakening.char.name)
+          const text = `${joinAnd(charsAwakened)} just woke up`
+          this.protocol.pushHint({
+            time: this.time,
+            text: text,
+            room: roomId,
+            present: present,
+            to: ':all',
+          })
+        }
+      })
+    },
+
+    // Increase time
     addTime(duration) {
       // Run all characters collecting events
       let events = []
@@ -234,21 +265,25 @@ export const useBookStore = defineStore('book', {
         events = events.concat(char.passTime(this.time, duration))
       }
 
+      // Increase time globally
+      this.time = this.time + duration
+
       // Handle Arrivals
       const arrivals = events.filter((event) => event.type === 'arrival')
       this.handleArrivals(arrivals)
 
-      // Increase time globally
-      this.time = this.time + duration
+      // Handle Awakenings
+      const awakenings = events.filter((event) => event.type === 'awakening')
+      this.handleAwakenings(awakenings)
     },
 
     // timejump until at least one active room, switch to active room
-    jumpToArrival() {
-      const arrivalTime = this.movingCharacterIDs.reduce((acc, charID) => {
-        return Math.min(acc, this.characters[charID].arrivalTime)
+    jumpToActive() {
+      const finishTime = this.busyCharacterIDs.reduce((acc, charID) => {
+        return Math.min(acc, this.characters[charID].action.until)
       }, 99999999)
-      if (arrivalTime > this.time) {
-        this.addTime(arrivalTime - this.time)
+      if (finishTime > this.time) {
+        this.addTime(finishTime - this.time)
         this.switchTo(this.activeRooms[0])
       } else {
         console.error('Cannot jump to point in time with active players.')
@@ -280,7 +315,7 @@ export const useBookStore = defineStore('book', {
     },
 
     updateRecentPlayerIDs() {
-      const presentIDs = Object.values(this.room.presentPlayerCharacters).map((char) => char.id)
+      const presentIDs = Object.values(this.room.availablePlayerCharacters).map((char) => char.id)
       const presentRecentPlayerIDs = this.recentPlayerIDs.filter((id) => presentIDs.includes(id))
       if (presentRecentPlayerIDs.length > 0) {
         this.setActivePlayerID(presentRecentPlayerIDs[0])
@@ -320,7 +355,16 @@ export const useBookStore = defineStore('book', {
     moveChar(charID, targetRoom, duration) {
       duration = Math.floor(duration)
       this.characters[charID].moveToRoom(targetRoom, this.time + duration)
-      this.movingCharacterIDs.push(charID)
+      this.busyCharacterIDs.push(charID)
+    },
+
+    sleepChar(charID, duration) {
+      this.characters[charID].sleep(this.time + duration)
+      this.busyCharacterIDs.push(charID)
+    },
+    wakeChar(charID) {
+      this.characters[charID].wake()
+      this.busyCharacterIDs = this.busyCharacterIDs.filter((id) => id != charID)
     },
 
     // Switch user view to different room
@@ -394,8 +438,8 @@ export const useBookStore = defineStore('book', {
           char.room = this.rooms[char.room]
           char.room.characters[char.id] = char
         }
-        if (char.arrivalTarget) {
-          char.arrivalTarget = this.rooms[char.arrivalTarget]
+        if (char.action === 'move' && char.action.target) {
+          char.action.target = this.rooms[char.action.target]
         }
       }
     },
@@ -501,7 +545,7 @@ export const useBookStore = defineStore('book', {
         this.states = data.states
         this.agendas = data.agendas
         this.protocol = Protocol.fromJSON(data.protocol, this.options)
-        this.movingCharacterIDs = data.movingCharacterIDs
+        this.busyCharacterIDs = data.busyCharacterIDs
         this.roomId = data.roomId
         this.time = data.time
         this.recentPlayerIDs = data.recentPlayerIDs
@@ -532,14 +576,14 @@ export const useBookStore = defineStore('book', {
     concretizeTalkTo(command) {
       let talkTo = command.action === 'talk' ? command.target : ':all'
       if (talkTo === ':all' && this.room.numberOfPlayers + this.room.numberOfAis === 2) {
-        talkTo = Object.keys(this.room.characters).filter((id) => id !== command.actor)
+        talkTo = this.room.availableCharacters.filter((char) => char.id !== command.actor)[0].id
       }
       return talkTo
     },
 
     // Process command (from AI or processed user message)
     async executeCommand(command) {
-      const present = Object.keys(this.room.characters)
+      let present = this.room.availableCharacters.map((char) => char.id)
 
       // Action TALK
       if (command.action === 'talk') {
@@ -553,7 +597,7 @@ export const useBookStore = defineStore('book', {
         // Process :resume if used
         if (command.target === ':resume') {
           const lastSpokenToID = this.protocol.lastSpokenTo(command.actor)
-          if (lastSpokenToID && this.room.isInRoom(lastSpokenToID)) {
+          if (lastSpokenToID && this.room.isAvailableInRoom(lastSpokenToID)) {
             command.target = lastSpokenToID
           } else {
             command.target = ':all'
@@ -635,7 +679,7 @@ export const useBookStore = defineStore('book', {
         // Construct info message
         let charMoving
         if (command.actor === ':group') {
-          charMoving = joinAnd(this.room.presentPlayerCharacters.map((char) => char.name))
+          charMoving = joinAnd(this.room.availablePlayerCharacters.map((char) => char.name))
         } else {
           charMoving = this.characters[command.actor].name
         }
@@ -657,7 +701,7 @@ export const useBookStore = defineStore('book', {
         // Move actors
         const { targetRoom, moveDuration } = this.getMoveSpecs(command.target, command.spec)
         if (command.actor === ':group') {
-          for (const char of this.room.presentPlayerCharacters) {
+          for (const char of this.room.availablePlayerCharacters) {
             this.moveChar(char.id, targetRoom, moveDuration)
           }
         } else {
@@ -681,10 +725,106 @@ export const useBookStore = defineStore('book', {
           if (this.activeRooms.length) {
             this.switchTo(this.activeRooms[0])
           } else {
-            this.jumpToArrival()
+            this.jumpToActive()
           }
         }
         this.updateRecentPlayerIDs() // if active player is no longer in active room
+      }
+
+      if (command.action === 'sleep') {
+        // Check if sleep is possible in this room
+        if (!this.room.hasAction('sleep')) {
+          this.protocol.pushError({
+            time: this.time,
+            title: 'No resting place',
+            text: `It is not possible to sleep here in ${this.room.name}. You need to go somewhere that has a place to sleep first.`,
+          })
+          return
+        }
+
+        // Construct info message
+        let charsSleeping
+        if (command.actor === ':group') {
+          charsSleeping = this.room.availablePlayerCharacters.map((char) => char.name)
+        } else {
+          charsSleeping = [this.characters[command.actor].name]
+        }
+        const infoMessage = `${joinAnd(charsSleeping)} just went to sleep`
+
+        // Start sleeping periods
+        if (command.actor === ':group') {
+          for (const char of this.room.availablePlayerCharacters) {
+            this.sleepChar(char.id, command.seconds)
+          }
+        } else {
+          this.sleepChar(command.actor, command.seconds)
+        }
+
+        // Send INFO message
+        this.protocol.pushHint({
+          time: this.time,
+          text: infoMessage,
+          room: this.room.id,
+          present: present,
+        })
+
+        // Switch to active room
+        if (this.room.numberOfPlayers === 0) {
+          if (this.activeRooms.length) {
+            this.switchTo(this.activeRooms[0])
+          } else {
+            this.jumpToActive()
+          }
+        }
+
+        this.addTime(this.options.talkDuration) // TODO: later replace with action duration
+        this.updateRecentPlayerIDs() // if active player is no longer in active room
+      }
+
+      if (command.action === 'wake') {
+        // Check if target is sleeping
+        if (this.characters[command.target].action.type !== 'sleep') {
+          this.protocol.pushError({
+            time: this.time,
+            title: 'Character not sleeping',
+            text: `You cannot wake up ${command.target}, because they are not asleep.`,
+          })
+          return
+        }
+
+        // Process :active actor if used
+        if (command.actor === ':active') {
+          command.actor = this.activePlayerID
+        } else {
+          this.setActivePlayerID(command.actor)
+        }
+
+        // End sleeping period
+        this.wakeChar(command.target)
+        present = this.room.availableCharacters.map((char) => char.id) // re-evaluate to add woken character
+
+        // Send INFO message
+        this.protocol.pushHint({
+          time: this.time,
+          text: `${this.characters[command.actor].name} wakes up ${this.characters[command.target].name}`,
+          room: this.room.id,
+          present: present,
+        })
+
+        // Send TALK message
+        if (command.message !== null) {
+          this.protocol.pushTalk({
+            time: this.time,
+            text: command.message,
+            room: this.room.id,
+            present: [...present, command.target],
+            from: command.actor,
+            to: command.target,
+          })
+        }
+
+        // Increase time
+        this.addTime(this.options.talkDuration) // TODO: later replace with action duration
       }
     },
 
@@ -784,7 +924,7 @@ export const useBookStore = defineStore('book', {
 
       // Check if actor is valid
       const possibleActors = [
-        ...this.room.presentPlayerCharacters.map((char) => char.id),
+        ...this.room.availablePlayerCharacters.map((char) => char.id),
         ':active',
         ':group',
       ]
@@ -798,8 +938,8 @@ export const useBookStore = defineStore('book', {
       }
 
       // replace :group with actor id if only one player
-      if (command.actor === ':group' && this.room.presentPlayerCharacters.length === 1) {
-        command.actor = this.room.presentPlayerCharacters[0].id
+      if (command.actor === ':group' && this.room.availablePlayerCharacters.length === 1) {
+        command.actor = this.room.availablePlayerCharacters[0].id
       }
 
       this.executeCommand(command)

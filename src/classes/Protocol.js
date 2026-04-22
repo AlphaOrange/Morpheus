@@ -62,8 +62,14 @@ export default class Protocol {
   }
 
   // Construct dialog from messages
-  filterDialog({ types, present, room, since, scene }) {
+  filterDialog({ types, present, room, lookback, since, scene }) {
     let filtered = this.messages
+
+    // Filter by limited lookback
+    if (lookback) {
+      filtered = filtered.slice(-lookback)
+    }
+
     // Filter by cutoff point
     if (since) {
       if (since.type === 'time') {

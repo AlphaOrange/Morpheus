@@ -7,7 +7,7 @@
           :key="char.id"
           :character="char"
           :icon="`person-walking`"
-          :text="periodText(char.arrivalTime - time)"
+          :text="periodText(char.action.until - time)"
           @click="showProfile(char)"
           class="moving-marker"
         />
@@ -25,7 +25,7 @@
         </div>
       </div>
     </div>
-    <div v-if="room.presentPlayerCharacters.length > 1" class="box">
+    <div v-if="room.availablePlayerCharacters.length > 1" class="box">
       <h3>Group</h3>
       <div class="button-list">
         <ActionButton
@@ -48,9 +48,17 @@
           :hint="location.commandId"
           :compact="compact"
         />
+        <ActionButton
+          v-if="room.hasAction('sleep')"
+          @click="sleep60()"
+          text="Sleep 1 Hour"
+          icon="moon"
+          pill="1h"
+          :compact="compact"
+        />
       </div>
     </div>
-    <div v-for="char in room.presentPlayerCharacters" :key="char.id" class="box">
+    <div v-for="char in room.availablePlayerCharacters" :key="char.id" class="box">
       <h3 class="hint-anchor char-header" @click="showProfile(char)">
         <span v-if="activePlayerID === char.id"><font-awesome-icon icon="fa-star" /></span>
         {{ char.name }}<span class="hint">{{ char.id }}</span>
@@ -64,11 +72,19 @@
           :compact="compact"
         />
         <ActionButton
-          v-for="partner in room.presentAiCharacters"
+          v-for="partner in room.availableAiCharacters"
           :key="partner.id"
           @click="talkTo(char, partner)"
           :text="`Talk to ${partner.name}`"
           :icon="'comments'"
+          :compact="compact"
+        />
+        <ActionButton
+          v-for="partner in room.busyCharacters"
+          :key="partner.id"
+          @click="wake(char, partner)"
+          :text="`Wake up ${partner.name}`"
+          icon="moon"
           :compact="compact"
         />
         <ActionButton
@@ -89,7 +105,21 @@
           :pill="pilltext(distancePeriodText(room, location))"
           :compact="compact"
         />
+        <ActionButton
+          v-if="room.hasAction('sleep')"
+          @click="sleep60(char)"
+          text="Sleep 1 Hour"
+          icon="moon"
+          pill="1h"
+          :compact="compact"
+        />
       </div>
+    </div>
+    <div v-for="char in room.busyPlayerCharacters" :key="char.id" class="box">
+      <h3 class="hint-anchor">
+        {{ char.name }}<span class="hint">{{ char.id }}</span>
+      </h3>
+      <div class="busy-info">Currently {{ busyText(char.action.type) }}</div>
     </div>
     <div class="box">
       <h3>User Actions</h3>
@@ -116,7 +146,7 @@ import { useOptionsStore } from '@/stores/options'
 const options = useOptionsStore()
 
 const { activeRooms, movingPlayerCharacters, activePlayerID, time, room } = storeToRefs(book)
-const emits = defineEmits(['talk', 'move', 'runNarrator', 'save'])
+const emits = defineEmits(['talk', 'move', 'sleep', 'wake', 'runNarrator', 'save'])
 
 const switchTo = (room) => {
   book.switchTo(room)
@@ -126,11 +156,18 @@ const pilltext = (distText) => {
   return distText === '0s' ? null : distText
 }
 
+const busyText = (action) => {
+  if (action === 'sleep') {
+    return 'sleeping'
+  }
+  return ''
+}
+
 const compact = computed(() => {
-  const numChars = room.value.presentPlayerCharacters.length
+  const numChars = room.value.availablePlayerCharacters.length
   const numPlaces = room.value.availableRooms.length + room.value.availableLocations.length
-  const numNPCs = room.value.presentAiCharacters.length
-  const group = room.value.presentPlayerCharacters.length > 1 ? 1 : 0
+  const numNPCs = room.value.availableAiCharacters.length
+  const group = room.value.availablePlayerCharacters.length > 1 ? 1 : 0
   const numButtons = (numChars + group) * numPlaces + numChars * numNPCs
   return numButtons >= options.compactButtonsThreshold
 })
@@ -153,6 +190,12 @@ const moveCharToRoom = (char, room) => {
 }
 const moveCharToLocation = (char, location) => {
   emits('move', { location: location, chars: [char] })
+}
+const sleep60 = (char = null) => {
+  emits('sleep', { char, duration: 60 })
+}
+const wake = (char, partner) => {
+  emits('wake', { fromChar: char, toChar: partner })
 }
 
 // Emit meta commands
@@ -213,5 +256,9 @@ const showProfile = (character) => {
   font-size: 0.8rem;
   text-align: center;
   background: var(--bg-highlight);
+}
+.busy-info {
+  font-style: italic;
+  color: var(--col-font-toned);
 }
 </style>

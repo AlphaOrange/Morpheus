@@ -1,6 +1,12 @@
 <template>
   <div class="box narrow character-box" :class="collapsedClass" @click="toggle">
-    <LightboxImage :src="props.character.imageM" class="image" />
+    <div class="image-box">
+      <LightboxImage :src="props.character.imageM" class="image" />
+      <div class="char-busy-icon" v-if="props.character.busy">
+        <font-awesome-icon :icon="actionIcon(props.character.action.type)" />
+        {{ actionText(props.character.action.type) }}
+      </div>
+    </div>
     <div class="info-box">
       <h3 class="hint-anchor">
         {{ props.character.name }}<span class="hint">{{ props.character.id }}</span>
@@ -35,6 +41,20 @@ const props = defineProps({
     default: 'default',
   },
 })
+
+// Content for character busy indicators
+const actionIcon = (action) => {
+  if (action === 'sleep') {
+    return 'fa-moon'
+  }
+  return ''
+}
+const actionText = (action) => {
+  if (action === 'sleep') {
+    return 'sleeping'
+  }
+  return ''
+}
 
 // Collapse box for better overview
 const isCollapsed = ref(props.collapsed)
@@ -90,5 +110,27 @@ const shortDescription = computed(() => {
 }
 .collapsed .description {
   display: none;
+}
+.image-box {
+  position: relative;
+}
+.char-busy-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--col-font-toned);
+  background: var(--bg-dark);
+  width: 100%;
+  padding: 0.25rem;
+  position: absolute;
+  left: 0;
+  top: 9rem;
+}
+.char-busy-icon i {
+  font-size: 1.5rem;
+}
+.collapsed .char-busy-icon {
+  top: 5rem;
 }
 </style>

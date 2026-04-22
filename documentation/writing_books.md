@@ -435,6 +435,8 @@ The room file must have the same name as the room folder (the room ID) and conta
   _(optional - default: "No description")_
 - `image`: name of an image file in the same folder, or "" for using the default room image  
   _(optional - default: "")_
+- `actions`: list of special actions that are enabled in this room, see "Special Character Actions" for list of possible entries  
+  _(optional - default: [])_
 
 _Note: rooms do not have position and detour, because all rooms are assumed nect to each other with constant amount of moving duration_
 
@@ -446,6 +448,7 @@ description: >-
   of all colors and shapes in small boxes
   and rainbow-colored test tubes.
 image: market.jpg
+actions: []
 ```
 
 ### State File
@@ -496,6 +499,12 @@ In the book file you can define options for your book. The following options are
 - `moveDurationDestination` (Default: 3600) # Time in seconds required for arriving in another destination per travel distance unit -> see "Position and Detour" for calculation details
 
 _Example: Moving from a location at `position = [0, 0]` and `detour = 0` to another location at `position = [2, 0]` with `detour = 1` with `moveDurationLocation = 60` (default value) takes `3 * 60 = 180` seconds, so 3 minutes of in-game time._
+
+#### Special Character Actions
+
+There are some specific actions that users can command their characters, that are only possible in specific rooms. To enable them you need to put the action keyword in the room's `actions` parameter. The current list is:
+
+- `"sleep"`: A character can sleep in this room
 
 ## Compiling books
 
