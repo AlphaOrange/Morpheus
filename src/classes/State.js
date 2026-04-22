@@ -34,4 +34,14 @@ export default class State {
       .map((interval) => interval.effect)
       .join(' ')
   }
+
+  // Update state and determine events
+  passTime({ duration, action = '' }) {
+    if (action === 'sleep') {
+      this.value = this.value + (duration / 3600) * this.change.sleep
+    } else {
+      this.value = this.value + (duration / 3600) * this.change.hour
+    }
+    return []
+  }
 }

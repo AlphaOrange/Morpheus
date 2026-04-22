@@ -180,6 +180,11 @@ ${this.body}, ${this.clothing}, ${this.appearance}`
   passTime(startTime, duration) {
     const events = []
 
+    // Update states
+    for (const state of this.states) {
+      events.push(state.passTime({ duration, action: this.action.type }))
+    }
+
     // Check for end of durational actions
     if (this.action.type === 'move' && startTime + duration >= this.action.until) {
       this.room = this.action.target

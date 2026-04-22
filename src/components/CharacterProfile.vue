@@ -14,22 +14,23 @@
       <div>Gender: {{ props.character.gender }}</div>
       <div>Age: {{ props.character.age }} years old</div>
       <p>{{ props.character.selectionDescription }}</p>
-      <!--<div v-if="props.character.action.type !== 'move'">
+      <div v-if="props.character.action.type !== 'move'">
         {{ props.character.name }} is currently here: {{ props.character.room.name }} in
         {{ props.character.room.location.name }} ({{
           props.character.room.location.destination.name
         }})
       </div>
-      <div v-else>{{ props.character.name }} is currently on the move.</div>-->
+      <div v-else>{{ props.character.name }} is currently on the move.</div>
+    </div>
+    <div>
+      <div v-for="state in props.character.states" :key="state.id">
+        {{ state.name }}: {{ state.value }}
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { useOptionsStore } from '@/stores/options'
-const options = useOptionsStore()
-
 const props = defineProps({
   character: {
     type: Object,
