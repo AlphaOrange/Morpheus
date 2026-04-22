@@ -150,13 +150,19 @@ ${this.body}, ${this.clothing}, ${this.appearance}`
       this.arrivalTime = arrivalTime
     }
   }
-  checkForArrival(time) {
-    if ((this.arrivalTime >= 0) & (time >= this.arrivalTime)) {
+
+  // Pass time and check for events
+  passTime(startTime, duration) {
+    const events = []
+
+    // Check for arrival
+    if ((this.arrivalTime >= 0) & (startTime + duration >= this.arrivalTime)) {
       this.room = this.arrivalTarget
       this.arrivalTime = -1
       this.room.addCharacter(this)
-      return true
+      events.push({ type: 'arrival', char: this, room: this.room })
     }
-    return false
+
+    return events
   }
 }

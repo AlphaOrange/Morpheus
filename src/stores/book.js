@@ -190,34 +190,25 @@ export const useBookStore = defineStore('book', {
       return gametime
     },
 
-    addTime(duration) {
-      // Increase time
-      this.time = this.time + duration
-      // Check Arrivals
-      const arrivals = {}
-      for (const charID of this.movingCharacterIDs) {
-        const char = this.characters[charID]
-        let arrived = char.checkForArrival(this.time)
-        if (arrived) {
-          this.movingCharacterIDs = this.movingCharacterIDs.filter((id) => id != charID)
-          // Collect arrivals per room
-          if (!(char.room.id in arrivals)) {
-            arrivals[char.room.id] = [char]
-          } else {
-            arrivals[char.room.id].push(char)
-          }
-          arrivals[char.room.id]
+    handleArrivals(arrivals) {
+      const roomArrivals = {}
+      for (let arrival of arrivals) {
+        this.movingCharacterIDs = this.movingCharacterIDs.filter((id) => id != arrival.char.id)
+        if (!(arrival.room.id in roomArrivals)) {
+          roomArrivals[arrival.room.id] = [arrival.char]
+        } else {
+          roomArrivals[arrival.room.id].push(arrival.char)
         }
       }
       // Sent Arrive HINT message per arrival room with player character
-      Object.keys(arrivals).forEach((roomId) => {
+      Object.keys(roomArrivals).forEach((roomId) => {
         const room = this.rooms[roomId]
         if (room.numberOfPlayers > 0) {
           const present = Object.keys(room.characters)
-          const charArrivedAi = arrivals[roomId]
+          const charArrivedAi = roomArrivals[roomId]
             .filter((char) => char.controlledBy === 'ai')
             .map((char) => char.name)
-          const charArrivedPlayer = arrivals[roomId]
+          const charArrivedPlayer = roomArrivals[roomId]
             .filter((char) => char.controlledBy === 'player')
             .map((char) => char.name)
           const charArrived = [...charArrivedAi, ...charArrivedPlayer]
@@ -234,6 +225,21 @@ export const useBookStore = defineStore('book', {
           })
         }
       })
+    },
+
+    addTime(duration) {
+      // Run all characters collecting events
+      let events = []
+      for (const char of Object.values(this.characters)) {
+        events = events.concat(char.passTime(this.time, duration))
+      }
+
+      // Handle Arrivals
+      const arrivals = events.filter((event) => event.type === 'arrival')
+      this.handleArrivals(arrivals)
+
+      // Increase time globally
+      this.time = this.time + duration
     },
 
     // timejump until at least one active room, switch to active room
