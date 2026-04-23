@@ -21,10 +21,12 @@
         }})
       </div>
       <div v-else>{{ props.character.name }} is currently on the move.</div>
-    </div>
-    <div>
-      <div v-for="state in props.character.states" :key="state.id">
-        {{ state.name }}: {{ state.value }}
+      <div v-if="props.character.states.length > 0" class="states">
+        <div v-for="state in props.character.states" :key="state.id">
+          <div :style="{ width: Math.round(state.value) + '%' }">
+            {{ state.name }}: {{ Math.round(state.value) }}%
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -78,5 +80,25 @@ nav > ul > li {
   top: 2px;
   left: 1rem;
   font-size: 0.75rem;
+}
+.states {
+  width: 100%;
+  border: 1px solid var(--bg-highlight);
+  border-radius: 0.25rem;
+  margin: 1rem 0 0;
+  padding: 0 0.25rem;
+}
+.states > div {
+  width: 100%;
+  margin: 0.25rem 0;
+  background: var(--bg-box);
+}
+.states > div:not(:first-child) {
+  margin-top: 0.25rem;
+}
+.states > div > div {
+  padding: 0.25rem 0.5rem;
+  background: var(--bg-highlight);
+  white-space: nowrap;
 }
 </style>
