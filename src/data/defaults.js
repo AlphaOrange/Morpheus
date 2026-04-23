@@ -43,7 +43,8 @@ export const defaultsCharacter = {
 export const defaultsState = {
   base: 0,
   change: {
-    hour: 0,
+    default: 0,
+    move: 0,
     sleep: 0,
     context: [-5, -2, +2, +5],
   },

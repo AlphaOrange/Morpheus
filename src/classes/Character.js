@@ -153,6 +153,11 @@ ${this.body}, ${this.clothing}, ${this.appearance}`
     return this.action.type !== ''
   }
 
+  // Replace placeholders in text
+  substitute(raw) {
+    return raw.replace('%selfname%', this.name)
+  }
+
   // Duration Actions
   moveToRoom(room, arrivalTime = 0) {
     if (this.action.type !== '') return
@@ -178,11 +183,21 @@ ${this.body}, ${this.clothing}, ${this.appearance}`
 
   // Pass time and check for events
   passTime(startTime, duration) {
-    const events = []
+    let events = []
 
     // Update states
     for (const state of this.states) {
-      events.push(state.passTime({ duration, action: this.action.type }))
+      let stateEvents = state
+        .passTime({ startTime, duration, action: this.action.type })
+        .map((event) => {
+          return {
+            type: 'hint',
+            char: this,
+            room: this.room,
+            message: this.substitute(event.rawMessage),
+          }
+        })
+      events = events.concat(stateEvents)
     }
 
     // Check for end of durational actions

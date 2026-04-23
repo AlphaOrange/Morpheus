@@ -33,6 +33,10 @@ export function formatTime({ datetime, ampm = false }) {
   }
 }
 
+export function clamp(number, min, max) {
+  return Math.max(min, Math.min(number, max))
+}
+
 // return a key from object using keys as relative probabilities
 export function sampleKey(obj) {
   const entries = Object.entries(obj)

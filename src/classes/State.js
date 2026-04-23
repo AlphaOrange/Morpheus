@@ -1,16 +1,22 @@
 import { defaultsState } from '@/data/defaults'
+import { clamp } from '@/helpers/utils'
+import { useOptionsStore } from '@/stores/options'
 
 export default class State {
+  options = useOptionsStore()
+
   constructor(rawData) {
     const data = { ...defaultsState, ...rawData }
     ;['id', 'name', 'base', 'change', 'intervals', 'events'].forEach(
       (key) => (this[key] = data[key]),
     )
     this.value = this.base
+    this.history = [[0, this.value]] // [Timestamp, Value]
   }
   static fromJSON(data) {
     const proto = new State(data)
     proto.value = data.value
+    proto.history = data.history
     return proto
   }
 
@@ -21,6 +27,7 @@ export default class State {
       name: this.name,
       base: this.base,
       value: this.value,
+      history: this.history,
       change: this.change,
       intervals: this.intervals,
       events: this.events,
@@ -36,12 +43,49 @@ export default class State {
   }
 
   // Update state and determine events
-  passTime({ duration, action = '' }) {
-    if (action === 'sleep') {
-      this.value = this.value + (duration / 3600) * this.change.sleep
+  passTime({ startTime, duration, action = '' }) {
+    // Process time-based change
+    if (action in this.change) {
+      this.value = clamp(this.value + (duration / 3600) * this.change[action], 0, 100)
     } else {
-      this.value = this.value + (duration / 3600) * this.change.hour
+      this.value = clamp(this.value + (duration / 3600) * this.change.default, 0, 100)
     }
-    return []
+
+    // Update history
+    if (this.history.length > 1) {
+      this.history.filter(
+        (entry) => entry[0] >= startTime + duration - this.options.lookbackStateEvents,
+      )
+    }
+
+    // Check current value for events
+    const events = []
+    if (this.history.every((entry) => this.value < entry[1])) {
+      // Value descrease
+      for (const event of this.events) {
+        if (
+          'below' in event &&
+          this.value < event.below &&
+          this.history.every((entry) => entry[1] >= event.below)
+        ) {
+          events.push({ type: 'stateEvent', rawMessage: event.hint })
+        }
+      }
+    } else if (this.history.every((entry) => this.value > entry[1])) {
+      for (const event of this.events) {
+        if (
+          'above' in event &&
+          this.value > event.above &&
+          this.history.every((entry) => entry[1] <= event.above)
+        ) {
+          events.push({ type: 'stateEvent', rawMessage: event.hint })
+        }
+      }
+    }
+
+    // Update history
+    this.history.push([startTime + duration, this.value])
+
+    return events
   }
 }

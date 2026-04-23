@@ -257,6 +257,22 @@ export const useBookStore = defineStore('book', {
       })
     },
 
+    handleEventHints(hints) {
+      // Sent HINT messages for all rooms where player characters present
+      for (const hint of hints) {
+        if (hint.room.numberOfPlayers > 0) {
+          const present = hint.room.availableCharacters.map((char) => char.id)
+          this.protocol.pushHint({
+            time: this.time,
+            text: hint.message,
+            room: hint.room.id,
+            present: present,
+            to: ':all',
+          })
+        }
+      }
+    },
+
     // Increase time
     addTime(duration) {
       // Run all characters collecting events
@@ -275,6 +291,10 @@ export const useBookStore = defineStore('book', {
       // Handle Awakenings
       const awakenings = events.filter((event) => event.type === 'awakening')
       this.handleAwakenings(awakenings)
+
+      // Handle Hints
+      const hints = events.filter((event) => event.type === 'hint')
+      this.handleEventHints(hints)
     },
 
     // timejump until at least one active room, switch to active room
