@@ -496,8 +496,11 @@ export const useBookStore = defineStore('book', {
         // Store singular components
         this.world = new World(data.world)
 
+        // Prepare state data
+        const globalStates = data?.states ?? []
+
         // Build and store components collections
-        this.buildCharacters(data.characters, (data) => new Character(data))
+        this.buildCharacters(data.characters, (data) => new Character(data, globalStates))
         this.buildDestinations(data.destinations, (data) => new Destination(data))
         this.collectRooms()
 

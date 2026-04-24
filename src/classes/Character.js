@@ -14,7 +14,7 @@ export default class Character {
   }
   lastUpdate = 0
 
-  constructor(rawData) {
+  constructor(rawData, globalStates) {
     const data = { ...defaultsCharacter, ...rawData }
     ;[
       'id',
@@ -36,6 +36,9 @@ export default class Character {
     this.start = data.start
       ? data.start.destination + '/' + data.start.location + '/' + data.start.room
       : null
+    for (let stateId of data.load_states) {
+      this.states[stateId] = new State(globalStates[stateId])
+    }
     for (let stateId of Object.keys(data.states)) {
       this.states[stateId] = new State(data.states[stateId])
     }
@@ -44,7 +47,8 @@ export default class Character {
   }
   static fromJSON(data) {
     data.image = data._image
-    const proto = new Character(data)
+    data.load_states = []
+    const proto = new Character(data, [])
     proto.room = data.room // Note: this gets rewired to room ref in book load/restore
     proto.controlledBy = data.controlledBy
     proto.action = data.action
