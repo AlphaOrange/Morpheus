@@ -196,7 +196,7 @@ ${this.body}, ${this.clothing}, ${this.appearance}`
     let events = []
 
     // Update states
-    for (const state of this.states) {
+    for (const state of Object.values(this.states)) {
       let stateEvents = state
         .passTime({ startTime, duration, action: this.action.type })
         .map((event) => {
