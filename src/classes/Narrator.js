@@ -3,6 +3,7 @@ import TalkAgent from '@/agents/TalkAgent'
 import MoveAgent from '@/agents/MoveAgent'
 import SleepAgent from '@/agents/SleepAgent'
 import WakeAgent from '@/agents/WakeAgent'
+import UpdateCharAgent from '@/agents/UpdateCharAgent'
 
 export default class Narrator {
   // This class handles all AI orchestration
@@ -10,6 +11,7 @@ export default class Narrator {
   // Narrator does not hold any game data and does not need to be saved with the game
 
   running = false
+  updateQueue = []
 
   constructor(book, protocol, options) {
     this.options = options
@@ -20,6 +22,7 @@ export default class Narrator {
     this.moveAgent = new MoveAgent()
     this.sleepAgent = new SleepAgent()
     this.wakeAgent = new WakeAgent()
+    this.updateCharAgent = new UpdateCharAgent(options)
   }
 
   // Handle an agent error
@@ -185,6 +188,7 @@ export default class Narrator {
     return true
   }
 
+  // Start an NPC action period
   async run({ force = false } = {}) {
     if (this.running) return
 
@@ -219,6 +223,59 @@ export default class Narrator {
     this.options.narratorRunningMessage = ''
   }
 
-  // Main Action: check for goals and states
-  // nyi
+  // Main Action: update characters for state changes and goals one at a time
+  async update({ char }) {
+    this.updateQueue.push(char)
+    if (this.updateQueue.length > 1) {
+      // Loop already running
+      return
+    } else {
+      while (this.updateQueue.length > 0) {
+        const nextChar = this.updateQueue[0]
+        let response
+
+        try {
+          // Run Update Agent
+          response = await this.updateCharAgent.run({
+            char: nextChar,
+            protocol: this.protocol,
+          })
+          this.updateQueue.shift()
+
+          if (response.error) {
+            this.handleError('Error in UpdateChar Agent', response.error)
+            break
+          }
+        } catch {
+          break
+        }
+
+        // State changes
+        for (const stateId of Object.keys(response.stateChanges)) {
+          const magnitude = response.stateChanges[stateId].change.toLowerCase()
+          let change = 0
+          switch (magnitude) {
+            case 'major decrease':
+              change = nextChar.states[stateId].change.context[0]
+              break
+            case 'minor decrease':
+              change = nextChar.states[stateId].change.context[1]
+              break
+            case 'minor increase':
+              change = nextChar.states[stateId].change.context[2]
+              break
+            case 'major increase':
+              change = nextChar.states[stateId].change.context[3]
+              break
+          }
+          console.log(
+            `${nextChar.id} State Change ${stateId}: ${change} (${response.stateChanges[stateId].evaluation})`,
+          )
+          nextChar.states[stateId].changeValue(change)
+        }
+        // TODO: insert goal changes here
+      }
+      this.updateQueue = [] // in case of error we need to empty the queue
+    }
+  }
 }

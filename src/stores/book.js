@@ -275,6 +275,11 @@ export const useBookStore = defineStore('book', {
 
     // Increase time
     addTime(duration) {
+      // Trigger Update Agents
+      if (duration > 0) {
+        this.room.availableCharacters.forEach((char) => this.narrator.update({ char }))
+      }
+
       // Run all characters collecting events
       let events = []
       for (const char of Object.values(this.characters)) {

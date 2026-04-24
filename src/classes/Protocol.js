@@ -24,7 +24,7 @@ export default class Protocol {
     show: DEV
       ? ['talk', 'hint', 'info', 'error', 'system', 'summary']
       : ['talk', 'info', 'hint', 'error', 'summary'], // show in dialog
-    context: ['talk', 'hint', 'summary'], // give these to agent for historal context
+    context: ['talk', 'hint', 'summary'], // give these to agent for historical context
     scene: ['talk', 'hint', 'summary'], // these count for scene building
     active: ['talk'], // these action make a character active
     talk: ['talk'],
@@ -74,6 +74,8 @@ export default class Protocol {
     if (since) {
       if (since.type === 'time') {
         filtered = filtered.filter((message) => message.time >= since.threshold)
+      } else if (since.type === 'id') {
+        filtered = filtered.filter((message) => message.id >= since.threshold)
       }
     }
 

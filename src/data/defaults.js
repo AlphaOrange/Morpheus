@@ -35,12 +35,18 @@ export const defaultsCharacter = {
   clothing: 'Casual outfit',
   appearance: 'Normal appearance',
   background: '',
-  states: [],
+  states: {},
   load_states: [],
   load_agendas: [],
 }
 
 export const defaultsState = {
+  examples: {
+    major_decrease: 'sudden, massive or unexpected decrease',
+    minor_decrease: 'slow, small or temporary decrease',
+    minor_increase: 'slow, small or temporary increase',
+    major_increase: 'sudden, massive or unexpected increase',
+  },
   base: 0,
   change: {
     default: 0,

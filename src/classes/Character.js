@@ -12,6 +12,7 @@ export default class Character {
     until: -1,
     target: '',
   }
+  lastUpdate = 0
 
   constructor(rawData) {
     const data = { ...defaultsCharacter, ...rawData }
@@ -35,11 +36,8 @@ export default class Character {
     this.start = data.start
       ? data.start.destination + '/' + data.start.location + '/' + data.start.room
       : null
-    if (!Array.isArray(data.states)) {
-      data.states = Object.values(data.states)
-    }
-    for (let state of data.states) {
-      this.states.push(new State(state))
+    for (let stateId of Object.keys(data.states)) {
+      this.states[stateId] = new State(data.states[stateId])
     }
     // data.load_states
     // data.load_agendas
@@ -50,6 +48,7 @@ export default class Character {
     proto.room = data.room // Note: this gets rewired to room ref in book load/restore
     proto.controlledBy = data.controlledBy
     proto.action = data.action
+    proto.lastUpdate = data.lastUpdate
     return proto
   }
 
@@ -80,6 +79,7 @@ export default class Character {
         until: this.action.until,
         target: this.action.target ? this.action.target.id : '',
       },
+      lastUpdate: this.lastUpdate,
     }
   }
 
@@ -138,6 +138,12 @@ ${this.background}
 ${this.body}, ${this.clothing}, ${this.appearance}
 Behavioral instructions: ${this.behavior}
 ${this.stateEffects}`
+  }
+  get neutralDescription() {
+    // for this character's update prompts, does not give hints to states
+    return `${this.name} (${this.gender}, ${this.age}, ${this.profession})
+${this.background}
+${this.body}, ${this.clothing}`
   }
   get externalDescription() {
     // for other character's prompts

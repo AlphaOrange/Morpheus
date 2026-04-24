@@ -1,0 +1,75 @@
+# Talk Agent: Writing a TALK command
+---
+system: |-
+  You are an expert in psychology and social behaviour. You are honest, precise and follow study guidelines diligently when observing and evaluating social interactions.
+user: |-
+  ### RECENT OBSERVATIONS ###
+
+  %dialog%
+
+  ### SUBJECT DESCRIPTION ###
+
+  %you_profile%
+
+  ### OTHER CHARACTERS ###
+
+  %others_profiles%
+
+  ### INSTRUCTIONS ###
+
+  Your task is to evaluate the recent interactions of the subject %you%. Therefore you shall assess tht change in one or more of the subject's conditions. The conditions are:
+
+  %states_descriptions%
+
+  For each condition access whether there was a change that happened within the RECENT OBSERVATIONS. Do not guess what happened before, do not assess the current state of the condition from something the subject does or indicates. Only evaluate what actually happened to the subject in the transcripted observations. The passing of time alone also does not cause changes.
+  If you assume no new change happened in the period, decide on "NONE".
+  If you assume a reasonable change, decide on "MAJOR DECREASE", "MINOR DECREASE", "MINOR INCREASE" or "MAJOR INCREASE".
+
+  Only evaluate the conditions described above. Do not evaluate anything else.
+format: |-
+  {
+    "condition_changes": {
+      "[condition id]": {
+        "evaluation": [short reason for your decision, 20 words max],
+        "change": [one of "NONE", "MAJOR DECREASE", "MINOR DECREASE", "MINOR INCREASE", "MAJOR INCREASE"]
+      }
+      (comma-separated repeat for more conditions if mentioned)
+    }
+  }
+example: |-
+  {
+    "condition_changes": {
+      "hunger": {
+        "evaluation": "No events that would influence hunger.",
+        "change": "NONE"
+      },
+      "tiredness": {
+        "evaluation": "Drank a refreshing glass of water.",
+        "change": "MINOR DECREASE"
+      } 
+    }
+  }
+validation: |-
+  {
+    "$id": "UpdateCharAgent",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "condition_changes": {
+        "type": "object",
+        "properties": {
+          "[a-z_]+": {
+            "type": "object"
+            "properties": {
+              "evaluation": {
+                "type": "string"
+              },
+              "change": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }

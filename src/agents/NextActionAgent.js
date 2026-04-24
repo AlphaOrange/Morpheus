@@ -164,9 +164,7 @@ export default class NextActionAgent extends Agent {
     }
 
     let actorId
-    console.log('messages: ' + messages.length)
     if (!urgentOnly && npcs.length === 1) {
-      console.log('just one npc available')
       actorId = npcs[0].id
     } else {
       // Determine actor using pressure model

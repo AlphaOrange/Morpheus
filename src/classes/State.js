@@ -7,7 +7,7 @@ export default class State {
 
   constructor(rawData) {
     const data = { ...defaultsState, ...rawData }
-    ;['id', 'name', 'base', 'change', 'intervals', 'events'].forEach(
+    ;['id', 'name', 'description', 'examples', 'base', 'change', 'intervals', 'events'].forEach(
       (key) => (this[key] = data[key]),
     )
     this.value = this.base
@@ -25,6 +25,8 @@ export default class State {
     return {
       id: this.id,
       name: this.name,
+      description: this.description,
+      examples: this.examples,
       base: this.base,
       value: this.value,
       history: this.history,
@@ -42,13 +44,18 @@ export default class State {
       .join(' ')
   }
 
+  // Change state value
+  changeValue(change) {
+    this.value = clamp(this.value + change, 0, 100)
+  }
+
   // Update state and determine events
   passTime({ startTime, duration, action = '' }) {
     // Process time-based change
     if (action in this.change) {
-      this.value = clamp(this.value + (duration / 3600) * this.change[action], 0, 100)
+      this.changeValue((duration / 3600) * this.change[action])
     } else {
-      this.value = clamp(this.value + (duration / 3600) * this.change.default, 0, 100)
+      this.changeValue((duration / 3600) * this.change.default)
     }
 
     // Update history

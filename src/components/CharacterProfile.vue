@@ -21,8 +21,8 @@
         }})
       </div>
       <div v-else>{{ props.character.name }} is currently on the move.</div>
-      <div v-if="props.character.states.length > 0" class="states">
-        <div v-for="state in props.character.states" :key="state.id">
+      <div v-if="states.length > 0" class="states">
+        <div v-for="state in states" :key="state.id">
           <div :style="{ width: Math.round(state.value) + '%' }">
             {{ state.name }}: {{ Math.round(state.value) }}%
           </div>
@@ -33,11 +33,17 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
+
 const props = defineProps({
   character: {
     type: Object,
     required: true,
   },
+})
+
+const states = computed(() => {
+  return Object.values(props.character.states)
 })
 </script>
 
