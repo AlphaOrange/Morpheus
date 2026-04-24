@@ -3,11 +3,15 @@
 features:
   maps: Move durations depend on distance and terrain
   move: Visit different places
+  states: Character states change and influence behaviour
   talk: Have conversations with NPCs
   visual: Has images for characters and/or places
 versions:
   - version: 0.8.0
     updates: |-
+      **States**
+      - TBA
+
       **Sleep and Wake**
       - New action `sleep`: sleep and regenerate for a certain number of minutes
       - New action `wake`: wake someone before sleep period is up
