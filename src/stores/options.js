@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import OPTIONS from '@/data/options'
+import { models } from '@/data/llm'
 
 // these options will be stored and restored with saving/loading books
 const SAVEABLE_OPTIONS = OPTIONS.filter((opt) => opt[2]).map((opt) => opt[0])
@@ -17,9 +18,7 @@ export const useOptionsStore = defineStore('options', {
   getters: {
     // Display id hints? (based on idHintsMode and idHintsActive)
     showIdHints(state) {
-      return (
-        (state.idHintsMode === 'always') | ((state.idHintsMode === 'auto') & state.idHintsActive)
-      )
+      return state.idHintsMode === 'always' || (state.idHintsMode === 'auto' && state.idHintsActive)
     },
     userOptionsText(state) {
       let options = []
@@ -68,6 +67,9 @@ export const useOptionsStore = defineStore('options', {
     },
     // set value for option
     setOption(option, value) {
+      if (option === 'aiVendor') {
+        this.setOption('aiModel', models[value][0])
+      }
       if (USER_OPTIONS.includes(option)) {
         const requiredType = typeof this[option]
         if (requiredType === 'boolean') {

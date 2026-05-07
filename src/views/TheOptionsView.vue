@@ -10,8 +10,13 @@
           <h3>AI Configuration</h3>
           <div class="input-group">
             <label for="selectAiVendor">Model Name:</label>
-            <select v-model="options.aiVendor" id="selectAiVendor" class="long">
-              <option>Google</option>
+            <select
+              :value="options.aiVendor"
+              @change="options.setOption('aiVendor', $event.target.value)"
+              id="selectAiVendor"
+              class="long"
+            >
+              <option v-for="vendor in Object.keys(models)" :key="vendor">{{ vendor }}</option>
             </select>
             <input type="checkbox" id="idLegalAllowAI" v-model="options.legalAllowAI" />
             <label for="idLegalAllowAI"
@@ -19,8 +24,7 @@
             ><br /><br />
             <label for="selectAiVersion">Model Version:</label>
             <select v-model="options.aiModel" id="selectAiVersion" class="long">
-              <option>gemini-2.5-flash</option>
-              <option>gemini-2.5-flash-lite</option>
+              <option v-for="model in models[options.aiVendor]" :key="model">{{ model }}</option>
             </select>
             <input type="checkbox" id="idShowUsage" v-model="options.showTokenUsage" />
             <label for="idShowUsage">Permanently display number of tokens used in session</label>
@@ -168,8 +172,8 @@
 
 <script setup>
 import TheTwoColumnsLayout from '@/layouts/TheTwoColumnsLayout.vue'
-
 import { useOptionsStore } from '@/stores/options'
+import { models } from '@/data/llm'
 const options = useOptionsStore()
 </script>
 

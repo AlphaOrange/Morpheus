@@ -1,4 +1,4 @@
-import { safetySettings } from '@/data/llm'
+import { models, safetySettings } from '@/data/llm'
 
 // Structure per entry:
 // [name, default value, save with book, allow user to change via command]
@@ -47,8 +47,8 @@ export default [
   ['showTokenUsage', false, true, true], // show number of tokens (in + out) used in this session
 
   // AI Configuration
-  ['aiVendor', 'Google', true, true],
-  ['aiModel', 'gemini-2.5-flash-lite', true, true],
+  ['aiVendor', Object.keys(models)[0], true, true],
+  ['aiModel', models[Object.keys(models)[0]][0], true, true],
   ['aiApiKey', import.meta.env.VITE_GEMINI_API_KEY, true, false], // false -> we don't want people to type their key during play
   ['aiApiKeyAllowSave', import.meta.env.VITE_ALLOW_SAVE_KEY === 'true', true, true],
   ['aiSafetyHarassment', safetySettings.harassment, true, true],

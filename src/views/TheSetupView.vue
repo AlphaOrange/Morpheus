@@ -8,8 +8,13 @@
         <div class="box">
           <h3>AI Configuration</h3>
           <label for="selectAiVendor">Model Name:</label>
-          <select v-model="options.aiVendor" id="selectAiVendor" class="long">
-            <option>Google</option>
+          <select
+            :value="options.aiVendor"
+            @change="options.setOption('aiVendor', $event.target.value)"
+            id="selectAiVendor"
+            class="long"
+          >
+            <option v-for="vendor in Object.keys(models)" :key="vendor">{{ vendor }}</option>
           </select>
           <div class="input-group">
             <input type="checkbox" id="idLegalAllowAI" v-model="options.legalAllowAI" />
@@ -22,8 +27,7 @@
           </div>
           <label for="selectAiVersion">Model Version:</label>
           <select v-model="options.aiModel" id="selectAiVersion" class="long">
-            <option>gemini-2.5-flash</option>
-            <option>gemini-2.5-flash-lite</option>
+            <option v-for="model in models[options.aiVendor]" :key="model">{{ model }}</option>
           </select>
           <h3>API Key:</h3>
           <input
@@ -87,6 +91,7 @@ import { storeToRefs } from 'pinia'
 import TheThirdsLayout from '@/layouts/TheThirdsLayout.vue'
 import CharacterInfoBox from '@/components/CharacterInfoBox.vue'
 import ActionButton from '@/components/ActionButton.vue'
+import { models } from '@/data/llm'
 
 import { useBookStore } from '@/stores/book'
 const book = useBookStore()
