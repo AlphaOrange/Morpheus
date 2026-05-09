@@ -31,6 +31,7 @@ export default [
   ['lookbackLastSpoken', 30, false, false], // how many messages max checking to find who actor has last spoken to
   ['lookbackStateEvents', 300, false, false], // seconds to look back for checking state threshold events
   ['actionsUntilUpdateAgent', 8, false, false], // number of character actions before UpdateAgent updates character
+  ['idlingUntilReset', 3600, false, false], // seconds of idling until ai character resets states
 
   // AI Parameters (how to build prompts)
   ['repeatTimestampAfterSeconds', 600, false, false], // seconds after which timestamp is shown again in formatted dialog

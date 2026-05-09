@@ -1,8 +1,11 @@
 import { genericImg, bookImg } from '@/helpers/utils'
 import { defaultsCharacter } from '@/data/defaults'
+import { useOptionsStore } from '@/stores/options'
 import State from '@/classes/State'
 
 export default class Character {
+  options = useOptionsStore()
+
   room = null
   states = []
   controlledBy = null
@@ -13,6 +16,7 @@ export default class Character {
     target: '',
   }
   lastUpdate = 0
+  idling = 0 // only used for npcs
 
   constructor(rawData, globalStates) {
     const data = { ...defaultsCharacter, ...rawData }
@@ -37,12 +41,11 @@ export default class Character {
       ? data.start.destination + '/' + data.start.location + '/' + data.start.room
       : null
     for (let stateId of data.load_states) {
-      this.states[stateId] = new State(globalStates[stateId])
+      this.states.push(new State(globalStates[stateId]))
     }
-    for (let stateId of Object.keys(data.states)) {
-      this.states[stateId] = new State(data.states[stateId])
+    for (let stateData of Object.values(data.states)) {
+      this.states.push(new State(stateData))
     }
-    // data.load_states
     // data.load_agendas
   }
   static fromJSON(data) {
@@ -191,6 +194,14 @@ ${this.body}, ${this.clothing}, ${this.appearance}`
     this.action.type = ''
   }
 
+  // Increase idle time if not active
+  idle(duration) {
+    const presentPlayers = this.room?.presentPlayerCharacters.length ?? 0
+    if (this.action.type === '' && presentPlayers === 0) {
+      this.idling += duration
+    }
+  }
+
   // Pass time and check for events
   passTime(startTime, duration) {
     let events = []
@@ -208,6 +219,17 @@ ${this.body}, ${this.clothing}, ${this.appearance}`
           }
         })
       events = events.concat(stateEvents)
+    }
+
+    // Check for reset
+    if (this.controlledBy === 'ai') {
+      const presentPlayers = this.room?.presentPlayerCharacters.length ?? 0
+      if (presentPlayers > 0) {
+        if (this.idling > this.options.idlingUntilReset) {
+          this.states.forEach((state) => state.reset())
+        }
+        this.idling = 0
+      }
     }
 
     // Check for end of durational actions

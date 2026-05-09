@@ -49,6 +49,11 @@ export default class State {
     this.value = clamp(this.value + change, 0, 100)
   }
 
+  // Reset state value
+  reset() {
+    this.value = this.base
+  }
+
   // Update state and determine events
   passTime({ startTime, duration, action = '' }) {
     // Process time-based change

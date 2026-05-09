@@ -275,12 +275,18 @@ export const useBookStore = defineStore('book', {
 
     // Increase time
     addTime(duration) {
-      // Trigger Update Agents
+      // Actions in non-zero time
       if (duration > 0) {
-        this.room.availableCharacters.forEach((char) => this.narrator.update({ char }))
+        // Trigger Update Agents
+        // this.room.availableCharacters.forEach((char) => this.narrator.update({ char })) // TODO: make optional
+
+        // Increase idle times
+        for (const char of Object.values(this.aiCharacters)) {
+          char.idle(duration)
+        }
       }
 
-      // Run all characters collecting events
+      // Run all characters collecting events (first AI, then Player)
       let events = []
       for (const char of Object.values(this.characters)) {
         events = events.concat(char.passTime(this.time, duration))
