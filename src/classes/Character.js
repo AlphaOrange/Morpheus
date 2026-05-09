@@ -18,7 +18,7 @@ export default class Character {
   lastUpdate = 0
   idling = 0 // only used for npcs
 
-  constructor(rawData, globalStates) {
+  constructor(rawData, globalStates, full = true) {
     const data = { ...defaultsCharacter, ...rawData }
     ;[
       'id',
@@ -40,22 +40,35 @@ export default class Character {
     this.start = data.start
       ? data.start.destination + '/' + data.start.location + '/' + data.start.room
       : null
+    // PLACEHOLDER: data.load_agendas
+    if (full) this.fullConstructor(globalStates, data)
+  }
+
+  // only to be used in original construction, not restore
+  fullConstructor(globalStates, data) {
     for (let stateId of data.load_states) {
       this.states.push(new State(globalStates[stateId]))
     }
     for (let stateData of Object.values(data.states)) {
       this.states.push(new State(stateData))
     }
-    // data.load_agendas
   }
+
   static fromJSON(data) {
     data.image = data._image
     data.load_states = []
-    const proto = new Character(data, [])
+    const proto = new Character(data, [], false)
     proto.room = data.room // Note: this gets rewired to room ref in book load/restore
+    // These are not part of the book:
     proto.controlledBy = data.controlledBy
     proto.action = data.action
     proto.lastUpdate = data.lastUpdate
+    proto.idling = data.idling
+    // Create State objects:
+    for (let stateData of data.states) {
+      proto.states.push(State.fromJSON(stateData))
+    }
+
     return proto
   }
 
@@ -87,6 +100,7 @@ export default class Character {
         target: this.action.target ? this.action.target.id : '',
       },
       lastUpdate: this.lastUpdate,
+      idling: this.idling,
     }
   }
 
