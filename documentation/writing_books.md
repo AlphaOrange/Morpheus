@@ -129,10 +129,8 @@ MyFirstBook
 │   ├── alice
 │   │   ├── alice.yaml
 │   │   ├── alice.jpg
-│   │   ├── agendas
-│   │   │   └── findjob.yaml
-│   │   │
-│   │   └── states (empty, but mandatory)
+│   │   └── agendas
+│   │       └── findjob.yaml
 │   │
 │   └── bob
 │       ├── bob.yaml
@@ -276,10 +274,6 @@ description: >-
 image: bighive.jpg
 ```
 
-### Agenda File
-
-In the current version, no agenda files are used, yet.
-
 ### Character File
 
 Each character in the game has their own folder and character file. A character can be an NPC (non-player character) or a playable character or both. A playable NPC character if not chosen by the player will still appear in the game. A playable character not defined as NPC, will not.
@@ -313,8 +307,7 @@ The character file must have the same name as the character folder (the characte
 - `background`: short description of the character's background story, only a few sentences mentioning what really matters for the character in the game and why
   _(optional - default: "")_
 - `load_states`: list of IDs of states defined in the "states" folder in the top-level folder, that should be used for this character, in addition to those defined in the character's "states" folder  
-  _(optional - default: [])_  
-  _Note: states are not yet implemented in the game, use an empty list [] for now_
+  _(optional - default: [])_
 - `load_agendas`: list of IDs of agendas defined in the "agendas" folder in the top-level folder, that should be used for this character, in addition to those defined in the character's "agendas" folder  
   _(optional - default: [])_
   _Note: agendas are not yet implemented in the game, use an empty list [] for now_
@@ -360,6 +353,78 @@ start:
   destination: seatown
   location: inn
   room: tabroom
+```
+
+### Agenda File
+
+In the current version, no agenda files are used, yet.
+
+### State File
+
+States are specific attributes of characters that can change over the course of the game, e.g. "energy" or "hunger". They always have values between 0 and 100 and different values can cause characters to change behaviour or create events that the other characters can observe.  
+State files can be defined in two different places:
+
+- The character's "states" folder. The character automatically gets assigned all states in their folder.
+- The "states" folder at the book's root level. A state defined there gets assigned to all characters that have the state's id listed in their `load_states` attribute. This way you only need to define a state once that you use for multiple characters. Of course, they will be independent in the game, e.g. Alice's and Bob's hunger values can progress differently.
+  The file name (without the ".yaml" extension) is the state's id. Each state file has the following items:
+
+- `name`: the state's name
+- `description`: a very short description, try to stay under 50 characters
+- `examples`: an object with the following items, try to stay under 50 characters each:
+  - `major_decrease`: short example for what would majorly decrease the state's value
+  - `minor_decrease`: short example for what would minorly decrease the state's value
+  - `minor_increase`: short example for what would minorly increase the state's value
+  - `major_increase`: short example for what would majorly increase the state's value  
+    _(optional)_
+- `base`: standard value for the state, used for game start and for resetting AI characters after longer absence  
+  _(optional - default: 0)_
+- `change`: an object with the following items:
+  - `default`: change per hour as number
+    _(optional - default: 0)_
+  - `move`: change per hour when moving as number (used instead of `default`, not on top)
+    _(optional - default: 0)_
+  - `sleep`: change per hour when sleeping as number (used instead of `default`, not on top)
+    _(optional - default: 0)_
+  - `context`: array of 4 numbers, contextual changes corresponding to the `examples`
+    _(optional - default: [-5, -2, +2, +5])_
+- `intervals`: a list with any number of entries of this type:
+  - `values`: array of two numbers between 0 and 100, in increasing order
+    `effect`: short description of an effect of a state value in this value interval on the character  
+    _(optional - default: [])_
+- `events`: a list with any number of entries, each one of these types:
+  - `above`: number between 0 and 100
+    `hint`: a hint given to everyone in the room when state increases above the `above` value. You can use "%selfname%" as placeholder for a character's name
+  - `below`: number between 0 and 100
+    `hint`: a hint given to everyone in the room when state decreases below the `below` value. You can use "%selfname%" as placeholder for a character's name  
+    _(optional - default: [])_
+
+Note: See "Character States" for more information about how states work in the game, how they change and what effects they have.
+
+#### Example
+
+```yaml
+---
+name: Hunger
+description: need of food for body energy
+examples:
+  major_decrease: eating energy-rich, big meals
+  minor_decrease: eating s small snack
+  minor_increase: physical work, see delicious food or others eat
+  major_increase: heavy physical work, getting teased with food
+base: 20
+change:
+  default: +3
+  move: +4
+  sleep: +3
+  context: [-20, -4, +1, +4]
+intervals:
+  - values: [71, 90]
+    effect: 'You are quite hungry.'
+  - values: [91, 100]
+    effect: 'You are so hungry, your stomach already hurts and you really need to eat to keep yourself going!'
+events:
+  - above: 80
+    hint: "You hear %selfname%'s stomach growl"
 ```
 
 ### Destination File
@@ -411,6 +476,8 @@ The location file must have the same name as the location folder (the location I
 - `image`: name of an image file in the same folder, or "" for using the default location image  
   _(optional - default: "")_
 
+#### Example
+
 ```yaml
 ---
 name: Market
@@ -440,6 +507,8 @@ The room file must have the same name as the room folder (the room ID) and conta
 
 _Note: rooms do not have position and detour, because all rooms are assumed nect to each other with constant amount of moving duration_
 
+#### Example
+
 ```yaml
 ---
 name: Spices Stand
@@ -451,35 +520,7 @@ image: market.jpg
 actions: []
 ```
 
-### State File
-
-In the current version, no state files are used, yet.
-
 ### Concepts and Explanations
-
-#### Position and Detour
-
-`position` numbers are used for calculating travelling distances between locations or destinations. Imagine the position as coordinates on a map. _Morpheus_ uses the mathematical distance between two positions as distance and multiplies with a book-specific factor in order to get the duration of travel. If one moves from a room to another location, the distance between the two locations is used. If one travels from a room to another destination, the distance between the two destinations is used.  
-The `detour` values of both start and end point are added to the distance. Imagine these as the difficulty of getting in or out of a place, e.g. a city in the mountains or a hut in a swamp.
-
-Example: The characters are in room "Spices Stand" in the location "Market" and want to move to the location "Inn".
-
-- position of "Market": [2, 4]
-- position of "Inn": [1, 0]
-- because the market is very crowded it has a detour of 3.
-
-Travel distance is now $\sqrt{(2-1)^2+(4-0)^2}+3 \approx 7.1$
-
-_Currently in Morpheus a location distance of 1 is equivalent to 1 minute of moving, a destination distance of 1 is equivalent to 1 hour of moving - we will make this configurable in the future_
-
-#### Supported Features
-
-In your book you can give a list of supported features, so users can directly see of which _Morpheus_ features a book makes use. Later there will also be filter options so users can search for books supporting specific features. In your list use the exact names out of this list of currently supported features if the book meets the requirements:
-
-- "maps": Map positions are used for distance calculation, i.e. there is at least one destination or location with position other than [0, 0] or detour other than 0.
-- "move": Player must be able to move to at least one other room from the starting location.
-- "talk": In every configuration of the book there must be at least one NPC you can meet (and talk to).
-- "visual": There are any custom images for places or characters.
 
 #### Book Options
 
@@ -500,11 +541,55 @@ In the book file you can define options for your book. The following options are
 
 _Example: Moving from a location at `position = [0, 0]` and `detour = 0` to another location at `position = [2, 0]` with `detour = 1` with `moveDurationLocation = 60` (default value) takes `3 * 60 = 180` seconds, so 3 minutes of in-game time._
 
+#### Character States
+
+Each state represents a character statistic with a value between 0 and 100 that can change during the course of the game. For example "hunger" rises until the character eats something or "energy" goes down and gets refilled during sleeping phases. Changes in a state's value can cause effets visible to everyone in the same room, e.g. a person with low energy looking tired struggling with keeping their eyes open. For AI characters state values can also influence behaviour, e.g. said person might start to yawn a lot. There are two ways states change values: over time and contextually.
+
+##### Interval and Threshold Effects
+
+TODO
+
+##### Change Over Time
+
+TODO
+
+##### Contextual Change
+
+TODO
+
+##### State Reset
+
+TODO
+
+#### Position and Detour
+
+`position` numbers are used for calculating travelling distances between locations or destinations. Imagine the position as coordinates on a map. _Morpheus_ uses the mathematical distance between two positions as distance and multiplies with a book-specific factor in order to get the duration of travel. If one moves from a room to another location, the distance between the two locations is used. If one travels from a room to another destination, the distance between the two destinations is used.  
+The `detour` values of both start and end point are added to the distance. Imagine these as the difficulty of getting in or out of a place, e.g. a city in the mountains or a hut in a swamp.
+
+Example: The characters are in room "Spices Stand" in the location "Market" and want to move to the location "Inn".
+
+- position of "Market": [2, 4]
+- position of "Inn": [1, 0]
+- because the market is very crowded it has a detour of 3.
+
+Travel distance is now $\sqrt{(2-1)^2+(4-0)^2}+3 \approx 7.1$
+
+_Currently in Morpheus a location distance of 1 is equivalent to 1 minute of moving, a destination distance of 1 is equivalent to 1 hour of moving - we will make this configurable in the future_
+
 #### Special Character Actions
 
 There are some specific actions that users can command their characters, that are only possible in specific rooms. To enable them you need to put the action keyword in the room's `actions` parameter. The current list is:
 
 - `"sleep"`: A character can sleep in this room
+
+#### Supported Features
+
+In your book you can give a list of supported features, so users can directly see of which _Morpheus_ features a book makes use. Later there will also be filter options so users can search for books supporting specific features. In your list use the exact names out of this list of currently supported features if the book meets the requirements:
+
+- "maps": Map positions are used for distance calculation, i.e. there is at least one destination or location with position other than [0, 0] or detour other than 0.
+- "move": Player must be able to move to at least one other room from the starting location.
+- "talk": In every configuration of the book there must be at least one NPC you can meet (and talk to).
+- "visual": There are any custom images for places or characters.
 
 ## Compiling books
 
