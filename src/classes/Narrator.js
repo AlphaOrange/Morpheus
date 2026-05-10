@@ -171,17 +171,17 @@ export default class Narrator {
     // run additional action
     if (action === 'move') {
       let response = await this.runMoveAction({ actorId })
-      if (response.error) return false
+      if (!response || response.error) return false
       this.book.executeCommand(response.command)
     }
     if (action === 'sleep') {
       let response = await this.runSleepAction({ actorId })
-      if (response.error) return false
+      if (!response || response.error) return false
       this.book.executeCommand(response.command)
     }
     if (action === 'wake') {
       let response = await this.runWakeAction({ actorId })
-      if (response.error) return false
+      if (!response || response.error) return false
       this.book.executeCommand(response.command)
     }
 

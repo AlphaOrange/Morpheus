@@ -27,7 +27,7 @@ format: |-
   {
     "to": (id of person spoken to or ':all'),
     "text": (what you are saying),
-    "action": ()"NONE" or another action)
+    "action": ("NONE" or another action)
   }
 example: |-
   {

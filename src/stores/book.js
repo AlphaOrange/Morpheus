@@ -845,6 +845,16 @@ export const useBookStore = defineStore('book', {
           present: present,
         })
 
+        // Send ACTION message
+        this.protocol.pushAction({
+          time: this.time,
+          action: 'wake',
+          room: this.room.id,
+          present: present,
+          from: command.actor,
+          to: command.target,
+        })
+
         // Send TALK message
         if (command.message !== null) {
           this.protocol.pushTalk({

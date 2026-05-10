@@ -9,6 +9,8 @@ export default class Protocol {
   //           }
   // TALK: somebody talks to one or all characters
   // {type: "talk", scene, time, text, room, present, from, to}
+  // ACTION: somebody performs an action (experimental stage!)
+  // {type: "action", scene, time, action, room, present, from, to}
   // HINT: ingame hint visible to one or all characters
   // {type: "hint", scene, time, text, room, present, to}
   // SUMMARY: not implemented yet, summaries of TALK/HINT blocks
@@ -26,7 +28,7 @@ export default class Protocol {
       : ['talk', 'info', 'hint', 'error', 'summary'], // show in dialog
     context: ['talk', 'hint', 'summary'], // give these to agent for historical context
     scene: ['talk', 'hint', 'summary'], // these count for scene building
-    active: ['talk'], // these action make a character active
+    active: ['talk', 'action'], // these action make a character active
     talk: ['talk'],
   }
 
@@ -194,6 +196,20 @@ export default class Protocol {
       scene: scene,
       time: time,
       text: text,
+      room: room,
+      present: present,
+      from: from,
+      to: to,
+    })
+  }
+  pushAction({ time, action, room, present, from, to = ':all' }) {
+    const scene = this.getScene({ time, room, present })
+    this.messages.push({
+      id: this.nextId(),
+      type: 'action',
+      action: action,
+      scene: scene,
+      time: time,
       room: room,
       present: present,
       from: from,
