@@ -128,6 +128,12 @@
           </header>
           <div>Some of these features might have additional AI usage:</div>
           <div class="input-group">
+            <input type="checkbox" id="idUsePlayerStates" v-model="options.usePlayerStates" />
+            <label for="idUsePlayerStates">Player Character States</label>
+            <br />
+            <input type="checkbox" id="idUseAiStates" v-model="options.useAiStates" />
+            <label for="idUseAiStates">AI Character States</label>
+            <br />
             <input
               type="checkbox"
               id="idUseAiForSavegameSummary"

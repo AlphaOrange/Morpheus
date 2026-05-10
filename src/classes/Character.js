@@ -7,7 +7,7 @@ export default class Character {
   options = useOptionsStore()
 
   room = null
-  states = []
+  _states = []
   controlledBy = null
   action = {
     // ongoing actions like 'move' or 'sleep'
@@ -47,10 +47,10 @@ export default class Character {
   // only to be used in original construction, not restore
   fullConstructor(globalStates, data) {
     for (let stateId of data.load_states) {
-      this.states.push(new State(globalStates[stateId]))
+      this._states.push(new State(globalStates[stateId]))
     }
     for (let stateData of Object.values(data.states)) {
-      this.states.push(new State(stateData))
+      this._states.push(new State(stateData))
     }
   }
 
@@ -65,8 +65,8 @@ export default class Character {
     proto.lastUpdate = data.lastUpdate
     proto.idling = data.idling
     // Create State objects:
-    for (let stateData of data.states) {
-      proto.states.push(State.fromJSON(stateData))
+    for (let stateData of data._states) {
+      proto._states.push(State.fromJSON(stateData))
     }
 
     return proto
@@ -92,7 +92,7 @@ export default class Character {
       start: this.start,
       _image: this._image,
       room: this.room === null ? null : this.room.id,
-      states: this.states,
+      _states: this._states,
       controlledBy: this.controlledBy,
       action: {
         type: this.action.type,
@@ -142,6 +142,16 @@ export default class Character {
       demo = '♀'
     }
     return demo + this.age
+  }
+
+  // Getter: States
+  get states() {
+    if (this.controlledBy === 'ai' && this.options.useAiStates) {
+      return this._states
+    } else if (this.controlledBy === 'player' && this.options.usePlayerStates) {
+      return this._states
+    }
+    return []
   }
 
   // Getter: Descriptions

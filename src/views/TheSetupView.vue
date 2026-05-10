@@ -47,6 +47,23 @@
             <label for="idAiApiKeyAllowSave">Store key with savegame</label>
           </div>
         </div>
+        <div class="box">
+          <h3>Book Features</h3>
+          <div class="input-group">
+            <input type="checkbox" id="idUsePlayerStates" v-model="options.usePlayerStates" />
+            <label for="idUsePlayerStates">Player Character States</label>
+            <br />
+            <input type="checkbox" id="idUseAiStates" v-model="options.useAiStates" />
+            <label for="idUseAiStates">AI Character States</label>
+            <br />
+            <input
+              type="checkbox"
+              id="idUseAiForSavegameSummary"
+              v-model="options.useAiForSavegameSummary"
+            />
+            <label for="idUseAiForSavegameSummary">Use AI for savegame summaries</label>
+          </div>
+        </div>
         <div>
           <button @click="startBook" :disabled="!checkConditions">Start Book</button>
         </div>

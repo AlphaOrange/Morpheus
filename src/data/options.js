@@ -45,6 +45,8 @@ export default [
 
   // AI Control
   ['useAiForSavegameSummary', false, true, true], // if true use ai agent on save, otherwise use description as summary
+  ['usePlayerStates', true, true, true], // if false, ignore player character states
+  ['useAiStates', true, true, true], // if false, ignore ai character states
   ['showTokenUsage', false, true, true], // show number of tokens (in + out) used in this session
 
   // AI Configuration
