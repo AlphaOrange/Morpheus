@@ -545,21 +545,70 @@ _Example: Moving from a location at `position = [0, 0]` and `detour = 0` to anot
 
 Each state represents a character statistic with a value between 0 and 100 that can change during the course of the game. For example "hunger" rises until the character eats something or "energy" goes down and gets refilled during sleeping phases. Changes in a state's value can cause effets visible to everyone in the same room, e.g. a person with low energy looking tired struggling with keeping their eyes open. For AI characters state values can also influence behaviour, e.g. said person might start to yawn a lot. There are two ways states change values: over time and contextually.
 
-##### Interval and Threshold Effects
+##### Interval Effects
 
-TODO
+Interval Effects only affect AI characters. They are defined as a list in the state attribute `intervals`. Example:
+
+```yaml
+intervals:
+  - values: [71, 90]
+    effect: 'You are quite hungry.'
+  - values: [91, 100]
+    effect: 'You are so hungry, your stomach already hurts and you really need to eat to keep yourself going
+```
+
+As long as the character's state value (here: hunger) is between 71 and 90, the AI gets the information "You are quite hungry" every time it's relevant, e.g. when generating responses in a dialog. If the value increases above 90, it falls in the other intervals and that text is induced instead. You are free to create as many intervals as you like. Intervals may overlap, although that's not recommended.
+
+##### Threshold Events
+
+Threshold Events are for both AI and Player characters. These do not affect the character's behaviour but define the state's effects that other characters may notice. They are defined in the state attribute `events`. Example:
+
+```yaml
+events:
+  - above: 80
+    hint: "You hear %selfname%'s stomach growl"
+```
+
+Let's assume a character named Aaron has a state "hunger" with this event. Once the Aaron's hunger state value rises above 80, all characters in the room will get the hint "You hear Aaron's stomach growl", including Aaron. The hint will also appear in the game dialog.  
+An event can occur multiple times, but _Morpheus_ prevents it to trigger too fast after another if a value oscillates around an event value.
 
 ##### Change Over Time
 
-TODO
+All state values in the game get updated every time time passes in the game. These changes are defined in the state attribute `change`. Example:
+
+```yaml
+change:
+  default: +3
+  move: +4
+  sleep: +3
+```
+
+All change values in the state file mean "change per hour". Here, if a character is not occupied with a durational action ("move", also see "Special Character Actions"), their state changes by +3 per hour (the `default` change). That means, when the game jumps for 10 minutes, the state changes by `+3 * 10/60 = +0.5`. If a character is performing a specific action like "move" or "sleep", the corresponding change value is applied instead.
 
 ##### Contextual Change
 
-TODO
+Contextual changes are applied _on top_ of time-based change, therefore they should only account for very specific reasons. For these changes _Morpheus_ uses multiple state attributes. Example:
+
+```yaml
+name: Hunger
+description: need of food for body energy
+examples:
+  major_decrease: eating energy-rich, big meals
+  minor_decrease: eating s small snack
+  minor_increase: physical work, see delicious food or others eat
+  major_increase: heavy physical work, getting teased with food
+change:
+  context: [-20, -4, +1, +4]
+```
+
+The _Morpheus_ AI decides in specific intervals if a change is applied for contextual reasons. The attributes `name`, `description` and `examples` help the AI by defining what context might cause what degree of change. The AI then decides for "no change" or one of the four degrees of change defined in `examples` and then applies the corresponding change value from `change.context` (defined in the same order as examples).  
+If for example a character eats a chocolate bar, the AI then evaluates and probably decides on "minor_decrease", applying a change of -4 to the "hunger" state value.
 
 ##### State Reset
 
-TODO
+AI characters do not act if not in a scene with at least one player character present (this is called "idling"). That also means AI characters can not decide to eat if hungry or to sleep if tired if no one is around. Therefore if you encounter an AI character that was idling for at least 1 hour, their state values are reset to the value defined by the state attribute `base`. It's also the start value for all characters.
+
+_NOTE: This only applies after longer idling. If an AI character accompanies you for a longer time they might need to eat and sleep explicitly just as your characters!_
 
 #### Position and Detour
 
