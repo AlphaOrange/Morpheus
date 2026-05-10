@@ -28,10 +28,10 @@ user: |-
   Based the recent dialog evaluate if any of the options really makes sense and if so decide on which destination to go.
 format: |-
   {
-    "move": [decision of moving, can be false or true],
-    "destination": [if moving, the id of the chosen destination, null if no move],
-    "type": [type of the destination from the description, either "room" or "location", null if no move],
-    "company": [list of ids of characters you'd like to come with you, null if no move]
+    "move": (decision of moving, can be false or true),
+    "destination": (if moving, the id of the chosen destination, null if no move),
+    "type": (type of the destination from the description, either "room" or "location", null if no move),
+    "company": (list of ids of characters you'd like to come with you, null if no move)
   }
 examples: |-
   {

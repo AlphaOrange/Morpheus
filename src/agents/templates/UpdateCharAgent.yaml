@@ -29,9 +29,9 @@ user: |-
 format: |-
   {
     "condition_changes": {
-      "[condition id]": {
-        "evaluation": [short reason for your decision, 20 words max],
-        "change": [one of "NONE", "MAJOR DECREASE", "MINOR DECREASE", "MINOR INCREASE", "MAJOR INCREASE"]
+      "(condition id)": {
+        "evaluation": (short reason for your decision, 20 words max),
+        "change": (one of "NONE", "MAJOR DECREASE", "MINOR DECREASE", "MINOR INCREASE", "MAJOR INCREASE")
       }
       (comma-separated repeat for more conditions if mentioned)
     }

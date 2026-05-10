@@ -23,8 +23,8 @@ user: |-
   Based the recent dialog evaluate which person you want to wake up or if I misinterpreted do not wake up anybody.
 format: |-
   {
-    "wake": [decision of waking, can be false or true],
-    "character": [id of character to wake up or ":none" if wake == false],
+    "wake": (decision of waking, can be false or true),
+    "character": (id of character to wake up or ":none" if wake == false),
   }
 examples: |-
   {
