@@ -80,7 +80,7 @@ export default class Narrator {
       actor: actorId,
       target: response.targetId,
       spec: response.spec,
-      message: null, // for NPCs TALK and MOVE currently are always separate actions (this might change with a NextAction Agent, that can decide on MOVE)
+      message: response.message,
     }
 
     this.options.narratorRunningMessage = ''

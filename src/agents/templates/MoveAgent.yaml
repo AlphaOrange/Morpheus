@@ -26,26 +26,30 @@ user: |-
   You, %you%, indicated you want to move somewhere outside the current room, %room%.
   There are several options where to go next, these are either adjacent rooms in your current location or other locations where movement might take a bit longer.
   Based the recent dialog evaluate if any of the options really makes sense and if so decide on which destination to go.
+  If you go somewhere you optionally can say something to the others in the room before you go, e.g. telling where you go if you want someone to follow you. Consider what you just said anyway, rather say nothing than repeat yourself!
 format: |-
   {
     "move": (decision of moving, can be false or true),
     "destination": (if moving, the id of the chosen destination, null if no move),
     "type": (type of the destination from the description, either "room" or "location", null if no move),
-    "company": (list of ids of characters you'd like to come with you, null if no move)
+    "company": (list of ids of characters you'd like to come with you, empty list if no company desired, null if no move),
+    "message": (what you say before leaving, null if no move or if there is nothing to say)
   }
 examples: |-
   {
     "move": true,
     "destination": "market",
     "type": "location",
-    "company": []
+    "company": [],
+    "message": "Alright, goin' to the market real quick. See you later!"
   }
 
   {
     "move": false,
     "destination": null,
     "type": null,
-    "company": null
+    "company": null,
+    "message": null
   }
 validation: |-
   {
@@ -67,6 +71,9 @@ validation: |-
         "items": {
           "type": "string"
         }
+      },
+      "message": {
+        "type": "string"
       }
     },
     "required": [ "move" ]
