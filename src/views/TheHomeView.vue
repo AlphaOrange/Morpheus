@@ -49,7 +49,8 @@
         Morpheus is an AI-powered interactive story engine, which allows you to dive into different
         scenarios, called books. You can discover different places and interact freely with the
         characters you encounter there. All characters have different personalities, special traits
-        and behaviour. Solve mysterious, fall in love or just chill out at the end of the world!
+        and behaviour, changing needs and conditions. Solve mysterious, fall in love or just chill
+        out at the end of the world!
         <h2>How does it work?</h2>
         First choose a book from the library. Then choose your character - or multiple characters if
         you want to play a whole group. When you start the book your character will be place at the
@@ -60,10 +61,10 @@
         conversation and also have the ability to move whereever they want - if they want.
         <h2>Wait, there will be more ...</h2>
         Morpheus is an evolving project of interactive storytelling and adventure gaming. There are
-        several things about to come in the near future. States will cause the characters to become
-        tired, hungry, angry or happy and behave accordingly. Agendas will give the NPCs their own
-        hidden goals they try to fulfill. Events will make the game world even more lively and
-        unpredictable. Finally tags will enable book writer's to adapt behaviour to specific
+        several things about to come in the near future. Agendas will give the NPCs their own hidden
+        goals they try to fulfill. Events will make the game world even more lively and
+        unpredictable. Relationships will form over time, making other people love or hate you,
+        trust or avoid you. Finally tags will enable book writer's to adapt behaviour to specific
         circumstances and build complex puzzle mechanics.
       </div>
       <div>
