@@ -264,18 +264,17 @@ img {
 
 /* Dialog Transitions */
 
-.message-enter-from {
+.message-enter-from,
+.message-leave-to {
   opacity: 0;
-  transform: translateY(10px);
 }
 
-.message-enter-to {
+.message-enter-to,
+.message-leave-from {
   opacity: 1;
-  transform: translateY(0);
 }
 
-.message-enter-active {
-  transition:
-    opacity 0.25s ease,
-    transform 0.25s ease;
+.message-enter-active,
+.message-leave-active {
+  transition: opacity 0.25s ease;
 }
