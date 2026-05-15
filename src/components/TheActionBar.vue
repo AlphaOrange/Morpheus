@@ -118,7 +118,7 @@
       </div>
     </div>
     <div v-for="char in room.busyPlayerCharacters" :key="char.id" class="box">
-      <h3 class="hint-anchor">
+      <h3 class="hint-anchor char-header" @click="showProfile(char)">
         {{ char.name }}<span class="hint">{{ char.id }}</span>
       </h3>
       <div class="busy-info">Currently {{ busyText(char.action.type) }}</div>
