@@ -153,6 +153,9 @@ export default class Character {
     }
     return []
   }
+  getState(stateId) {
+    return this.states.filter((state) => state.id === stateId)[0]
+  }
 
   // Getter: Descriptions
   get stateEffects() {

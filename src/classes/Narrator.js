@@ -256,22 +256,23 @@ export default class Narrator {
           let change = 0
           switch (magnitude) {
             case 'major decrease':
-              change = nextChar.states[stateId].change.context[0]
+              change = nextChar.getState(stateId).change.context[0]
               break
             case 'minor decrease':
-              change = nextChar.states[stateId].change.context[1]
+              change = nextChar.getState(stateId).change.context[1]
               break
             case 'minor increase':
-              change = nextChar.states[stateId].change.context[2]
+              change = nextChar.getState(stateId).change.context[2]
               break
             case 'major increase':
-              change = nextChar.states[stateId].change.context[3]
+              change = nextChar.getState(stateId).change.context[3]
               break
           }
+          let prevValue = nextChar.getState(stateId).value
           console.log(
-            `${nextChar.id} State Change ${stateId}: ${change} (${response.stateChanges[stateId].evaluation})`,
+            `${nextChar.id} State Change ${stateId} (${prevValue}): ${change} (${response.stateChanges[stateId].evaluation})`,
           )
-          nextChar.states[stateId].changeValue(change)
+          nextChar.getState(stateId).changeValue(change)
         }
         // TODO: insert goal changes here
       }

@@ -279,7 +279,7 @@ export const useBookStore = defineStore('book', {
       // Actions in non-zero time
       if (duration > 0) {
         // Trigger Update Agents
-        // this.room.availableCharacters.forEach((char) => this.narrator.update({ char })) // TODO: make optional
+        this.room.availableCharacters.forEach((char) => this.narrator.update({ char })) // TODO: make optional
 
         // Increase idle times
         for (const char of Object.values(this.aiCharacters)) {
@@ -332,7 +332,6 @@ export const useBookStore = defineStore('book', {
         if (playerIds.includes(char.id)) {
           char.controlledBy = 'player'
           if (!this.options.playerCharsHaveStates) {
-            console.log(this.options)
             // remove states from player characters
             char._states = []
           }
