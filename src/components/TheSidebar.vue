@@ -170,13 +170,18 @@ footer img.cover {
 }
 footer .book-title {
   position: relative;
-  width: var(--width-navbar-extended);
-  margin: 0 0 10rem 2rem;
+  width: var(--width-navbar);
+  overflow: hidden;
+  margin-bottom: 10rem;
+  margin-left: 0;
   z-index: 2001;
   color: var(--col-font-toned);
   text-shadow: var(--text-shadow);
   opacity: 0;
-  transition: opacity 0.1s ease-out 0.15s;
+  transition:
+    opacity 0.1s ease-out 0.15s,
+    margin 0.1s ease-out 0.15s,
+    width 0.1s step-end 0.15s;
 }
 
 /* Active Link */
@@ -218,6 +223,11 @@ footer .book-title {
 }
 .sidebar:hover footer .book-title {
   opacity: 1;
-  transition: opacity 0.1s ease-in-out 0.8s;
+  width: var(--width-navbar-extended);
+  margin-left: 2rem;
+  transition:
+    opacity 0.1s ease-in-out 0.8s,
+    margin 0.4s ease-in-out 0.5s,
+    width 0.1s step-start 0.8s;
 }
 </style>
