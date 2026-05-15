@@ -10,26 +10,48 @@ versions:
   - version: 0.8.0
     updates: |-
       **States**
-      - TBA
+      New game concept "states" introduced: characters can have multiple states which values change over time and context-based.
+
+      - Implement states for characters
+      - States change based on time passed (and activities like move or sleep)
+      - States change based on dialog context
+      - Specific state values influence AI character behavior
+      - Specific state values trigger character events
+      - AI character states reset after a certain time off-screen
 
       **Sleep and Wake**
-      - New action `sleep`: sleep and regenerate for a certain number of minutes
+      - New feature "Room Actions": Rooms can allow specific additional actions
+      - New durational action `sleep`: sleep and regenerate state values for a certain number of minutes
       - New action `wake`: wake someone before sleep period is up
       - AI character also can use `sleep` and `wake`
       - Player Action Bar and AI Character Profiles show sleeping state
+      - Sleeping characters cannot act while sleeping
+
+      **Characters**
+      - Character Profile Box showing up when clicking player character name in action bar
+      - Character description shown in profile box
+      - Current state values shown in profile box
 
       **Books**
       - New parameter for talk duration calculation: `talkDuration`
       - New parameters for move duration calculation: `moveDurationRoom`, `moveDurationLocation`, `moveDurationDestination`
+      - New parameter for switching off player character states: `playerCharsHaveStates`
 
       **Misc**
+      - AI characters can now write additional message before leaving a room
+      - No longer show system infos when in production
+      - Help messages disappear from dialog after a while
       - Improvements to internal character action handling
       - Improvements to AI prompting
+      - Rebuild game options system
       - Layout Tweaks
 
       **Bugfixes**
-      - Prevent AI fro mistaken character's profession for family name
-    features: [maps, move, talk]
+      - Prevent AI from mistake character's profession for family name
+      - Show Room and location ID hints also if only 1 active player character in room
+      - Prevent "Currently playing" label from blocking lower buttons in action bar
+      - Fix fatal error that appeared when AI decided to not move somewhere after showed intention to move
+    features: [maps, move, talk, states]
     fullSupport: 0.8.0
     minSupport: 0.8.0
   - version: 0.7.0

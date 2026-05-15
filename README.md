@@ -61,7 +61,7 @@ VITE_GENERAL_CONSENT=true
 
 _Be careful with these options and never use publicly in production, otherwise you might experience unwanted data leakage and/or legal issues!_
 
-### 6. Built and Run App
+### 6. Build and Run App
 
 Run locally:
 

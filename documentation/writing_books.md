@@ -1,6 +1,6 @@
 # Writing Books
 
-_For Morpheus Version 0.6.0_
+_For Morpheus Version 0.8.0_
 
 This documentation contains a detailed specification for book structures and files. Following these specs enables you to write your own _Morpheus_ books that can be played in the _Morpheus_ app for interactive story games.
 
