@@ -18,12 +18,13 @@ import { useOptionsStore } from '@/stores/options'
 
 // These options get stored in OptionsStore on load
 const BOOK_OPTIONS = [
-  'minPlayerChars',
-  'maxPlayerChars',
   'talkDuration',
   'moveDurationRoom',
   'moveDurationLocation',
   'moveDurationDestination',
+  'minPlayerChars',
+  'maxPlayerChars',
+  'playerCharsHaveStates',
 ]
 
 export const useBookStore = defineStore('book', {
@@ -330,6 +331,11 @@ export const useBookStore = defineStore('book', {
       for (const char of Object.values(this.characters)) {
         if (playerIds.includes(char.id)) {
           char.controlledBy = 'player'
+          if (!this.options.playerCharsHaveStates) {
+            console.log(this.options)
+            // remove states from player characters
+            char._states = []
+          }
           this.playerCharacters[char.id] = char
         } else if (char.isNPC) {
           char.controlledBy = 'ai'

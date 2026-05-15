@@ -9,12 +9,16 @@ export const defaultsBookStart = {
   introduction: 'Your story starts now!',
 }
 export const defaultsBookOptions = {
-  minPlayerChars: 1,
-  maxPlayerChars: 99,
+  // Durations
   talkDuration: 30,
   moveDurationRoom: 0,
   moveDurationLocation: 60,
   moveDurationDestination: 3600,
+  // Number of characters
+  minPlayerChars: 1,
+  maxPlayerChars: 99,
+  // States
+  playerCharsHaveStates: true,
 }
 
 export const defaultsWorld = {
