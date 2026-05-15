@@ -94,6 +94,7 @@
           :text="avRoom.name"
           :icon="'door-open'"
           :pill="pilltext(distancePeriodText(room, avRoom))"
+          :hint="room.numberOfPlayers === 1 ? avRoom.commandId : null"
           :compact="compact"
         />
         <ActionButton
@@ -103,6 +104,7 @@
           :text="location.name"
           :icon="'person-walking'"
           :pill="pilltext(distancePeriodText(room, location))"
+          :hint="room.numberOfPlayers === 1 ? location.commandId : null"
           :compact="compact"
         />
         <ActionButton
