@@ -27,7 +27,7 @@
               </div>
             </div>
           </header>
-          <main class="message-box" v-html="renderMarkdown(messageText(message))"></main>
+          <main class="formatted-message" v-html="renderMarkdown(messageText(message))"></main>
         </template>
         <template v-else>
           <img class="minor-icon" :src="structuralIcon(message)" />

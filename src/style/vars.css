@@ -3,8 +3,11 @@
   --col-font: #fff;
   --col-font-link: #607095;
   --col-font-blur: #607095;
-  --col-font-toned: #ccc;
+  --col-font-90: rgba(255, 255, 255, 0.9);
+  --col-font-80: rgba(255, 255, 255, 0.8);
+  --col-font-toned: var(--col-font-80);
   --col-font-fade: #666;
+  --col-font-dark: #030310;
   --col-success: #3c5;
   --col-loader: #607095;
   --col-loader-fade: #60709522;
@@ -19,6 +22,7 @@
   --bg-highlight: #607095;
   --bg-light: #c0c0f0;
   --bg-shade: rgba(0, 0, 0, 0.3);
+  --bg-blueshade: rgba(0, 12, 48, 0.25);
   --bg-darkshade: rgba(0, 0, 0, 0.7);
   --bg-error: #c02000;
   --bg-warning: #501010;

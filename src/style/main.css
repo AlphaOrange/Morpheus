@@ -107,6 +107,23 @@ img {
   gap: 0.5rem;
 }
 
+/* Dialog */
+
+.formatted-message em {
+  font-weight: bold;
+}
+
+.formatted-message strong {
+  font-weight: normal;
+  font-style: italic;
+  padding: 0 0.4rem 0.05rem 0.3rem;
+  border-radius: 0.25em;
+  background: var(--bg-blueshade);
+  color: var(--col-font-90);
+  box-decoration-break: clone;
+  line-height: 1.4rem;
+}
+
 /* Boxes */
 
 .box {
