@@ -21,6 +21,10 @@ body {
 
 a {
   text-decoration: none;
+  color: var(--col-font-textlink);
+}
+a:hover {
+  color: var(--col-font-link);
 }
 
 h1 {
