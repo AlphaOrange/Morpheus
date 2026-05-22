@@ -80,6 +80,7 @@ ${this.responseExample}`
           parts: [{ text: prompt }],
         },
       ],
+      timeout: this.timeout,
       generationConfig: this.generationConfig,
       safetySettings: this.options.aiSafetySettingsGemini,
     })
@@ -87,6 +88,59 @@ ${this.responseExample}`
     console.log(response)
 
     return { text: response.text, tokens: response.usageMetadata.totalTokenCount }
+  }
+
+  // Run on Open AI API
+  async query_openai(prompt, type = 'json') {
+    const body = {
+      model: this.options.aiModel,
+      reasoning: { effort: 'low' },
+      instructions: this.systemPrompt,
+      input: prompt,
+    }
+
+    if (type === 'json') {
+      body.text = {
+        format: {
+          type: 'json_object',
+        },
+      }
+    }
+
+    const response = await fetch('https://api.openai.com/v1/responses', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.options.aiApiKey}`,
+      },
+      body: JSON.stringify(body),
+    })
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      throw new Error(`OpenAI API error: ${errorText}`)
+    }
+
+    const data = await response.json()
+    console.log(data)
+
+    const outputItems = data.output ?? []
+
+    const textItem = outputItems
+      .flatMap((item) => item.content ?? [])
+      .find((item) => item.type === 'output_text')
+
+    if (!textItem) {
+      throw new Error('No text output returned from model')
+    }
+    const textContent = textItem.text
+
+    console.log('== RESPONSE ==\n' + textContent)
+
+    return {
+      text: textContent,
+      tokens: data.usage?.total_tokens || 0,
+    }
   }
 
   async query({ prompt, type = 'json' }) {
@@ -104,6 +158,8 @@ ${this.responseExample}`
     let response = null
     if (this.options.aiVendor === 'Google') {
       response = await this.query_google(prompt)
+    } else if (this.options.aiVendor === 'OpenAI') {
+      response = await this.query_openai(prompt, type)
     } else {
       throw new Error('AI Vendor not supported')
     }
@@ -112,12 +168,20 @@ ${this.responseExample}`
     // Return text or JSON
     let responseText = response.text
     if (type === 'json') {
-      const jsonText = responseText.substring(
-        responseText.indexOf('{'),
-        responseText.lastIndexOf('}') + 1,
-      )
-      return JSON.parse(jsonText)
+      let parsed
+      try {
+        parsed = JSON.parse(responseText)
+      } catch {
+        const start = responseText.indexOf('{')
+        const end = responseText.lastIndexOf('}')
+        if (start === -1 || end === -1) {
+          throw new Error('Invalid JSON response from model')
+        }
+        parsed = JSON.parse(responseText.substring(start, end + 1))
+      }
+      return parsed
+    } else {
+      return responseText
     }
-    return responseText
   }
 }

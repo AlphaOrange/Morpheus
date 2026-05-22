@@ -69,6 +69,11 @@ export const useOptionsStore = defineStore('options', {
     setOption(option, value) {
       if (option === 'aiVendor') {
         this.setOption('aiModel', models[value][0])
+        if (value === 'Google') {
+          this['aiApiKey'] = import.meta.env.VITE_GEMINI_API_KEY
+        } else if (value === 'OpenAI') {
+          this['aiApiKey'] = import.meta.env.VITE_OPENAI_API_KEY
+        }
       }
       if (USER_OPTIONS.includes(option)) {
         const requiredType = typeof this[option]
