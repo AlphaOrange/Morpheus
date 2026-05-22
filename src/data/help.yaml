@@ -32,7 +32,7 @@ help:
 
     **GAME INFO**
 
-    `--ids` 🛠️
+    `--ids`
     IDs of all characters, places and items that you currently can interact with.
 
     `--tasks` 🛠️

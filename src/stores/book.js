@@ -894,12 +894,35 @@ export const useBookStore = defineStore('book', {
       // Meta commands
       if (command.action === 'help') {
         let help
+        // Generate dynamic or predefined topic
         if (command.topic === 'options') {
-          // Generate dynamic topic
+          // Build help text for options state
           const helpText =
             this.options.userOptionsText +
             '\n\nUse `set option [name]=[value]` for changing or go to the Options tab.'
           help = { text: helpText, title: 'Current Game Settings' }
+        } else if (command.topic === 'ids') {
+          // Collect available command ids
+          const playerIds = this.room.presentPlayerCharacters
+            .map((char) => `- \`${char.id}\` (${char.name})`)
+            .join('\n')
+          const aiIds = this.room.presentAiCharacters
+            .map((char) => `- \`${char.id}\` - ${char.name}`)
+            .join('\n')
+          const adjacentRooms = this.room.availableRooms
+            .map((room) => `- \`${room.commandId}\` (${room.name})`)
+            .join('\n')
+          const adjacentLocations = this.room.availableLocations
+            .map((location) => `- \`${location.commandId}\` (${location.name})`)
+            .join('\n')
+          // Build help text
+          const helpText =
+            `These IDs are currently available:\n\n` +
+            `**Player Characters**\n${playerIds}\n\n` +
+            `**Non-Player Characters**\n${aiIds}\n\n` +
+            `**Adjacent Rooms**\n${adjacentRooms}\n\n` +
+            `**Other Locations**\n${adjacentLocations}`
+          help = { text: helpText, title: 'Currently Available IDs' }
         } else {
           // otherwise get static topic
           help = getHelpData(command.topic)
