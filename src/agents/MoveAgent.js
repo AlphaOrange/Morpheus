@@ -1,5 +1,6 @@
 import Agent from '@/agents/Agent'
 import { formatDialog } from '@/helpers/utils'
+import { useBookStore } from '@/stores/book'
 import TEMPLATES from '@/agents/templates/MoveAgent.yaml'
 
 export default class MoveAgent extends Agent {
@@ -14,6 +15,8 @@ export default class MoveAgent extends Agent {
   // - move: true/false (perform MOVE action?)
   // - targetId: Target (command ID of a room/location/destination)
   // - spec: "destination", "location" or "room"
+
+  book = useBookStore()
 
   constructor() {
     super()
@@ -47,6 +50,7 @@ export default class MoveAgent extends Agent {
       .replace('%others_profiles%', others_profiles)
       .replace('%place_description%', place_description)
       .replace('%room%', room.name)
+      .replace('%style_base%', this.book.style.base)
 
     try {
       const answer = await this.query({ prompt, type: 'json' })

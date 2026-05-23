@@ -1,5 +1,6 @@
 import Agent from '@/agents/Agent'
 import { formatDialog, joinOr } from '@/helpers/utils'
+import { useBookStore } from '@/stores/book'
 import TEMPLATES from '@/agents/templates/TalkAgent.yaml'
 
 export default class TalkAgent extends Agent {
@@ -13,6 +14,8 @@ export default class TalkAgent extends Agent {
   // Agent Output
   // - text: Message
   // - to: Target (:all or Character.id)
+
+  book = useBookStore()
 
   constructor() {
     super()
@@ -58,6 +61,9 @@ export default class TalkAgent extends Agent {
       .replace('%dialog%', dialog)
       .replace('%others_profiles%', others_profiles)
       .replace('%you_profile%', you_profile)
+      .replace('%style_base%', this.book.style.base)
+      .replace('%style_dialog%', this.book.style.dialog)
+      .replace('%style_narration%', this.book.style.narration)
       .replace('%additional_actions_list%', additional_actions_list)
 
     try {

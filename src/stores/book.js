@@ -38,6 +38,7 @@ export const useBookStore = defineStore('book', {
     tags: [],
     startTime: null,
     introduction: null,
+    style: null,
     _cover: '',
 
     // Savegame-only Information
@@ -152,6 +153,7 @@ export const useBookStore = defineStore('book', {
         tags: this.tags,
         startTime: this.startTime,
         introduction: this.introduction,
+        style: this.style,
         _cover: this._cover,
         world: this.world, // stringify will convert world object
         destinations: this.destinations, // stringify will convert destination objects
@@ -442,6 +444,7 @@ export const useBookStore = defineStore('book', {
       this.description = data.description
       this.saveSummary = data.description
       this.tags = data.tags
+      this.style = data.style
       this._cover = data._cover ?? data.cover
       if (data.startTime) {
         this.startTime = new Date(data.startTime)

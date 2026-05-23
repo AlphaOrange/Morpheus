@@ -1,5 +1,6 @@
 import Agent from '@/agents/Agent'
 import { formatDialog } from '@/helpers/utils'
+import { useBookStore } from '@/stores/book'
 import TEMPLATES from '@/agents/templates/WakeAgent.yaml'
 
 export default class WakeAgent extends Agent {
@@ -14,6 +15,7 @@ export default class WakeAgent extends Agent {
   // - wake: true/false (perform wake action)
   // - target: Character.id
 
+  book = useBookStore()
   LOOKBACK = 20
 
   constructor() {
@@ -54,6 +56,7 @@ export default class WakeAgent extends Agent {
       .replace('%you_profile%', you_profile)
       .replace('%sleepers_profiles%', sleepers_profiles)
       .replace('%room%', room.name)
+      .replace('%style_base%', this.book.style.base)
 
     try {
       const answer = await this.query({ prompt, type: 'json' })
