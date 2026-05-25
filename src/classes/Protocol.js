@@ -21,6 +21,8 @@ export default class Protocol {
   // {type: "system", time, text}
   // ERROR: a program error occurred // debug mode only
   // {type: "error", time, text, title}
+  // STOPPER: an interactive message that needs confirmation, not part of the dialog
+  // {type: "stopper", subtype, from, to, text, payload}
 
   typeFilters = {
     show: DEV
@@ -45,6 +47,7 @@ export default class Protocol {
         text: 'This is the start of the game protocol.',
       },
     ]
+    this.stopper = null
   }
   static fromJSON(data, optionsStore) {
     const proto = new Protocol(optionsStore)
@@ -255,6 +258,18 @@ export default class Protocol {
       text: text,
       title: title,
     })
+  }
+
+  // Set a new stopper
+  pushStopper({ subtype, from, to, text, payload }) {
+    this.stopper = {
+      type: 'stopper',
+      subtype: subtype,
+      from: from,
+      to: to,
+      text: text,
+      payload: payload,
+    }
   }
 
   // Remove a message

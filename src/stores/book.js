@@ -689,6 +689,15 @@ export const useBookStore = defineStore('book', {
 
         // Increase time
         this.addTime(this.options.talkDuration)
+
+        // TODO JUST TESTING!!!
+        this.protocol.pushStopper({
+          subtype: 'move-with',
+          text: 'Bob asks Alice and Zodiac to come with him to the lake.',
+          from: ['bob'],
+          to: ['alice', 'zodiac'],
+          payload: {},
+        })
       }
 
       // Action MOVE
