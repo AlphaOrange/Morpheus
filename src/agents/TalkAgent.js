@@ -1,5 +1,5 @@
 import Agent from '@/agents/Agent'
-import { formatDialog, joinOr } from '@/helpers/utils'
+import { formatDialog } from '@/helpers/utils'
 import { useBookStore } from '@/stores/book'
 import TEMPLATES from '@/agents/templates/TalkAgent.yaml'
 

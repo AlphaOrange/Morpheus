@@ -13,7 +13,12 @@ import {
   genericImg,
   bookImg,
 } from '@/helpers/utils'
-import { defaultsBook, defaultsBookStart, defaultsBookOptions } from '@/data/defaults'
+import {
+  defaultsBook,
+  defaultsBookStart,
+  defaultsBookStyle,
+  defaultsBookOptions,
+} from '@/data/defaults'
 import { useOptionsStore } from '@/stores/options'
 
 // These options get stored in OptionsStore on load
@@ -434,6 +439,7 @@ export const useBookStore = defineStore('book', {
     assignBaseBookData(rawData) {
       const data = { ...defaultsBook, ...rawData }
       data.start = { ...defaultsBookStart, ...data.start }
+      data.style = { ...defaultsBookStyle, ...(data.style ?? {}) }
       data.options = { ...defaultsBookOptions, ...(data.options ?? {}) }
 
       this.id = data.id

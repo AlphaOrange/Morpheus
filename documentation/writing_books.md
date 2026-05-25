@@ -212,6 +212,13 @@ There must be exactly one book file and it must be named `book.yaml`. The book f
     _(optional - default: "2020-01-01 12:00:00")_
   - `introduction`: an introduction text for the _user_ (not readable for the _characters_) at the very start of the story  
     _(optional - default: "Your story starts now!")_
+- `style`: specifications of narrative style, see "Narrative Instructions" for more details on how to build this. May include:
+  - `base`: General additional instruction for Non-character AI  
+    _(optional - default: "")_
+  - `dialog`: Instruction on how to write dialog  
+    _(optional - default: "No long monologues, we want a lively quick dialogue.")_
+  - `narration`: Instruction on how to you narrative notes in dialog like gesture and facial expressions  
+    _(optional - default: "Use it sparse and concise.")_
 - `options`: an object with book options - see "Book Options"  
   _(completely optional, all options entries optional - see "Book Options" for defaults)_
 
@@ -534,6 +541,23 @@ In the book file you can define options for your book. The following options are
 - `moveDurationDestination` (Default: 3600) # Time in seconds required for arriving in another destination per travel distance unit -> see "Position and Detour" for calculation details
 
 _Example: Moving from a location at `position = [0, 0]` and `detour = 0` to another location at `position = [2, 0]` with `detour = 1` with `moveDurationLocation = 60` (default value) takes `3 * 60 = 180` seconds, so 3 minutes of in-game time._
+
+##### Narrative Instructions
+
+You can tweak the narrative style the AI follows for your book to give it a distinct feel. Therefore you can set the book's "style" parameter that can have any of the following entries:
+
+- `base`: This is used for all AI that is used for writing dialog and deciding on actions. Use this for tweaking the general behaviour of the characters in your world. Don't be too specific, don't write any specifics about how the dialog text should look like.  
+  Write in the "you" form, directly instructing an AI that controls the game world.
+  For example you could write "Your characters often behave irrational and change their mind by the minute." or "You are very meticulous and spell things out explicitly instead of just hinting at them."  
+  _The default value is an empty string: ""_
+- `dialog`: This is instructing the AI on how to write dialog, i.e. the way how the characters speak in general (for character-specific behaviour use `behavior` in individual character definitions).  
+  Write in the "you" form, directly instructing the _character_.  
+  For example you could instruct "Write lively, you want to sound exciting and engaging."  
+  _The default value is: "No long monologues, we want a lively quick dialogue."_
+- `narration`: This is instructing the AI on how to write the narrative notes (stage directions, actions description, there are a lot of labels for this), i.e. the descriptions of gesture, facial expressions, movements, little actions before, after and in between the sentences said by the characters.  
+  Write in the "you" form, directly instructing the _character_.  
+  For example you could instruct "You it extensive, the reader shall be able to pick up on every detail."
+  _The default value is: "Use it sparse and concise."_
 
 ##### Playable Number of Characters
 
