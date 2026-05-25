@@ -35,6 +35,7 @@ export default class Character {
       'clothing',
       'appearance',
       'background',
+      'activity',
     ].forEach((key) => (this[key] = data[key]))
     this._image = data.image
     this.start = data.start
@@ -89,6 +90,7 @@ export default class Character {
       clothing: this.clothing,
       appearance: this.appearance,
       background: this.background,
+      activity: this.activity,
       start: this.start,
       _image: this._image,
       room: this.room === null ? null : this.room.id,

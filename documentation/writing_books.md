@@ -313,6 +313,8 @@ The character file must have the same name as the character folder (the characte
   _(optional - default: "Normal appearance")_
 - `background`: short description of the character's background story, only a few sentences mentioning what really matters for the character in the game and why
   _(optional - default: "")_
+- `activity`: frequency the character speaks or acts as a number, 100 being normal activity, must be positive, be careful with extreme numbers
+  _(optional - default: 100)_
 - `load_states`: list of IDs of states defined in the "states" folder in the top-level folder, that should be used for this character, in addition to those defined in the character's "states" folder  
   _(optional - default: [])_
 - `load_agendas`: list of IDs of agendas defined in the "agendas" folder in the top-level folder, that should be used for this character, in addition to those defined in the character's "agendas" folder  

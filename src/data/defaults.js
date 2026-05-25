@@ -44,6 +44,7 @@ export const defaultsCharacter = {
   clothing: 'Casual outfit',
   appearance: 'Normal appearance',
   background: '',
+  activity: 100,
   states: {},
   load_states: [],
   load_agendas: [],

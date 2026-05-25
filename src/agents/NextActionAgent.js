@@ -135,7 +135,8 @@ export default class NextActionAgent extends Agent {
       let notSpokenFactor =
         Math.min(messages.length - last_index[char.id].from - 1, this.options.maxNotSpokenRounds) /
         this.options.maxNotSpokenRounds
-      pressure[char.id] += this.options.pressure_notSpokenRounds * notSpokenFactor
+      pressure[char.id] +=
+        (this.options.pressure_notSpokenRounds * notSpokenFactor * char.activity) / 100
 
       // Pressure cannot be negative
       pressure[char.id] = Math.max(pressure[char.id], 0)
