@@ -117,8 +117,8 @@ const rx = {
   switch1: /^switch ([0-9]+)$/i, // switch 3 (third room in the room row)
   switch2: /^switch ([a-z0-9_]+)$/i, // switch taproom
   switch3: /^switch$/i, // switch (next room in the room row)
-  wait: /^wait ([0-9]+)$/i, // wait x minutes (max 60)
-  sleep: /^(?:([a-z0-9_]+) )?sleep ([0-9]+)$/i, // sleep x minutes (max 720)
+  wait: /^wait ([0-9]+) ?(min|mins|minute|minutes|hour|hours)?$/i, // wait x (minutes) (max 120 minutes)
+  sleep: /^(?:([a-z0-9_]+) )?sleep ([0-9]+) ?(min|mins|minute|minutes|hour|hours)?$/i, // sleep x (minutes) (max 720 minutes)
   wake: /^(?:([a-z0-9_]+) )?wake ([a-z0-9_]+)(?::(.*))?$/is, // alice wake bob: Wake up!
   talk_colons: /^((?:[^:]+ ){6}.*)$/is, // after 6 spaces without colon, this is just a talk message and user may use colons
   move_room: /^(?:([a-z0-9_]+) )?(move room |move to room )([a-z0-9_]+)(?::(.*))?$/is,
@@ -173,10 +173,11 @@ export function messageToCommand(message) {
     return command
   }
 
-  // Wait for x minutes (max 60)
+  // Wait for x minutes (max 120)
   res = rx.wait.exec(message)
   if (res) {
-    const waitSeconds = Math.min(res[1], 60) * 60
+    const factor = res[2] && ['hour', 'hours'].includes(res[2]) ? 3600 : 60
+    const waitSeconds = Math.min(res[1] * factor, 120 * 60)
     command = { action: 'wait', seconds: waitSeconds }
     return command
   }
@@ -185,7 +186,8 @@ export function messageToCommand(message) {
   res = rx.sleep.exec(message)
   if (res) {
     const actor = res[1] || ':group'
-    const sleepSeconds = Math.min(res[2], 720) * 60
+    const factor = res[3] && ['hour', 'hours'].includes(res[3]) ? 3600 : 60
+    const sleepSeconds = Math.min(res[2] * factor, 720 * 60)
     command = { action: 'sleep', actor: actor, seconds: sleepSeconds }
     return command
   }

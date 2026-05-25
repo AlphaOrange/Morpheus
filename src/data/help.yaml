@@ -161,10 +161,14 @@ commands:
     **SLEEP FOR A CERTAIN AMOUNT OF TIME**
 
     `[acting char id] sleep [minutes]`
+    `[acting char id] sleep [minutes] minutes`
+    `[acting char id] sleep [hours] hours`
 
     **MAKE WHOLE GROUP SLEEP FOR A CERTAIN AMOUNT OF TIME**
 
     `sleep [minutes]`
+    `sleep [minutes] minutes`
+    `sleep [hours] hours`
 
     **WAKE SOMEONE UP (OPTIONAL TALK)**
 
@@ -232,10 +236,12 @@ natural:
     **SLEEP AND WAKE UP COMMANDS**
 
     `[acting char id] sleep [minutes]`
-    Go to sleep for certain amount of minutes
+    `[acting char id] sleep [hours] hours`
+    Go to sleep for certain amount of time
 
     `sleep [minutes]`
-    Whole group goes to sleep for certain amount of minutes
+    `sleep [hours] hours`
+    Whole group goes to sleep for certain amount of time
 
     `[acting char id] wake [sleeping char id]`
     Wake someone up
@@ -320,7 +326,9 @@ meta:
     Switch view to another active room (i.e. there is another player-controlled character). If command is just `switch` game switches to next active room in order, if there is a number it uses the order of the switch buttons in the upper left.
 
     `wait [minutes]`
-    Wait a certain number of minutes while doing nothing.
+    `wait [minutes] minutes`
+    `wait [hours] hours`
+    Wait a certain amount of time while doing nothing.
 example:
   title: Example Conversation
   text: |-
