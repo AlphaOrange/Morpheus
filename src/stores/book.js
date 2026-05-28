@@ -445,6 +445,7 @@ export const useBookStore = defineStore('book', {
       this.id = data.id
       this.author = data.author
       this.version = data.version
+      this.version.morpheus = __APP_VERSION__ // b/c will save on this version
       this.features = data.features
       this.title = data.title
       this.description = data.description

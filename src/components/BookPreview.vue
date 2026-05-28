@@ -7,14 +7,17 @@
         {{ book.title }} <small>{{ book.version.book }}</small>
       </h2>
       <p class="sub-heading">by {{ book.author }}</p>
-      <p v-if="supported === 'min'">
+      <p v-if="supported === 'min' && !savegame">
         <span class="tag tag-warning">
           created for Morpheus {{ book.version.morpheus }}, some features may be unsupported
         </span>
       </p>
       <p v-if="supported === 'unsupported'">
         <span class="tag tag-warning">
-          created for Morpheus {{ book.version.morpheus }}, no longer supported
+          <span v-if="savegame"
+            >saved with Morpheus {{ book.version.morpheus }}, no longer supported</span
+          >
+          <span v-else>created for Morpheus {{ book.version.morpheus }}, no longer supported</span>
         </span>
       </p>
       <div class="tags">
