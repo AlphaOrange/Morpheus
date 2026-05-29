@@ -34,8 +34,8 @@ If you want to add custom books, copy the book folder with all its content into 
 
 You can find books here:
 
-- [Minimal Book Boilerplate](https://github.com/AlphaOrange/Morpheus-Books-Minimal)
 - [Example Book](https://github.com/AlphaOrange/Morpheus-Books-Example)
+- [Spring Days](https://github.com/AlphaOrange/Morpheus-Book-SpringDays)
 
 ### 5. Set environmental variables
 

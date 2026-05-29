@@ -182,16 +182,16 @@ const talkTo = (char, partner) => {
   emits('talk', { fromChar: char, toChar: partner })
 }
 const moveToRoom = (room) => {
-  emits('move', { room: room })
+  emits('move', { room })
 }
 const moveToLocation = (location) => {
-  emits('move', { location: location })
+  emits('move', { location })
 }
 const moveCharToRoom = (char, room) => {
-  emits('move', { room: room, chars: [char] })
+  emits('move', { room, char })
 }
 const moveCharToLocation = (char, location) => {
-  emits('move', { location: location, chars: [char] })
+  emits('move', { location, char })
 }
 const sleep60 = (char = null) => {
   emits('sleep', { char, duration: 60 })

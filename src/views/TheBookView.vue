@@ -64,16 +64,14 @@ const talk = function ({ fromChar, toChar = null } = {}) {
   messageBox.value?.setMessage(text)
 }
 
-const move = function ({ location = null, room = null, chars = [] } = {}) {
+const move = function ({ location = null, room = null, char = null } = {}) {
   let text
   if (location) {
-    text = chars.length
-      ? chars[0].id + ' move to location ' + location.commandId
+    text = char
+      ? char.id + ' move to location ' + location.commandId
       : 'move to location ' + location.commandId
   } else if (room) {
-    text = chars.length
-      ? chars[0].id + ' move to room ' + room.commandId
-      : 'move to room ' + room.commandId
+    text = char ? char.id + ' move to room ' + room.commandId : 'move to room ' + room.commandId
   }
   if (text) messageBox.value?.setMessage(text)
 }
