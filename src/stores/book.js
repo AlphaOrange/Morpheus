@@ -629,6 +629,28 @@ export const useBookStore = defineStore('book', {
       return talkTo
     },
 
+    // Helper: find correct spec for move target if not specified
+    findSpec(command) {
+      if (this.room.availableRooms.map((room) => room.commandId).includes(command.target)) {
+        return 'room'
+      } else if (
+        this.room.availableLocations.map((loc) => loc.commandId).includes(command.target)
+      ) {
+        return 'location'
+      } else if (
+        this.availableDestinations.map((dest) => dest.commandId).includes(command.target)
+      ) {
+        return 'destinations'
+      } else {
+        this.protocol.pushError({
+          time: this.time,
+          title: 'Could not identify move target',
+          text: `'${command.target}' seems not to be valid place you can go to right now.`,
+        })
+        throw new Error()
+      }
+    },
+
     // Process command (from AI or processed user message)
     async executeCommand(command) {
       let present = this.room.availableCharacters.map((char) => char.id)
@@ -689,15 +711,6 @@ export const useBookStore = defineStore('book', {
 
         // Increase time
         this.addTime(this.options.talkDuration)
-
-        // TODO JUST TESTING!!!
-        this.protocol.pushStopper({
-          subtype: 'move-with',
-          text: 'Bob asks Alice and Zodiac to come with him to the lake.',
-          from: ['bob'],
-          to: ['alice', 'zodiac'],
-          payload: {},
-        })
       }
 
       // Action MOVE
@@ -713,22 +726,9 @@ export const useBookStore = defineStore('book', {
 
         // Process target spec
         if (command.spec === ':undefined') {
-          if (this.room.availableRooms.map((room) => room.commandId).includes(command.target)) {
-            command.spec = 'room'
-          } else if (
-            this.room.availableLocations.map((loc) => loc.commandId).includes(command.target)
-          ) {
-            command.spec = 'location'
-          } else if (
-            this.availableDestinations.map((dest) => dest.commandId).includes(command.target)
-          ) {
-            command.spec = 'destinations'
-          } else {
-            this.protocol.pushError({
-              time: this.time,
-              title: 'Could not identify move target',
-              text: `'${command.target}' seems not to be valid place you can go to right now.`,
-            })
+          try {
+            command.spec = this.findSpec(command)
+          } catch {
             return
           }
         }
@@ -786,6 +786,68 @@ export const useBookStore = defineStore('book', {
           }
         }
         this.updateRecentPlayerIDs() // if active player is no longer in active room
+      }
+
+      // Action MOVEWITH
+      if (command.action === 'movewith') {
+        // Process :active actor if used
+        if (command.actor === ':active') {
+          command.actor = this.activePlayerID
+        } else {
+          this.setActivePlayerID(command.actor)
+        }
+
+        // Process target spec
+        if (command.spec === ':undefined') {
+          try {
+            command.spec = this.findSpec(command)
+          } catch {
+            return
+          }
+        }
+
+        // Send TALK message
+        const talkTo = this.concretizeTalkTo(command)
+        if (command.message !== null) {
+          this.protocol.pushTalk({
+            time: this.time,
+            text: command.message,
+            room: this.room.id,
+            present: present,
+            from: command.actor,
+            to: talkTo,
+          })
+        }
+
+        // Construct info message
+        let moverName = this.characters[command.actor].name
+        let companyNames = joinAnd(command.company.map((char) => this.characters[char].name))
+        const stopperText = `${moverName} asks ${companyNames} to come with them to another ${command.spec}: ${command.target}`
+        // TODO: command.target is commandId, not a clean name
+
+        // Create the stopper
+        this.protocol.pushStopper({
+          subtype: 'move-with',
+          text: stopperText,
+          from: [command.actor],
+          to: command.company,
+          payload: {},
+        })
+
+        /*         // Move actors
+        const { targetRoom, moveDuration } = this.getMoveSpecs(command.target, command.spec)
+        if (command.actor === ':group') {
+          for (const char of this.room.availablePlayerCharacters) {
+            this.moveChar(char.id, targetRoom, moveDuration)
+          }
+        } else {
+          this.setActivePlayerID(command.actor)
+          this.moveChar(command.actor, targetRoom, moveDuration)
+        }
+ */
+
+        // Increase time
+        this.addTime(this.options.talkDuration)
       }
 
       if (command.action === 'sleep') {
