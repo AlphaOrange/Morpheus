@@ -825,12 +825,24 @@ export const useBookStore = defineStore('book', {
         const stopperText = `${moverName} asks ${companyNames} to come with them to another ${command.spec}: ${command.target}`
         // TODO: command.target is commandId, not a clean name
 
+        // Automatic accept for group members
+        let answers = {}
+        if (this.characters[command.actor].controlledBy === 'player') {
+          const playerCompanyChars = command.company
+            .map((char) => this.characters[char])
+            .filter((char) => char.controlledBy === 'player')
+          for (const char of playerCompanyChars) {
+            answers[char.id] = true
+          }
+        }
+
         // Create the stopper
         this.protocol.pushStopper({
           subtype: 'move-with',
           text: stopperText,
           from: [command.actor],
           to: command.company,
+          answers: answers,
           payload: {},
         })
 

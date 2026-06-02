@@ -261,14 +261,15 @@ export default class Protocol {
   }
 
   // Set a new stopper
-  pushStopper({ subtype, from, to, text, payload }) {
+  pushStopper({ subtype, from, to, text, answers = {}, payload }) {
     this.stopper = {
       type: 'stopper',
-      subtype: subtype,
-      from: from,
-      to: to,
-      text: text,
-      payload: payload,
+      subtype,
+      from,
+      to,
+      answers,
+      text,
+      payload,
     }
   }
 

@@ -23,8 +23,22 @@
         <div class="formatted-message" v-html="renderMarkdown(messageText(message))"></div>
         <div v-if="isStopper" class="stopper button-list">
           <template v-for="charId in message.to" :key="charId">
-            <ActionButton :text="`${characters[charId].name} accepts`"></ActionButton>
-            <ActionButton :text="`${characters[charId].name} declines`"></ActionButton>
+            <div v-if="answered(charId) && message.answers[charId]" class="answer answer-accepted">
+              {{ `${characters[charId].name} accepted` }}
+            </div>
+            <div v-if="answered(charId) && !message.answers[charId]" class="answer answer-declined">
+              {{ `${characters[charId].name} declined` }}
+            </div>
+            <ActionButton
+              v-if="!answered(charId)"
+              :text="`${characters[charId].name} accepts`"
+              class="accept-button"
+            ></ActionButton>
+            <ActionButton
+              v-if="!answered(charId)"
+              :text="`${characters[charId].name} declines`"
+              class="decline-button"
+            ></ActionButton>
           </template>
         </div>
       </main>
@@ -84,6 +98,10 @@ const messageClasses = (message) => {
     classes.push('minor-message')
   }
   return classes
+}
+
+const answered = (charId) => {
+  return Object.keys(props.message.answers).includes(charId)
 }
 
 const showIcon = (message) => {
@@ -237,6 +255,24 @@ main {
 .stopper {
   margin-top: 1rem;
   margin-bottom: -0.5rem;
+}
+
+.answer {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  margin: 0 0.5rem 0.5rem 0;
+  border-radius: 0.5rem;
+  background: var(--bg-box);
+  color: var(--col-font);
+}
+.answer:last-child {
+  margin: 0;
+}
+.answer-accepted {
+  background: var(--bg-system);
+}
+.answer-declined {
+  background: var(--bg-warning);
 }
 
 .minor-icon {
