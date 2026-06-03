@@ -30,17 +30,20 @@
               {{ `${characters[charId].name} declined` }}
             </div>
             <ActionButton
-              v-if="!answered(charId)"
+              v-if="!answered(charId) && isPlayer(charId)"
               :text="`${characters[charId].name} accepts`"
               class="accept-button"
               @click="answerStopper(charId, true)"
             ></ActionButton>
             <ActionButton
-              v-if="!answered(charId)"
+              v-if="!answered(charId) && isPlayer(charId)"
               :text="`${characters[charId].name} declines`"
               class="decline-button"
               @click="answerStopper(charId, false)"
             ></ActionButton>
+            <div v-if="!answered(charId) && !isPlayer(charId)" class="answer answer-pending">
+              {{ `${characters[charId].name} pending ...` }}
+            </div>
           </template>
         </div>
       </main>
@@ -101,6 +104,10 @@ const messageClasses = (message) => {
     classes.push('minor-message')
   }
   return classes
+}
+
+const isPlayer = (charId) => {
+  return characters.value[charId].controlledBy === 'player'
 }
 
 const answered = (charId) => {
@@ -280,6 +287,9 @@ main {
 }
 .answer-declined {
   background: var(--bg-warning);
+}
+.answer-pending {
+  color: var(--col-font-fade);
 }
 
 .minor-icon {
