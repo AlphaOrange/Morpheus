@@ -273,6 +273,10 @@ export default class Protocol {
     }
   }
 
+  answerStopper({ charId, answer }) {
+    this.stopper.answers[charId] = answer
+  }
+
   // Remove a message
   remove(messageId) {
     this.messages = this.messages.filter((msg) => msg.id != messageId)

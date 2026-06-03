@@ -820,10 +820,12 @@ export const useBookStore = defineStore('book', {
         }
 
         // Construct info message
+        const { targetRoom, moveDuration } = this.getMoveSpecs(command.target, command.spec)
         let moverName = this.characters[command.actor].name
         let companyNames = joinAnd(command.company.map((char) => this.characters[char].name))
         const stopperText = `${moverName} asks ${companyNames} to come with them to another ${command.spec}: ${command.target}`
         // TODO: command.target is commandId, not a clean name
+        // TODO: add move duration
 
         // Automatic accept for group members
         let answers = {}
@@ -843,20 +845,8 @@ export const useBookStore = defineStore('book', {
           from: [command.actor],
           to: command.company,
           answers: answers,
-          payload: {},
+          payload: { targetRoom },
         })
-
-        /*         // Move actors
-        const { targetRoom, moveDuration } = this.getMoveSpecs(command.target, command.spec)
-        if (command.actor === ':group') {
-          for (const char of this.room.availablePlayerCharacters) {
-            this.moveChar(char.id, targetRoom, moveDuration)
-          }
-        } else {
-          this.setActivePlayerID(command.actor)
-          this.moveChar(command.actor, targetRoom, moveDuration)
-        }
- */
 
         // Increase time
         this.addTime(this.options.talkDuration)

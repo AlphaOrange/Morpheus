@@ -122,8 +122,6 @@ const rx = {
   sleep: /^(?:([a-z0-9_]+) )?sleep ([0-9]+)$/i, // sleep x minutes (max 720)
   wake: /^(?:([a-z0-9_]+) )?wake ([a-z0-9_]+)(?::(.*))?$/is, // alice wake bob: Wake up!
 
-  talk_colons: /^((?:[^:]+ ){6}.*)$/is, // after 6 spaces without colon, this is just a talk message and user may use colons
-
   move_room: /^(?:([a-z0-9_]+) )?(move room |move to room )([a-z0-9_]+)(?::(.*))?$/is,
   move_location: /^(?:([a-z0-9_]+) )?(move location |move to location )([a-z0-9_]+)(?::(.*))?$/is,
   move_destination:
@@ -144,6 +142,8 @@ const rx = {
   movewith2_room: /^([a-z0-9_]+)? ?(>) ?([a-z0-9_]+) ?\/ ?([a-z0-9_, ]+)(?::(.*))?$/is,
   movewith2_location: /^([a-z0-9_]+)? ?(>>) ?([a-z0-9_]+) ?\/ ?([a-z0-9_, ]+)(?::(.*))?$/is,
   movewith2_destination: /^([a-z0-9_]+)? ?(>>>) ?([a-z0-9_]+) ?\/ ?([a-z0-9_, ]+)(?::(.*))?$/is,
+
+  talk_colons: /^((?:[^:]+ ){6}.*)$/is, // after 6 spaces without colon, this is just a talk message and user may use colons
 
   talk1all: /^(?:([a-z0-9_]+) )?(talk|talk to) ?::(.+)$/is, // alice talk to:: text / talk:: text
   talk1: /^(?:([a-z0-9_]+) )?(talk|talk to) ?(?:([a-z0-9_]+))?:(.+)$/is, // alice talk to bob: text / talk to bob: text / talk: / talk to:

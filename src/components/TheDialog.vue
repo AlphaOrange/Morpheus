@@ -8,7 +8,11 @@
         class="entry"
         :message="message"
       ></DialogMessage>
-      <DialogMessage v-if="protocol.stopper" :message="protocol.stopper"></DialogMessage>
+      <DialogMessage
+        v-if="protocol.stopper"
+        :message="protocol.stopper"
+        @answerStopper="answerStopper"
+      ></DialogMessage>
     </transition-group>
     <div v-if="options.narratorRunning" class="temp-message">
       <div class="loader"></div>
@@ -53,6 +57,10 @@ const dialog = computed(() => {
   }
   return enhancedDialog
 })
+
+function answerStopper({ charId, answer }) {
+  protocol.value.answerStopper({ charId, answer })
+}
 
 const scrollToEnd = async () => {
   await nextTick()

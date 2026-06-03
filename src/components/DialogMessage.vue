@@ -33,11 +33,13 @@
               v-if="!answered(charId)"
               :text="`${characters[charId].name} accepts`"
               class="accept-button"
+              @click="answerStopper(charId, true)"
             ></ActionButton>
             <ActionButton
               v-if="!answered(charId)"
               :text="`${characters[charId].name} declines`"
               class="decline-button"
+              @click="answerStopper(charId, false)"
             ></ActionButton>
           </template>
         </div>
@@ -74,6 +76,7 @@ const props = defineProps({
     required: true,
   },
 })
+const emits = defineEmits(['answerStopper'])
 
 const isMajorMessage = (message) => {
   return message.type !== 'structural'
@@ -102,6 +105,10 @@ const messageClasses = (message) => {
 
 const answered = (charId) => {
   return Object.keys(props.message.answers).includes(charId)
+}
+
+const answerStopper = (charId, answer) => {
+  emits('answerStopper', { charId, answer })
 }
 
 const showIcon = (message) => {
