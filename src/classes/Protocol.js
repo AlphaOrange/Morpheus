@@ -273,6 +273,9 @@ export default class Protocol {
     }
   }
 
+  hasStopper() {
+    return !(this.stopper === null)
+  }
   answerStopper({ charId, answer }) {
     this.stopper.answers[charId] = answer
   }

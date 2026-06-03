@@ -191,6 +191,7 @@ export default class Narrator {
   // Start an NPC action period
   async run({ force = false } = {}) {
     if (this.running) return
+    if (this.protocol.hasStopper()) return
 
     if (!force) {
       // check if last action was error
