@@ -423,7 +423,7 @@ export function messageToCommand(message) {
 // ----- Formatting -----
 
 // format dialog string for ai prompting
-export function formatDialog({ messages, perspective }) {
+export function formatDialog({ messages, perspective = null }) {
   const book = useBookStore()
   const options = useOptionsStore()
   let dialog = []
@@ -452,8 +452,11 @@ export function formatDialog({ messages, perspective }) {
         let toId = message.to
         dialog.push(`${fromName} [${fromId}] to ${toName} [${toId}]: "${message.text}"`)
       }
-    } else if (message.type === 'hint' && [perspective, ':all'].includes(message.to)) {
-      dialog.push(`(Hint: ${message.text})`)
+    } else if (message.type === 'hint') {
+      if (!perspective || [perspective, ':all'].includes(message.to)) {
+        let hintTo = message.to === ':all' ? '' : ` to ${message.to}`
+        dialog.push(`(Hint${hintTo}: ${message.text})`)
+      }
     }
   }
   return dialog.join('\n')

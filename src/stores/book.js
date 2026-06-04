@@ -371,25 +371,27 @@ export const useBookStore = defineStore('book', {
       const resolvers = {
         room: () => {
           const targetRoom = this.room.availableRooms.find((room) => room.commandId === targetId)
-          return { targetRoom: targetRoom, distanceTo: targetRoom }
+          return { target: targetRoom, targetRoom: targetRoom, distanceTo: targetRoom }
         },
         location: () => {
           const location = this.room.availableLocations.find(
             (location) => location.commandId === targetId,
           )
-          return { targetRoom: location.entry, distanceTo: location }
+          return { target: location, targetRoom: location.entry, distanceTo: location }
         },
         destination: () => {
           const destination = this.availableDestinations.find(
             (destination) => destination.commandId === targetId,
           )
-          return { targetRoom: destination.entry, distanceTo: destination }
+          return { target: destination, targetRoom: destination.entry, distanceTo: destination }
         },
       }
 
       const resolver = resolvers[spec]
-      const { targetRoom, distanceTo } = resolver()
+      const { target, targetRoom, distanceTo } = resolver()
       return {
+        target,
+        spec,
         targetRoom,
         moveDuration: distancePeriod(this.room, distanceTo),
       }
@@ -820,12 +822,10 @@ export const useBookStore = defineStore('book', {
         }
 
         // Construct info message
-        const { targetRoom, moveDuration } = this.getMoveSpecs(command.target, command.spec)
+        const { target, spec } = this.getMoveSpecs(command.target, command.spec)
         let moverName = this.characters[command.actor].name
         let companyNames = joinAnd(command.company.map((char) => this.characters[char].name))
-        const stopperText = `${moverName} asks ${companyNames} to come with them to another ${command.spec}: ${command.target}`
-        // TODO: command.target is commandId, not a clean name
-        // TODO: add move duration
+        const stopperText = `${moverName} asks ${companyNames} to come with them to another ${spec}: ${target.name}`
 
         // Automatic accept for group members
         let answers = {}
@@ -845,11 +845,14 @@ export const useBookStore = defineStore('book', {
           from: [command.actor],
           to: command.company,
           answers: answers,
-          payload: { targetRoom },
+          payload: { target, spec },
         })
 
         // Increase time
         this.addTime(this.options.talkDuration)
+
+        // Run Narrator
+        this.narrator.resolveStopper()
       }
 
       if (command.action === 'sleep') {

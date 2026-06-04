@@ -86,6 +86,7 @@ export default class Protocol {
 
     // Filter by scene
     if (scene) {
+      if (scene === -1) scene = this.scene
       filtered = filtered.filter((message) => {
         if (!this.typeFilters['scene'].includes(message.type)) {
           return false // no scene information
@@ -276,7 +277,7 @@ export default class Protocol {
   hasStopper() {
     return !(this.stopper === null)
   }
-  answerStopper({ charId, answer }) {
+  answerStopper(charId, answer) {
     this.stopper.answers[charId] = answer
   }
 
