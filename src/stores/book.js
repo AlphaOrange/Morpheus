@@ -717,11 +717,22 @@ export const useBookStore = defineStore('book', {
 
       // Action MOVE
       if (command.action === 'move') {
-        if (command.message !== null && command.actor === ':group') {
+        // Process movers
+        let movers
+        if (command.actor === ':group') {
+          movers = this.room.availablePlayerCharacters
+        } else if (Array.isArray(command.actor)) {
+          movers = this.room.availableCharacters.filter((char) => command.actor.includes(char.id))
+        } else {
+          movers = this.room.availableCharacters.filter((char) => command.actor === char.id)
+        }
+
+        // Check for validity of talk message
+        if (command.message !== null && movers.length > 1) {
           this.protocol.pushError({
             time: this.time,
             title: 'Invalid Command',
-            text: `You cannot send an exit message if the group moves together.\n\nTried to say: ${command.message}`,
+            text: `You cannot send an exit message if more than one characters moves at once.\n\nTried to say: "${command.message}"`,
           })
           return
         }
@@ -736,36 +747,28 @@ export const useBookStore = defineStore('book', {
         }
 
         // Construct info message
-        let charMoving
-        if (command.actor === ':group') {
-          charMoving = joinAnd(this.room.availablePlayerCharacters.map((char) => char.name))
-        } else {
-          charMoving = this.characters[command.actor].name
-        }
+        const charMoving = joinAnd(movers.map((char) => char.name))
         const infoMessage = `${charMoving} just left ${this.room.name}`
 
         // Send TALK message
-        const talkTo = this.concretizeTalkTo(command)
-        if (command.message !== null) {
-          this.protocol.pushTalk({
-            time: this.time,
-            text: command.message,
-            room: this.room.id,
-            present: present,
-            from: command.actor,
-            to: talkTo,
-          })
+        if (movers.length > 1) {
+          const talkTo = this.concretizeTalkTo(command)
+          if (command.message !== null) {
+            this.protocol.pushTalk({
+              time: this.time,
+              text: command.message,
+              room: this.room.id,
+              present: present,
+              from: command.actor,
+              to: talkTo,
+            })
+          }
         }
 
         // Move actors
         const { targetRoom, moveDuration } = this.getMoveSpecs(command.target, command.spec)
-        if (command.actor === ':group') {
-          for (const char of this.room.availablePlayerCharacters) {
-            this.moveChar(char.id, targetRoom, moveDuration)
-          }
-        } else {
-          this.setActivePlayerID(command.actor)
-          this.moveChar(command.actor, targetRoom, moveDuration)
+        for (let char of movers) {
+          this.moveChar(char.id, targetRoom, moveDuration)
         }
 
         // Send INFO message

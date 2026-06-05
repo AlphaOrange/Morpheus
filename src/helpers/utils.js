@@ -235,7 +235,6 @@ export function messageToCommand(message) {
       actor: actor.toLowerCase(),
       target: res[3].toLowerCase(),
       spec: 'room',
-      company: [],
       message: msg,
     }
     return command
@@ -251,7 +250,6 @@ export function messageToCommand(message) {
       actor: actor.toLowerCase(),
       target: res[3].toLowerCase(),
       spec: 'location',
-      company: [],
       message: msg,
     }
     return command
@@ -267,7 +265,6 @@ export function messageToCommand(message) {
       actor: actor.toLowerCase(),
       target: res[3].toLowerCase(),
       spec: 'destination',
-      company: [],
       message: msg,
     }
     return command
@@ -283,7 +280,6 @@ export function messageToCommand(message) {
       actor: actor.toLowerCase(),
       target: res[3].toLowerCase(),
       spec: ':undefined',
-      company: [],
       message: msg,
     }
     return command
