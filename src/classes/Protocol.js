@@ -34,8 +34,9 @@ export default class Protocol {
     talk: ['talk'],
   }
 
-  constructor(optionsStore) {
+  constructor(optionsStore, book) {
     this.options = optionsStore
+    this.book = book
     this.count = 1
     this.scene = 0
     // this.messages = []
@@ -49,8 +50,8 @@ export default class Protocol {
     ]
     this.stopper = null
   }
-  static fromJSON(data, optionsStore) {
-    const proto = new Protocol(optionsStore)
+  static fromJSON(data, optionsStore, book) {
+    const proto = new Protocol(optionsStore, book)
     proto.messages = data.messages
     proto.count = proto.messages.length
     proto.scene = proto.messages.reduce((acc, msg) => Math.max(acc, msg.scene ?? 0), 0)
@@ -279,6 +280,10 @@ export default class Protocol {
   }
   answerStopper(charId, answer) {
     this.stopper.answers[charId] = answer
+    if (this.stopper.to.every((toId) => Object.keys(this.stopper.answers).includes(toId))) {
+      this.book.resolveStopper(this.stopper)
+      this.stopper = null
+    }
   }
 
   // Remove a message

@@ -7,6 +7,7 @@
         ref="messageEls"
         class="entry"
         :message="message"
+        @removeMessage="removeMessage(message)"
       ></DialogMessage>
       <DialogMessage
         v-if="protocol.stopper"
@@ -57,6 +58,10 @@ const dialog = computed(() => {
   }
   return enhancedDialog
 })
+
+function removeMessage(message) {
+  protocol.value.remove(message.id)
+}
 
 function answerStopper({ charId, answer }) {
   protocol.value.answerStopper({ charId, answer })

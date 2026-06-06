@@ -10,11 +10,7 @@
         <div class="header-text">
           <span>{{ headerText(message) }}</span>
           <div>
-            <IconButton
-              v-if="message.removable"
-              icon="circle-xmark"
-              @click="protocol.remove(message.id)"
-            />
+            <IconButton v-if="message.removable" icon="circle-xmark" @click="removeMessage" />
             <span class="timestamp">{{ timestamp(message) }}</span>
           </div>
         </div>
@@ -58,7 +54,7 @@
 <script setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { formatTime, joinAnd } from '@/helpers/utils'
+import { formatTime } from '@/helpers/utils'
 import IconButton from '@/components/IconButton.vue'
 import ActionButton from '@/components/ActionButton.vue'
 import { useBookStore } from '@/stores/book'
@@ -79,7 +75,7 @@ const props = defineProps({
     required: true,
   },
 })
-const emits = defineEmits(['answerStopper'])
+const emits = defineEmits(['answerStopper', 'removeMessage'])
 
 const isMajorMessage = (message) => {
   return message.type !== 'structural'
@@ -116,6 +112,10 @@ const answered = (charId) => {
 
 const answerStopper = (charId, answer) => {
   emits('answerStopper', { charId, answer })
+}
+
+const removeMessage = () => {
+  emits('removeMessage')
 }
 
 const showIcon = (message) => {

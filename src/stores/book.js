@@ -544,7 +544,7 @@ export const useBookStore = defineStore('book', {
     // Last setup steps before start
     async startBook() {
       // start fresh protocol
-      this.protocol = new Protocol(this.options)
+      this.protocol = new Protocol(this.options, this)
       this.protocol.pushInfo({
         time: this.time,
         text: this.introduction,
@@ -594,7 +594,7 @@ export const useBookStore = defineStore('book', {
         // more book data
         this.states = data.states
         this.agendas = data.agendas
-        this.protocol = Protocol.fromJSON(data.protocol, this.options)
+        this.protocol = Protocol.fromJSON(data.protocol, this.options, this)
         this.busyCharacterIDs = data.busyCharacterIDs
         this.roomId = data.roomId
         this.time = data.time
@@ -845,7 +845,7 @@ export const useBookStore = defineStore('book', {
         this.protocol.pushStopper({
           subtype: 'move-with',
           text: stopperText,
-          from: [command.actor],
+          from: command.actor,
           to: command.company,
           answers: answers,
           payload: { target, spec },
@@ -962,6 +962,42 @@ export const useBookStore = defineStore('book', {
 
         // Increase time
         this.addTime(this.options.talkDuration) // TODO: later replace with action duration
+      }
+    },
+
+    // Resolve stopper answered by everyone
+    resolveStopper(stopper) {
+      if (stopper.subtype === 'move-with') {
+        if (Object.values(stopper.answers).every(Boolean)) {
+          // Action accepted: move characters
+          const command = {
+            action: 'move',
+            actor: [stopper.from, ...stopper.to],
+            target: stopper.payload.target.commandId,
+            spec: stopper.payload.spec,
+            message: null,
+          }
+          this.executeCommand(command)
+        } else {
+          // Action declined: send hint message
+          let moverName = this.characters[stopper.from].name
+          let companyNames = joinAnd(stopper.to.map((charId) => this.characters[charId].name))
+          let decliners = Object.keys(stopper.answers).filter((charId) => !stopper.answers[charId])
+          decliners = joinAnd(
+            Object.values(this.characters)
+              .filter((char) => decliners.includes(char.id))
+              .map((char) => char.name),
+          )
+          const infoMessage = `${moverName} asked ${companyNames} to come with them to another ${stopper.payload.spec}: ${stopper.payload.target.name}. ${decliners} declined.`
+
+          let present = this.room.availableCharacters.map((char) => char.id)
+          this.protocol.pushHint({
+            time: this.time,
+            text: infoMessage,
+            room: this.room.id,
+            present: present,
+          })
+        }
       }
     },
 
