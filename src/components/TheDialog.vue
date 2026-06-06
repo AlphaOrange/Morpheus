@@ -72,7 +72,7 @@ const scrollToEnd = async () => {
   const messages = messageEls.value
   if (!messages.length) return
   const lastMessage = messages[messages.length - 1]
-  lastMessage.scrollIntoView({
+  lastMessage.$el.scrollIntoView({
     behavior: 'smooth',
     block: 'start',
   })
