@@ -215,6 +215,7 @@ export const useBookStore = defineStore('book', {
               ? `${joinAnd(charArrivedPlayer)} just arrived at ${room.name}, ${joinAnd(charArrivedAi)} also here.`
               : `${joinAnd(charArrived)} just arrived at ${room.name}`
           this.protocol.pushHint({
+            subtype: 'move',
             time: this.time,
             text: text,
             room: roomId,
@@ -244,6 +245,7 @@ export const useBookStore = defineStore('book', {
           const charsAwakened = roomAwakenings[roomId].map((awakening) => awakening.char.name)
           const text = `${joinAnd(charsAwakened)} just woke up`
           this.protocol.pushHint({
+            subtype: 'sleep',
             time: this.time,
             text: text,
             room: roomId,
@@ -260,6 +262,7 @@ export const useBookStore = defineStore('book', {
         if (hint.room.numberOfPlayers > 0) {
           const present = hint.room.availableCharacters.map((char) => char.id)
           this.protocol.pushHint({
+            subtype: 'info',
             time: this.time,
             text: hint.message,
             room: hint.room.id,
@@ -764,6 +767,7 @@ export const useBookStore = defineStore('book', {
 
         // Send INFO message
         this.protocol.pushHint({
+          subtype: 'move',
           time: this.time,
           text: infoMessage,
           room: this.room.id,
@@ -891,6 +895,7 @@ export const useBookStore = defineStore('book', {
 
         // Send INFO message
         this.protocol.pushHint({
+          subtype: 'sleep',
           time: this.time,
           text: infoMessage,
           room: this.room.id,
@@ -934,6 +939,7 @@ export const useBookStore = defineStore('book', {
 
         // Send INFO message
         this.protocol.pushHint({
+          subtype: 'sleep',
           time: this.time,
           text: `${this.characters[command.actor].name} wakes up ${this.characters[command.target].name}`,
           room: this.room.id,
@@ -994,6 +1000,7 @@ export const useBookStore = defineStore('book', {
 
           let present = this.room.availableCharacters.map((char) => char.id)
           this.protocol.pushHint({
+            subtype: 'decline',
             time: this.time,
             text: infoMessage,
             room: this.room.id,

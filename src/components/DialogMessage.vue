@@ -2,11 +2,9 @@
   <div :class="messageClasses(message)">
     <template v-if="isMajorMessage(message)">
       <header>
-        <div
-          v-if="showIcon(message)"
-          class="header-icon"
-          :style="{ backgroundImage: `url(${headerIcon(message)})` }"
-        ></div>
+        <div v-if="showIcon(message)" class="header-icon" :style="iconBg(message)">
+          <font-awesome-icon v-if="glyph(message)" :icon="`fa-${glyph(message)}`" />
+        </div>
         <div class="header-text">
           <span>{{ headerText(message) }}</span>
           <div>
@@ -123,12 +121,31 @@ const cancelStopper = () => {
   emits('cancelStopper')
 }
 const showIcon = (message) => {
-  return ['talk', 'stopper'].includes(message.type)
+  return ['talk', 'hint', 'stopper'].includes(message.type)
 }
 
-const headerIcon = (message) => {
-  return characters.value[message.from].imageS
+const HINTGLYPHS = {
+  default: 'circle-info',
+  move: 'person-walking',
+  sleep: 'moon',
+  decline: 'ban',
 }
+const glyph = (message) => {
+  if (message.subtype) {
+    return HINTGLYPHS[message.subtype]
+  } else {
+    return false
+  }
+}
+const iconBg = (message) => {
+  if (message.from) {
+    const charImage = characters.value[message.from].imageS
+    return { backgroundImage: `url(${charImage})` }
+  } else {
+    return {}
+  }
+}
+
 const structuralIcon = (message) => {
   if (message.spec === 'room') {
     const room = rooms.value[message.room]
@@ -245,12 +262,16 @@ header {
 }
 
 .header-icon {
-  display: block;
+  display: flex;
   float: left;
   height: 2rem;
   width: 2rem;
   background-size: cover;
   background-position: center center;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+  color: var(--col-font-toned);
 }
 
 .header-text {

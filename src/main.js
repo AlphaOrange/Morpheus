@@ -15,11 +15,13 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import {
   faArrowLeft,
+  faBan,
   faBookAtlas,
   faBookBookmark,
   faBookmark,
   faBookOpenReader,
   faBuildingColumns,
+  faCircleInfo,
   faCirclePlay,
   faCircleQuestion,
   faCircleXmark,
@@ -38,11 +40,13 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 library.add(
   faArrowLeft,
+  faBan,
   faBookAtlas,
   faBookBookmark,
   faBookmark,
   faBookOpenReader,
   faBuildingColumns,
+  faCircleInfo,
   faCirclePlay,
   faCircleQuestion,
   faCircleXmark,

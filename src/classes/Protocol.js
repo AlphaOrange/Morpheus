@@ -221,11 +221,12 @@ export default class Protocol {
       to: to,
     })
   }
-  pushHint({ time, text, room, present, to = ':all' }) {
+  pushHint({ time, text, room, present, to = ':all', subtype = 'default' }) {
     const scene = this.getScene({ time, room, present })
     this.messages.push({
       id: this.nextId(),
       type: 'hint',
+      subtype: subtype,
       scene: scene,
       time: time,
       text: text,
