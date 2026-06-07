@@ -59,6 +59,7 @@ export default class MoveAgent extends Agent {
         targetId: answer.destination,
         spec: answer.type,
         message: answer.message,
+        company: answer.company,
       }
     } catch (err) {
       const errorMessage = err.response?.data?.error?.message || err.message || 'Unknown error'

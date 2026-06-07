@@ -80,12 +80,24 @@ export default class Narrator {
     }
     if (!response.move) return null
 
-    const command = {
-      action: 'move',
-      actor: actorId,
-      target: response.targetId,
-      spec: response.spec,
-      message: response.message,
+    let command
+    if (response.company && response.company.length > 0) {
+      command = {
+        action: 'movewith',
+        actor: actorId,
+        target: response.targetId,
+        spec: response.spec,
+        company: response.company,
+        message: response.message,
+      }
+    } else {
+      command = {
+        action: 'move',
+        actor: actorId,
+        target: response.targetId,
+        spec: response.spec,
+        message: response.message,
+      }
     }
 
     this.options.narratorRunningMessage = ''

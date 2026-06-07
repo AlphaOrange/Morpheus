@@ -64,7 +64,7 @@ function removeMessage(message) {
 }
 
 function answerStopper({ charId, answer }) {
-  protocol.value.answerStopper({ charId, answer })
+  protocol.value.answerStopper(charId, answer)
 }
 
 const scrollToEnd = async () => {
