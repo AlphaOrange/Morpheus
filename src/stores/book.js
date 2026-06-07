@@ -802,6 +802,17 @@ export const useBookStore = defineStore('book', {
           this.setActivePlayerID(command.actor)
         }
 
+        // Check for availability
+        const availableCharIds = this.room.availablePlayerCharacters.map((char) => char.id)
+        if (command.company.some((charId) => availableCharIds.includes(charId))) {
+          this.protocol.pushError({
+            time: this.time,
+            title: `Characters unavailable`,
+            text: `Not all characters are present or available to move right now`,
+          })
+          return
+        }
+
         // Process target spec
         if (command.spec === ':undefined') {
           try {
