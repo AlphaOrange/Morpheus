@@ -414,6 +414,7 @@ export const useBookStore = defineStore('book', {
 
     // Switch user view to different room
     switchTo(room) {
+      this.protocol.cancelStopper()
       this.roomId = room.id
       this.locationId = room.location.id
       this.destinationId = room.location.destination.id
@@ -803,8 +804,8 @@ export const useBookStore = defineStore('book', {
         }
 
         // Check for availability
-        const availableCharIds = this.room.availablePlayerCharacters.map((char) => char.id)
-        if (command.company.some((charId) => availableCharIds.includes(charId))) {
+        const availableCharIds = this.room.availableCharacters.map((char) => char.id)
+        if (!command.company.every((charId) => availableCharIds.includes(charId))) {
           this.protocol.pushError({
             time: this.time,
             title: `Characters unavailable`,

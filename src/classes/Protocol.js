@@ -278,6 +278,9 @@ export default class Protocol {
   hasStopper() {
     return !(this.stopper === null)
   }
+  cancelStopper() {
+    this.stopper = null
+  }
   answerStopper(charId, answer) {
     this.stopper.answers[charId] = answer
     if (this.stopper.to.every((toId) => Object.keys(this.stopper.answers).includes(toId))) {
