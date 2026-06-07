@@ -1,0 +1,58 @@
+# Stopper Agent: Deciding on a stopper decision
+---
+system: |-
+  You are an expert in psychology and social behaviour. You are honest, precise and follow study guidelines diligently when observing and evaluating social interactions.
+user: |-
+  ### RECENT OBSERVATIONS ###
+
+  %dialog%
+
+  ### SUBJECT DESCRIPTIONS ###
+
+  %profiles%
+
+  ### INSTRUCTIONS ###
+
+  Immediately after the recent observations as described above the following happens:
+  %question%
+
+  Based on the recent observations and the subject descriptions, you now need to predict each subject's reply. The subjects are:
+  %asked%.
+
+  Consider everything you know about the current situation and the relations between the subjects.
+  This goes exclusively for the person who asked and the subject that were asked, no one else. So consider for each subject whether they would agree with the selection of people being asked and not being asked.
+  Consider whether each subject is both willing and able to accept and whether an acceptance would impact what they are currently up for.
+  Each subject's reply can only be "accept" or "decline" and nothing else.
+  - "accept" means join the proposed group in the proposed activity, being happy with activity and selected group
+  - "decline" means not join the proposed group in the proposed activity, because unhappy with acitivity or selection of the group
+format: |-
+  {
+    "replies": {
+      "(subject id)": (either "accept" or "decline"),
+      (comma-separated repeat for other subjects if any)
+    }
+  }
+example: |-
+  {
+    "replies": {
+      "carl": "accept",
+      "holly": "decline",
+      "konrad": "accept"
+    }
+  }
+validation: |-
+  {
+    "$id": "StopperAgent",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "replies": {
+        "type": "object",
+        "properties": {
+          "[a-z_]": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }

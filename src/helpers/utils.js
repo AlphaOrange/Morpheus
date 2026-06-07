@@ -120,7 +120,7 @@ const rx = {
   wait: /^wait ([0-9]+) ?(min|mins|minute|minutes|hour|hours)?$/i, // wait x (minutes) (max 120 minutes)
   sleep: /^(?:([a-z0-9_]+) )?sleep ([0-9]+) ?(min|mins|minute|minutes|hour|hours)?$/i, // sleep x (minutes) (max 720 minutes)
   wake: /^(?:([a-z0-9_]+) )?wake ([a-z0-9_]+)(?::(.*))?$/is, // alice wake bob: Wake up!
-  talk_colons: /^((?:[^:]+ ){6}.*)$/is, // after 6 spaces without colon, this is just a talk message and user may use colons
+
   move_room: /^(?:([a-z0-9_]+) )?(move room |move to room )([a-z0-9_]+)(?::(.*))?$/is,
   move_location: /^(?:([a-z0-9_]+) )?(move location |move to location )([a-z0-9_]+)(?::(.*))?$/is,
   move_destination:
@@ -129,6 +129,21 @@ const rx = {
   move2_room: /^([a-z0-9_]+)? ?(>) ?([a-z0-9_]+)(?::(.*))?$/is,
   move2_location: /^([a-z0-9_]+)? ?(>>) ?([a-z0-9_]+)(?::(.*))?$/is,
   move2_destination: /^([a-z0-9_]+)? ?(>>>) ?([a-z0-9_]+)(?::(.*))?$/is,
+
+  movewith_room:
+    /^(?:([a-z0-9_]+) )?(move room |move to room )([a-z0-9_]+) with ([a-z0-9_, ]+)(?::(.*))?$/is,
+  movewith_location:
+    /^(?:([a-z0-9_]+) )?(move location |move to location )([a-z0-9_]+) with ([a-z0-9_, ]+)(?::(.*))?$/is,
+  movewith_destination:
+    /^(?:([a-z0-9_]+) )?(move destination |move to destination )([a-z0-9_]+) with ([a-z0-9_, ]+)(?::(.*))?$/is,
+  movewith_undefined:
+    /^(?:([a-z0-9_]+) )?(move |move to )([a-z0-9_]+) with ([a-z0-9_, ]+)(?::(.*))?$/is,
+  movewith2_room: /^([a-z0-9_]+)? ?(>) ?([a-z0-9_]+) ?\/ ?([a-z0-9_, ]+)(?::(.*))?$/is,
+  movewith2_location: /^([a-z0-9_]+)? ?(>>) ?([a-z0-9_]+) ?\/ ?([a-z0-9_, ]+)(?::(.*))?$/is,
+  movewith2_destination: /^([a-z0-9_]+)? ?(>>>) ?([a-z0-9_]+) ?\/ ?([a-z0-9_, ]+)(?::(.*))?$/is,
+
+  talk_colons: /^((?:[^:]+ ){6}.*)$/is, // after 6 spaces without colon, this is just a talk message and user may use colons
+
   talk1all: /^(?:([a-z0-9_]+) )?(talk|talk to) ?::(.+)$/is, // alice talk to:: text / talk:: text
   talk1: /^(?:([a-z0-9_]+) )?(talk|talk to) ?(?:([a-z0-9_]+))?:(.+)$/is, // alice talk to bob: text / talk to bob: text / talk: / talk to:
   talk2: /^([a-z0-9_]+)? ?(-) ?([a-z0-9_]+):(.+)$/is, // alice-bob: text / -bob: text
@@ -271,6 +286,74 @@ export function messageToCommand(message) {
     return command
   }
 
+  // Move with people to room
+  res = rx.movewith_room.exec(message) || rx.movewith2_room.exec(message)
+  if (res) {
+    let actor = res[1] || ':active'
+    let msg = res[5] ? res[5].trim() : null
+    let company = res[4].split(',').map((item) => item.trim())
+    command = {
+      action: 'movewith',
+      actor: actor.toLowerCase(),
+      target: res[3].toLowerCase(),
+      spec: 'room',
+      company: company,
+      message: msg,
+    }
+    return command
+  }
+
+  // Move with people to location
+  res = rx.movewith_location.exec(message) || rx.movewith2_location.exec(message)
+  if (res) {
+    let actor = res[1] || ':active'
+    let msg = res[5] ? res[5].trim() : null
+    let company = res[4].split(',').map((item) => item.trim())
+    command = {
+      action: 'movewith',
+      actor: actor.toLowerCase(),
+      target: res[3].toLowerCase(),
+      spec: 'location',
+      company: company,
+      message: msg,
+    }
+    return command
+  }
+
+  // Move with people to destination
+  res = rx.movewith_destination.exec(message) || rx.movewith2_destination.exec(message)
+  if (res) {
+    let actor = res[1] || ':active'
+    let msg = res[5] ? res[5].trim() : null
+    let company = res[4].split(',').map((item) => item.trim())
+    command = {
+      action: 'movewith',
+      actor: actor.toLowerCase(),
+      target: res[3].toLowerCase(),
+      spec: 'destination',
+      company: company,
+      message: msg,
+    }
+    return command
+  }
+
+  // Move with people to undefined
+  res = rx.movewith_undefined.exec(message)
+  if (res) {
+    let actor = res[1] || ':active'
+    let msg = res[5] ? res[5].trim() : null
+    let company = res[4].split(',').map((item) => item.trim())
+    command = {
+      action: 'movewith',
+      actor: actor.toLowerCase(),
+      target: res[3].toLowerCase(),
+      spec: ':undefined',
+      company: company,
+      message: msg,
+    }
+    return command
+  }
+
   // Talk to :all
   res = rx.talk1all.exec(message)
   if (res) {
@@ -337,7 +420,7 @@ export function messageToCommand(message) {
 // ----- Formatting -----
 
 // format dialog string for ai prompting
-export function formatDialog({ messages, perspective }) {
+export function formatDialog({ messages, perspective = null }) {
   const book = useBookStore()
   const options = useOptionsStore()
   let dialog = []
@@ -366,8 +449,11 @@ export function formatDialog({ messages, perspective }) {
         let toId = message.to
         dialog.push(`${fromName} [${fromId}] to ${toName} [${toId}]: "${message.text}"`)
       }
-    } else if (message.type === 'hint' && [perspective, ':all'].includes(message.to)) {
-      dialog.push(`(Hint: ${message.text})`)
+    } else if (message.type === 'hint') {
+      if (!perspective || [perspective, ':all'].includes(message.to)) {
+        let hintTo = message.to === ':all' ? '' : ` to ${message.to}`
+        dialog.push(`(Hint${hintTo}: ${message.text})`)
+      }
     }
   }
   return dialog.join('\n')

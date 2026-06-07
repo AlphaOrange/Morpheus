@@ -21,6 +21,8 @@ export default class Protocol {
   // {type: "system", time, text}
   // ERROR: a program error occurred // debug mode only
   // {type: "error", time, text, title}
+  // STOPPER: an interactive message that needs confirmation, not part of the dialog
+  // {type: "stopper", subtype, from, to, text, payload}
 
   typeFilters = {
     show: DEV
@@ -32,8 +34,9 @@ export default class Protocol {
     talk: ['talk'],
   }
 
-  constructor(optionsStore) {
+  constructor(optionsStore, book) {
     this.options = optionsStore
+    this.book = book
     this.count = 1
     this.scene = 0
     // this.messages = []
@@ -45,14 +48,14 @@ export default class Protocol {
         text: 'This is the start of the game protocol.',
       },
     ]
+    this.stopper = null
   }
-  static fromJSON(data, optionsStore) {
-    const proto = new Protocol(optionsStore)
+  static fromJSON(data, optionsStore, book) {
+    const proto = new Protocol(optionsStore, book)
     proto.messages = data.messages
+    proto.stopper = data.stopper
     proto.count = proto.messages.length
     proto.scene = proto.messages.reduce((acc, msg) => Math.max(acc, msg.scene ?? 0), 0)
-    console.log(proto.count)
-    console.log(proto.scene)
     return proto
   }
 
@@ -60,6 +63,7 @@ export default class Protocol {
   toJSON() {
     return {
       messages: this.messages,
+      stopper: this.stopper,
     }
   }
 
@@ -83,6 +87,7 @@ export default class Protocol {
 
     // Filter by scene
     if (scene) {
+      if (scene === -1) scene = this.scene
       filtered = filtered.filter((message) => {
         if (!this.typeFilters['scene'].includes(message.type)) {
           return false // no scene information
@@ -255,6 +260,33 @@ export default class Protocol {
       text: text,
       title: title,
     })
+  }
+
+  // Set a new stopper
+  pushStopper({ subtype, from, to, text, answers = {}, payload }) {
+    this.stopper = {
+      type: 'stopper',
+      subtype,
+      from,
+      to,
+      answers,
+      text,
+      payload,
+    }
+  }
+
+  hasStopper() {
+    return !(this.stopper === null)
+  }
+  cancelStopper() {
+    this.stopper = null
+  }
+  answerStopper(charId, answer) {
+    this.stopper.answers[charId] = answer
+    if (this.stopper.to.every((toId) => Object.keys(this.stopper.answers).includes(toId))) {
+      this.book.resolveStopper(this.stopper)
+      this.stopper = null
+    }
   }
 
   // Remove a message

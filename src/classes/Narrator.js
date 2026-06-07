@@ -4,6 +4,8 @@ import MoveAgent from '@/agents/MoveAgent'
 import SleepAgent from '@/agents/SleepAgent'
 import WakeAgent from '@/agents/WakeAgent'
 import UpdateCharAgent from '@/agents/UpdateCharAgent'
+import StopperAgent from '@/agents/StopperAgent'
+import { joinAnd } from '@/helpers/utils'
 
 export default class Narrator {
   // This class handles all AI orchestration
@@ -23,18 +25,21 @@ export default class Narrator {
     this.sleepAgent = new SleepAgent()
     this.wakeAgent = new WakeAgent()
     this.updateCharAgent = new UpdateCharAgent(options)
+    this.stopperAgent = new StopperAgent()
   }
 
   // Handle an agent error
-  handleError(title, error) {
+  handleError(title, error, resetRun = true) {
     this.protocol.pushError({
       time: this.book.time,
       text: error,
       title: title,
     })
     // remove the agent's working message
-    this.options.narratorRunning = false
-    this.options.narratorRunningMessage = ''
+    if (resetRun) {
+      this.options.narratorRunning = false
+      this.options.narratorRunningMessage = ''
+    }
   }
 
   // TALK Action
@@ -75,12 +80,24 @@ export default class Narrator {
     }
     if (!response.move) return null
 
-    const command = {
-      action: 'move',
-      actor: actorId,
-      target: response.targetId,
-      spec: response.spec,
-      message: response.message,
+    let command
+    if (response.company && response.company.length > 0) {
+      command = {
+        action: 'movewith',
+        actor: actorId,
+        target: response.targetId,
+        spec: response.spec,
+        company: response.company,
+        message: response.message,
+      }
+    } else {
+      command = {
+        action: 'move',
+        actor: actorId,
+        target: response.targetId,
+        spec: response.spec,
+        message: response.message,
+      }
     }
 
     this.options.narratorRunningMessage = ''
@@ -191,6 +208,7 @@ export default class Narrator {
   // Start an NPC action period
   async run({ force = false } = {}) {
     if (this.running) return
+    if (this.protocol.hasStopper()) return
 
     if (!force) {
       // check if last action was error
@@ -243,7 +261,7 @@ export default class Narrator {
           this.updateQueue.shift()
 
           if (response.error) {
-            this.handleError('Error in UpdateChar Agent', response.error)
+            this.handleError('Error in UpdateChar Agent', response.error, false)
             break
           }
         } catch {
@@ -277,6 +295,55 @@ export default class Narrator {
         // TODO: insert goal changes here
       }
       this.updateQueue = [] // in case of error we need to empty the queue
+    }
+  }
+
+  // Start an NPC action period
+  async resolveStopper() {
+    let stopper = this.protocol.stopper
+
+    // Get AI characters from stopper
+    const askerChar = this.book.characters[stopper.from]
+    const askedChars = stopper.to.map((charId) => this.book.characters[charId])
+    const groupChars = [askerChar, ...askedChars]
+    const aiAsked = askedChars.filter((char) => char.controlledBy === 'ai')
+    const notGroupChars = Object.values(this.book.room.characters).filter(
+      (char) => char.id !== stopper.from && !stopper.to.includes(char.id),
+    )
+
+    if (aiAsked.length > 0) {
+      // Prepare questions based on stopper subtype
+      let question = ''
+      if (stopper.subtype === 'move-with') {
+        const group = joinAnd(groupChars.map((char) => `${char.name} [${char.id}]`))
+        const notGroup = joinAnd(notGroupChars.map((char) => `${char.name} [${char.id}]`))
+        const notInvited = notGroup ? ` ${notGroup} are not invited to join.` : ''
+        question = `${askerChar.name} [${askerChar.id}] asks for: ${group} all move to ${stopper.payload.spec} ${stopper.payload.target.name} together.${notInvited}`
+      } else {
+        this.handleError('Error in Stopper Agent', 'Invalid stopper type', false)
+      }
+
+      // Run StopperAgent
+      let response
+      try {
+        response = await this.stopperAgent.run({
+          protocol: this.protocol,
+          question,
+          asked: aiAsked,
+        })
+        if (response.error) {
+          this.handleError('Error in Stopper Agent', response.error, false)
+          return
+        }
+      } catch (e) {
+        this.handleError('Error in Stopper Agent', e.message, false)
+        return
+      }
+
+      // Handle decisions
+      for (const [charId, reply] of Object.entries(response.replies)) {
+        this.protocol.answerStopper(charId, reply === 'accept')
+      }
     }
   }
 }

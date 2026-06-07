@@ -360,25 +360,27 @@ export const useBookStore = defineStore('book', {
       const resolvers = {
         room: () => {
           const targetRoom = this.room.availableRooms.find((room) => room.commandId === targetId)
-          return { targetRoom: targetRoom, distanceTo: targetRoom }
+          return { target: targetRoom, targetRoom: targetRoom, distanceTo: targetRoom }
         },
         location: () => {
           const location = this.room.availableLocations.find(
             (location) => location.commandId === targetId,
           )
-          return { targetRoom: location.entry, distanceTo: location }
+          return { target: location, targetRoom: location.entry, distanceTo: location }
         },
         destination: () => {
           const destination = this.availableDestinations.find(
             (destination) => destination.commandId === targetId,
           )
-          return { targetRoom: destination.entry, distanceTo: destination }
+          return { target: destination, targetRoom: destination.entry, distanceTo: destination }
         },
       }
 
       const resolver = resolvers[spec]
-      const { targetRoom, distanceTo } = resolver()
+      const { target, targetRoom, distanceTo } = resolver()
       return {
+        target,
+        spec,
         targetRoom,
         moveDuration: distancePeriod(this.room, distanceTo),
       }
@@ -401,6 +403,7 @@ export const useBookStore = defineStore('book', {
 
     // Switch user view to different room
     switchTo(room) {
+      this.protocol.cancelStopper()
       this.roomId = room.id
       this.locationId = room.location.id
       this.destinationId = room.location.destination.id
@@ -532,7 +535,7 @@ export const useBookStore = defineStore('book', {
     // Last setup steps before start
     async startBook() {
       // start fresh protocol
-      this.protocol = new Protocol(this.options)
+      this.protocol = new Protocol(this.options, this)
       this.protocol.pushInfo({
         time: this.time,
         text: this.introduction,
@@ -582,7 +585,7 @@ export const useBookStore = defineStore('book', {
         // more book data
         this.states = data.states
         this.agendas = data.agendas
-        this.protocol = Protocol.fromJSON(data.protocol, this.options)
+        this.protocol = Protocol.fromJSON(data.protocol, this.options, this)
         this.busyCharacterIDs = data.busyCharacterIDs
         this.roomId = data.roomId
         this.time = data.time
@@ -617,6 +620,28 @@ export const useBookStore = defineStore('book', {
         talkTo = this.room.availableCharacters.filter((char) => char.id !== command.actor)[0].id
       }
       return talkTo
+    },
+
+    // Helper: find correct spec for move target if not specified
+    findSpec(command) {
+      if (this.room.availableRooms.map((room) => room.commandId).includes(command.target)) {
+        return 'room'
+      } else if (
+        this.room.availableLocations.map((loc) => loc.commandId).includes(command.target)
+      ) {
+        return 'location'
+      } else if (
+        this.availableDestinations.map((dest) => dest.commandId).includes(command.target)
+      ) {
+        return 'destinations'
+      } else {
+        this.protocol.pushError({
+          time: this.time,
+          title: 'Could not identify move target',
+          text: `'${command.target}' seems not to be valid place you can go to right now.`,
+        })
+        throw new Error()
+      }
     },
 
     // Process command (from AI or processed user message)
@@ -683,68 +708,58 @@ export const useBookStore = defineStore('book', {
 
       // Action MOVE
       if (command.action === 'move') {
-        if (command.message !== null && command.actor === ':group') {
+        // Process movers
+        let movers
+        if (command.actor === ':group') {
+          movers = this.room.availablePlayerCharacters
+        } else if (Array.isArray(command.actor)) {
+          movers = this.room.availableCharacters.filter((char) => command.actor.includes(char.id))
+        } else {
+          movers = this.room.availableCharacters.filter((char) => command.actor === char.id)
+        }
+
+        // Check for validity of talk message
+        if (command.message !== null && movers.length > 1) {
           this.protocol.pushError({
             time: this.time,
             title: 'Invalid Command',
-            text: `You cannot send an exit message if the group moves together.\n\nTried to say: ${command.message}`,
+            text: `You cannot send an exit message if more than one characters moves at once.\n\nTried to say: "${command.message}"`,
           })
           return
         }
 
         // Process target spec
         if (command.spec === ':undefined') {
-          if (this.room.availableRooms.map((room) => room.commandId).includes(command.target)) {
-            command.spec = 'room'
-          } else if (
-            this.room.availableLocations.map((loc) => loc.commandId).includes(command.target)
-          ) {
-            command.spec = 'location'
-          } else if (
-            this.availableDestinations.map((dest) => dest.commandId).includes(command.target)
-          ) {
-            command.spec = 'destinations'
-          } else {
-            this.protocol.pushError({
-              time: this.time,
-              title: 'Could not identify move target',
-              text: `'${command.target}' seems not to be valid place you can go to right now.`,
-            })
+          try {
+            command.spec = this.findSpec(command)
+          } catch {
             return
           }
         }
 
         // Construct info message
-        let charMoving
-        if (command.actor === ':group') {
-          charMoving = joinAnd(this.room.availablePlayerCharacters.map((char) => char.name))
-        } else {
-          charMoving = this.characters[command.actor].name
-        }
+        const charMoving = joinAnd(movers.map((char) => char.name))
         const infoMessage = `${charMoving} just left ${this.room.name}`
 
         // Send TALK message
-        const talkTo = this.concretizeTalkTo(command)
-        if (command.message !== null) {
-          this.protocol.pushTalk({
-            time: this.time,
-            text: command.message,
-            room: this.room.id,
-            present: present,
-            from: command.actor,
-            to: talkTo,
-          })
+        if (movers.length > 1) {
+          const talkTo = this.concretizeTalkTo(command)
+          if (command.message !== null) {
+            this.protocol.pushTalk({
+              time: this.time,
+              text: command.message,
+              room: this.room.id,
+              present: present,
+              from: command.actor,
+              to: talkTo,
+            })
+          }
         }
 
         // Move actors
         const { targetRoom, moveDuration } = this.getMoveSpecs(command.target, command.spec)
-        if (command.actor === ':group') {
-          for (const char of this.room.availablePlayerCharacters) {
-            this.moveChar(char.id, targetRoom, moveDuration)
-          }
-        } else {
-          this.setActivePlayerID(command.actor)
-          this.moveChar(command.actor, targetRoom, moveDuration)
+        for (let char of movers) {
+          this.moveChar(char.id, targetRoom, moveDuration)
         }
 
         // Send INFO message
@@ -767,6 +782,82 @@ export const useBookStore = defineStore('book', {
           }
         }
         this.updateRecentPlayerIDs() // if active player is no longer in active room
+      }
+
+      // Action MOVEWITH
+      if (command.action === 'movewith') {
+        // Process :active actor if used
+        if (command.actor === ':active') {
+          command.actor = this.activePlayerID
+        } else {
+          this.setActivePlayerID(command.actor)
+        }
+
+        // Check for availability
+        const availableCharIds = this.room.availableCharacters.map((char) => char.id)
+        if (!command.company.every((charId) => availableCharIds.includes(charId))) {
+          this.protocol.pushError({
+            time: this.time,
+            title: `Characters unavailable`,
+            text: `Not all characters are present or available to move right now`,
+          })
+          return
+        }
+
+        // Process target spec
+        if (command.spec === ':undefined') {
+          try {
+            command.spec = this.findSpec(command)
+          } catch {
+            return
+          }
+        }
+
+        // Send TALK message
+        const talkTo = this.concretizeTalkTo(command)
+        if (command.message !== null) {
+          this.protocol.pushTalk({
+            time: this.time,
+            text: command.message,
+            room: this.room.id,
+            present: present,
+            from: command.actor,
+            to: talkTo,
+          })
+        }
+
+        // Construct info message
+        const { target, spec } = this.getMoveSpecs(command.target, command.spec)
+        let moverName = this.characters[command.actor].name
+        let companyNames = joinAnd(command.company.map((char) => this.characters[char].name))
+        const stopperText = `${moverName} asks ${companyNames} to come with them to another ${spec}: ${target.name}`
+
+        // Automatic accept for group members
+        let answers = {}
+        if (this.characters[command.actor].controlledBy === 'player') {
+          const playerCompanyChars = command.company
+            .map((char) => this.characters[char])
+            .filter((char) => char.controlledBy === 'player')
+          for (const char of playerCompanyChars) {
+            answers[char.id] = true
+          }
+        }
+
+        // Create the stopper
+        this.protocol.pushStopper({
+          subtype: 'move-with',
+          text: stopperText,
+          from: command.actor,
+          to: command.company,
+          answers: answers,
+          payload: { target, spec },
+        })
+
+        // Increase time
+        this.addTime(this.options.talkDuration)
+
+        // Run Narrator
+        this.narrator.resolveStopper()
       }
 
       if (command.action === 'sleep') {
@@ -873,6 +964,42 @@ export const useBookStore = defineStore('book', {
 
         // Increase time
         this.addTime(this.options.talkDuration) // TODO: later replace with action duration
+      }
+    },
+
+    // Resolve stopper answered by everyone
+    resolveStopper(stopper) {
+      if (stopper.subtype === 'move-with') {
+        if (Object.values(stopper.answers).every(Boolean)) {
+          // Action accepted: move characters
+          const command = {
+            action: 'move',
+            actor: [stopper.from, ...stopper.to],
+            target: stopper.payload.target.commandId,
+            spec: stopper.payload.spec,
+            message: null,
+          }
+          this.executeCommand(command)
+        } else {
+          // Action declined: send hint message
+          let moverName = this.characters[stopper.from].name
+          let companyNames = joinAnd(stopper.to.map((charId) => this.characters[charId].name))
+          let decliners = Object.keys(stopper.answers).filter((charId) => !stopper.answers[charId])
+          decliners = joinAnd(
+            Object.values(this.characters)
+              .filter((char) => decliners.includes(char.id))
+              .map((char) => char.name),
+          )
+          const infoMessage = `${moverName} asked ${companyNames} to come with them to another ${stopper.payload.spec}: ${stopper.payload.target.name}. ${decliners} declined.`
+
+          let present = this.room.availableCharacters.map((char) => char.id)
+          this.protocol.pushHint({
+            time: this.time,
+            text: infoMessage,
+            room: this.room.id,
+            present: present,
+          })
+        }
       }
     },
 
