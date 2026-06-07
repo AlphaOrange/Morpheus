@@ -53,10 +53,9 @@ export default class Protocol {
   static fromJSON(data, optionsStore, book) {
     const proto = new Protocol(optionsStore, book)
     proto.messages = data.messages
+    proto.stopper = data.stopper
     proto.count = proto.messages.length
     proto.scene = proto.messages.reduce((acc, msg) => Math.max(acc, msg.scene ?? 0), 0)
-    console.log(proto.count)
-    console.log(proto.scene)
     return proto
   }
 
@@ -64,6 +63,7 @@ export default class Protocol {
   toJSON() {
     return {
       messages: this.messages,
+      stopper: this.stopper,
     }
   }
 
