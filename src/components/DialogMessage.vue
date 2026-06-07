@@ -11,6 +11,7 @@
           <span>{{ headerText(message) }}</span>
           <div>
             <IconButton v-if="message.removable" icon="circle-xmark" @click="removeMessage" />
+            <IconButton v-if="isStopper" icon="circle-xmark" @click="cancelStopper" />
             <span class="timestamp">{{ timestamp(message) }}</span>
           </div>
         </div>
@@ -75,7 +76,7 @@ const props = defineProps({
     required: true,
   },
 })
-const emits = defineEmits(['answerStopper', 'removeMessage'])
+const emits = defineEmits(['answerStopper', 'cancelStopper', 'removeMessage'])
 
 const isMajorMessage = (message) => {
   return message.type !== 'structural'
@@ -118,6 +119,9 @@ const removeMessage = () => {
   emits('removeMessage')
 }
 
+const cancelStopper = () => {
+  emits('cancelStopper')
+}
 const showIcon = (message) => {
   return ['talk', 'stopper'].includes(message.type)
 }

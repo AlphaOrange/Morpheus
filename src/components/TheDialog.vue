@@ -13,6 +13,7 @@
         v-if="protocol.stopper"
         :message="protocol.stopper"
         @answerStopper="answerStopper"
+        @cancelStopper="cancelStopper"
       ></DialogMessage>
     </transition-group>
     <div v-if="options.narratorRunning" class="temp-message">
@@ -65,6 +66,10 @@ function removeMessage(message) {
 
 function answerStopper({ charId, answer }) {
   protocol.value.answerStopper(charId, answer)
+}
+
+function cancelStopper() {
+  protocol.value.cancelStopper()
 }
 
 const scrollToEnd = async () => {
