@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import { watch, nextTick, ref, computed } from 'vue'
+import { watch, nextTick, ref, computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import DialogMessage from '@/components/DialogMessage.vue'
 
@@ -72,20 +72,39 @@ function cancelStopper() {
   protocol.value.cancelStopper()
 }
 
-const scrollToEnd = async () => {
+// Scroll To Last Message
+
+const initialized = ref(false)
+const messageEls = ref([])
+
+// Scroll Function
+const scrollToEnd = async (smooth = true) => {
   await nextTick()
   const messages = messageEls.value
   if (!messages.length) return
   const lastMessage = messages[messages.length - 1]
   lastMessage.$el.scrollIntoView({
-    behavior: 'smooth',
+    behavior: smooth ? 'smooth' : 'auto',
     block: 'start',
   })
 }
 
+// Scroll to end on mount
+onMounted(async () => {
+  await scrollToEnd(false) // jump instantly
+  initialized.value = true
+})
+
 // Watcher: scroll to start of new message when added
-const messageEls = ref([])
 watch(() => [dialog.value.length, options.narratorRunning], scrollToEnd, { flush: 'post' })
+watch(
+  () => [dialog.value.length, options.narratorRunning],
+  () => {
+    if (!initialized.value) return
+    scrollToEnd(true)
+  },
+  { flush: 'post' },
+)
 
 // expose scrolling to outer components
 defineExpose({ scrollToEnd })
