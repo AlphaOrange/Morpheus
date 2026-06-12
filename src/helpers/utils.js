@@ -4,6 +4,7 @@ import Destination from '@/classes/Destination'
 import { useOptionsStore } from '@/stores/options'
 import { useBookStore } from '@/stores/book'
 import semver from 'semver'
+import MarkdownIt from 'markdown-it'
 
 // ----- General Helpers -----
 
@@ -418,6 +419,17 @@ export function messageToCommand(message) {
 }
 
 // ----- Formatting -----
+
+const md = new MarkdownIt({
+  html: true,
+  breaks: true,
+  linkify: false,
+  typographer: false,
+})
+
+export function renderMarkdown(text) {
+  return md.render(text || '')
+}
 
 // format dialog string for ai prompting
 export function formatDialog({ messages, perspective = null }) {

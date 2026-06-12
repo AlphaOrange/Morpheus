@@ -26,23 +26,12 @@
 <script setup>
 import { computed, ref, onMounted } from 'vue'
 import TheTwoColumnsLayout from '@/layouts/TheTwoColumnsLayout.vue'
-import { changelog } from '@/helpers/utils'
-import MarkdownIt from 'markdown-it'
-const md = new MarkdownIt({
-  html: true,
-  breaks: true,
-  linkify: false,
-  typographer: false,
-})
+import { changelog, renderMarkdown } from '@/helpers/utils'
 
 const version = computed(() => __APP_VERSION__)
 const impressum = ref('')
 const privacyPolicy = ref('')
 const aiAgenda = ref('')
-
-const renderMarkdown = (text) => {
-  return md.render(text || '')
-}
 
 onMounted(async () => {
   try {

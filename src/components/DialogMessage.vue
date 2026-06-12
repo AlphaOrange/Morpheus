@@ -54,19 +54,12 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { formatTime } from '@/helpers/utils'
+import { renderMarkdown } from '@/helpers/utils'
 import IconButton from '@/components/IconButton.vue'
 import ActionButton from '@/components/ActionButton.vue'
 import { useBookStore } from '@/stores/book'
 const bookStore = useBookStore()
 const { characters, rooms } = storeToRefs(bookStore)
-
-import MarkdownIt from 'markdown-it'
-const md = new MarkdownIt({
-  html: true,
-  breaks: true,
-  linkify: false,
-  typographer: false,
-})
 
 const props = defineProps({
   message: {
@@ -192,11 +185,6 @@ const timestamp = (message) => {
     return formatTime({ datetime: bookStore.toGametime(message.time) })
   }
   return ''
-}
-
-// Render conversation texts from Markdown to HTML
-const renderMarkdown = (text) => {
-  return md.render(text || '')
 }
 </script>
 
