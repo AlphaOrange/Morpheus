@@ -66,6 +66,7 @@ export const defaultsState = {
   },
   intervals: [],
   events: [],
+  regenerable: false,
 }
 
 export const defaultsDestination = {

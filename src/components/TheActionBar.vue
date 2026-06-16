@@ -50,10 +50,10 @@
         />
         <ActionButton
           v-if="room.hasAction('sleep')"
-          @click="sleep60()"
-          text="Sleep 1 Hour"
+          @click="sleep6()"
+          text="Sleep 6 Hours"
           icon="moon"
-          pill="1h"
+          pill="6h"
           :compact="compact"
         />
       </div>
@@ -109,10 +109,10 @@
         />
         <ActionButton
           v-if="room.hasAction('sleep')"
-          @click="sleep60(char)"
-          text="Sleep 1 Hour"
+          @click="sleep6(char)"
+          text="Sleep 6 Hours"
           icon="moon"
-          pill="1h"
+          pill="6h"
           :compact="compact"
         />
       </div>
@@ -193,8 +193,8 @@ const moveCharToRoom = (char, room) => {
 const moveCharToLocation = (char, location) => {
   emits('move', { location, char })
 }
-const sleep60 = (char = null) => {
-  emits('sleep', { char, duration: 60 })
+const sleep6 = (char = null) => {
+  emits('sleep', { char, duration: 360 })
 }
 const wake = (char, partner) => {
   emits('wake', { fromChar: char, toChar: partner })

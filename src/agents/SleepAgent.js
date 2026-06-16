@@ -31,9 +31,15 @@ export default class SleepAgent extends Agent {
         duration: 0,
       }
     }
+    let duration = actor.suggestSleepingMinutes()
+    if (duration === 0) {
+      duration = this.options.defaultSleepDuration
+    } else {
+      duration = Math.max(this.options.minSleepDuration, duration)
+    }
     return {
       sleep: true,
-      duration: 360, // change later when there are states
+      duration: duration,
     }
   }
 }

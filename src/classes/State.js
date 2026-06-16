@@ -7,9 +7,17 @@ export default class State {
 
   constructor(rawData) {
     const data = { ...defaultsState, ...rawData }
-    ;['id', 'name', 'description', 'examples', 'base', 'change', 'intervals', 'events'].forEach(
-      (key) => (this[key] = data[key]),
-    )
+    ;[
+      'id',
+      'name',
+      'description',
+      'examples',
+      'base',
+      'change',
+      'intervals',
+      'events',
+      'regenerable',
+    ].forEach((key) => (this[key] = data[key]))
     this.value = this.base
     this.history = [[0, this.value]] // [Timestamp, Value]
   }
@@ -33,6 +41,7 @@ export default class State {
       change: this.change,
       intervals: this.intervals,
       events: this.events,
+      regenerable: this.regenerable,
     }
   }
 

@@ -36,6 +36,10 @@ export default [
   // AI Parameters (how to build prompts)
   ['repeatTimestampAfterSeconds', 600, false, false], // seconds after which timestamp is shown again in formatted dialog
 
+  // Characters Behavior Parameters
+  ['minSleepDuration', 60, false, false], // Minimal sleep duration in minutes for AI
+  ['defaultSleepDuration', 360, false, false], // Sleep duration in minutes for AI if not decided by characters or states
+
   // === USER SETTINGS (runtime changes by user)
 
   // UX Settings

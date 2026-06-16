@@ -223,6 +223,14 @@ ${this.body}, ${this.clothing}, ${this.appearance}`
     this.action.type = ''
   }
 
+  // Suggest duration for sleep in minutes from states
+  suggestSleepingMinutes() {
+    const regMins = this.states
+      .filter((state) => state.regenerable)
+      .map((state) => ((state.base - state.value) / state.change.sleep) * 60)
+    return Math.round(Math.max(0, ...regMins))
+  }
+
   // Increase idle time if not active
   idle(duration) {
     const presentPlayers = this.room?.presentPlayerCharacters.length ?? 0
