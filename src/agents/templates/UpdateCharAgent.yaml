@@ -15,6 +15,10 @@ user: |-
 
   %others_profiles%
 
+  ### THE LOCATION ###
+
+  %room_description%
+
   ### INSTRUCTIONS ###
 
   Your task is to evaluate the recent interactions of the subject %you%. Therefore you shall assess tht change in one or more of the subject's conditions. The conditions are:

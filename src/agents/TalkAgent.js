@@ -56,6 +56,7 @@ export default class TalkAgent extends Agent {
     const additional_actions_list = actions
       .map((action) => `- ${action.type}: ${action.description}`)
       .join('\n')
+    const roomDescription = actor.room.enhancedDescription
     const prompt = TEMPLATES.user
       .replaceAll('%you%', actor.name)
       .replace('%dialog%', dialog)
@@ -65,6 +66,7 @@ export default class TalkAgent extends Agent {
       .replace('%style_dialog%', this.book.style.dialog)
       .replace('%style_narration%', this.book.style.narration)
       .replace('%additional_actions_list%', additional_actions_list)
+      .replace('%room_description%', roomDescription)
 
     try {
       const answer = await this.query({ prompt, type: 'json' })

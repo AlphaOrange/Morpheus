@@ -13,7 +13,11 @@ user: |-
 
   %you_profile%
 
-  ### CHARACTERS WITH YOU IN THE ROOM ###
+  ### YOU ARE HERE ###
+
+  %room_description%
+
+  ### CHARACTERS WITH YOU ###
 
   %others_profiles%
 

@@ -142,6 +142,10 @@ ${avLocations}`
     return description
   }
 
+  get enhancedDescription() {
+    return `${this.name}\n${this.description}`
+  }
+
   // Adding and removing characters
   addCharacter(character) {
     this.characters[character.id] = character

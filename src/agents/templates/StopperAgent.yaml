@@ -11,6 +11,10 @@ user: |-
 
   %profiles%
 
+  ### THE LOCATION ###
+
+  %room_description%
+
   ### INSTRUCTIONS ###
 
   Immediately after the recent observations as described above the following happens:

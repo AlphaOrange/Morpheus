@@ -50,6 +50,7 @@ export default class WakeAgent extends Agent {
     })
     const you_profile = actor.selfDescription
     const sleepers_profiles = this.sleepers_profiles({ sleepers })
+    const roomDescription = actor.room.enhancedDescription
     const prompt = TEMPLATES.user
       .replace('%dialog%', dialog)
       .replaceAll('%you%', actor.name)
@@ -57,6 +58,7 @@ export default class WakeAgent extends Agent {
       .replace('%sleepers_profiles%', sleepers_profiles)
       .replace('%room%', room.name)
       .replace('%style_base%', this.book.style.base)
+      .replace('%room_description%', roomDescription)
 
     try {
       const answer = await this.query({ prompt, type: 'json' })

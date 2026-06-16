@@ -41,11 +41,13 @@ export default class StopperAgent extends Agent {
     })
     const profiles = this.profiles({ chars: asked })
     const charsAsked = joinAnd(asked.map((char) => `${char.name} [ID: ${char.id}]`))
+    const roomDescription = asked[0].room.enhancedDescription
     const prompt = TEMPLATES.user
       .replace('%dialog%', dialog)
       .replace('%profiles%', profiles)
       .replace('%question%', question)
       .replace('%asked%', charsAsked)
+      .replace('%room_description%', roomDescription)
 
     try {
       const answer = await this.query({ prompt, type: 'json' })

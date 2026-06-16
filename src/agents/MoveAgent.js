@@ -51,6 +51,7 @@ export default class MoveAgent extends Agent {
       .replace('%place_description%', place_description)
       .replace('%room%', room.name)
       .replace('%style_base%', this.book.style.base)
+      .replace('%room_description%', room.enhancedDescription)
 
     try {
       const answer = await this.query({ prompt, type: 'json' })

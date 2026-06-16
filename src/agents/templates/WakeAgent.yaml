@@ -13,6 +13,10 @@ user: |-
 
   %you_profile%
 
+  ### YOU ARE HERE ###
+
+  %room_description%
+
   ### CURRENTLY SLEEPING CHARACTERS ###
 
   %sleepers_profiles%

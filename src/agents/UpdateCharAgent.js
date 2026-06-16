@@ -76,12 +76,15 @@ MAJOR INCREASE: ${state.examples.major_increase}
       const you_profile = char.neutralDescription
       const others_profiles = this.others_profiles({ actor: char })
       const states_descriptions = this.states_descriptions({ char })
+      const roomDescription = char.room.enhancedDescription
       const prompt = TEMPLATES.user
         .replaceAll('%you%', char.name)
         .replace('%dialog%', dialog)
         .replace('%others_profiles%', others_profiles)
         .replace('%you_profile%', you_profile)
         .replace('%states_descriptions%', states_descriptions)
+        .replace('%room_description%', roomDescription)
+
       const answer = await this.query({ prompt, type: 'json' })
       char.lastUpdate = updateDialog.slice(-1)[0].id
       return {
