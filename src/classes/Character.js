@@ -135,17 +135,6 @@ export default class Character {
     return this.getImage('S')
   }
 
-  // Getter: Gender+Age combination
-  get demo() {
-    let demo
-    if (this.gender === 'male') {
-      demo = '♂'
-    } else {
-      demo = '♀'
-    }
-    return demo + this.age
-  }
-
   // Getter: States
   get states() {
     if (this.controlledBy === 'ai' && this.options.useAiStates) {
