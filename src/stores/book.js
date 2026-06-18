@@ -378,14 +378,15 @@ export const useBookStore = defineStore('book', {
           return { target: destination, targetRoom: destination.entry, distanceTo: destination }
         },
       }
-
       const resolver = resolvers[spec]
-      const { target, targetRoom, distanceTo } = resolver()
+      const result = resolver()
+      if (!result?.targetRoom) {
+        throw new Error(`targetRoom not found for targetId=${targetId}`)
+      }
       return {
-        target,
+        ...result,
         spec,
-        targetRoom,
-        moveDuration: distancePeriod(this.room, distanceTo),
+        moveDuration: distancePeriod(this.room, result.distanceTo),
       }
     },
 
@@ -734,10 +735,21 @@ export const useBookStore = defineStore('book', {
         // Process target spec
         if (command.spec === ':undefined') {
           try {
-            command.spec = this.findSpec(command)
+            const spec = this.findSpec(command)
+            command.spec = spec
           } catch {
             return
           }
+        }
+
+        // Find room (and check if exists)
+        let targetRoom, moveDuration
+        try {
+          const moveSpecs = this.getMoveSpecs(command.target, command.spec)
+          targetRoom = moveSpecs.targetRoom
+          moveDuration = moveSpecs.moveDuration
+        } catch {
+          return
         }
 
         // Construct info message
@@ -760,7 +772,6 @@ export const useBookStore = defineStore('book', {
         }
 
         // Move actors
-        const { targetRoom, moveDuration } = this.getMoveSpecs(command.target, command.spec)
         for (let char of movers) {
           this.moveChar(char.id, targetRoom, moveDuration)
         }
