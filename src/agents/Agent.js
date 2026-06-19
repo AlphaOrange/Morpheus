@@ -143,6 +143,28 @@ ${this.responseExample}`
     }
   }
 
+  // Check if API and model settings work
+  async checkApi() {
+    const prompt = 'Just answer: Okay'
+    let response = null
+    try {
+      if (this.options.aiVendor === 'Google') {
+        response = await this.query_google(prompt)
+      } else if (this.options.aiVendor === 'OpenAI') {
+        response = await this.query_openai(prompt, type)
+      } else {
+        throw new Error('AI Vendor not supported')
+      }
+    } catch {
+      return false
+    }
+    this.shelf.tokenUsage = this.shelf.tokenUsage + response.tokens
+    if (!response.text) {
+      return false
+    }
+    return true
+  }
+
   async query({ prompt, type = 'json' }) {
     prompt = this.enhance_prompt(prompt)
     console.log(`== PROMPT ==\n${prompt}`)

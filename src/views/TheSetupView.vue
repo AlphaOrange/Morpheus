@@ -36,9 +36,15 @@
             placeholder="insert valid key"
             class="long"
           />
+          <div v-if="options.aiApiKey !== '' && !apiKeyValid" class="box warning-box">
+            <div>⚠️ Your API key seems to be not valid.</div>
+          </div>
+          <div v-if="options.aiApiKey !== '' && apiKeyValid" class="box success-box">
+            <div>✅ Your API key works fine!</div>
+          </div>
           <div v-if="options.aiApiKey === ''" class="box warning-box">
             <div>
-              You did not yet enter an API key. Without LLM model connection functionality is
+              ⚠️ You did not yet enter an API key. Without LLM model connection functionality is
               extremely limited!
             </div>
           </div>
@@ -103,12 +109,14 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import TheThirdsLayout from '@/layouts/TheThirdsLayout.vue'
 import CharacterInfoBox from '@/components/CharacterInfoBox.vue'
 import ActionButton from '@/components/ActionButton.vue'
 import { models } from '@/data/llm'
+import { debounce } from '@/helpers/utils'
+import Agent from '@/agents/Agent'
 
 import { useBookStore } from '@/stores/book'
 const book = useBookStore()
@@ -121,6 +129,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const playerSelection = ref(new Set()) // selected player characters
+const apiKeyValid = ref(false)
 
 // Select or unselect character as player character
 const selectPlayer = (id) => {
@@ -160,6 +169,14 @@ const headlineChooseChars = computed(() => {
     }
   }
 })
+
+// Check if API key is correct
+const testAgent = new Agent()
+const apiCheck = debounce(async () => {
+  apiKeyValid.value = await testAgent.checkApi()
+}, 500)
+onMounted(apiCheck)
+watch(() => options.aiApiKey, apiCheck)
 
 // Check if settings are okay and user may start book
 const checkConditions = computed(() => {

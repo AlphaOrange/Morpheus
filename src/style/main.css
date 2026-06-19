@@ -167,6 +167,14 @@ img {
   background: var(--bg-warning);
 }
 
+.success-box {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 0.5rem;
+  text-align: center;
+  background: var(--bg-system);
+}
+
 .box > .warning-box {
   margin-bottom: 1rem;
 }
