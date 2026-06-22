@@ -21,9 +21,22 @@ export default class Location {
 
   // only to be used in original construction, not restore
   fullConstructor(data) {
-    for (let roomData of Object.values(data.rooms)) {
-      let room = new Room(roomData, this)
-      this.rooms[room.id] = room
+    if (data.rooms) {
+      for (let roomData of Object.values(data.rooms)) {
+        let room = new Room(roomData, this)
+        this.rooms[room.id] = room
+      }
+    } else {
+      // Use location as fallback for room (location/room hybrid)
+      let room = new Room(
+        {
+          name: this.name,
+          description: this.description,
+          image: this._image,
+        },
+        this,
+      )
+      this.rooms[this.id] = room
     }
     if (data.entry === '') {
       this.entry = Object.values(this.rooms)[0]
