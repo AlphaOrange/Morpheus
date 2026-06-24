@@ -113,11 +113,18 @@ img {
 
 /* Dialog */
 
-.formatted-message em {
+.formatted-message p {
+  margin: 0 0 1rem;
+}
+.formatted-message p:last-child {
+  margin: 0;
+}
+
+.message-talk .formatted-message em {
   font-weight: bold;
 }
 
-.formatted-message strong {
+.message-talk .formatted-message strong {
   font-weight: normal;
   font-style: italic;
   padding: 0 0.4rem 0.05rem 0.3rem;
@@ -126,13 +133,6 @@ img {
   color: var(--col-font-90);
   box-decoration-break: clone;
   line-height: 1.4rem;
-}
-
-.formatted-message p {
-  margin: 0 0 1rem;
-}
-.formatted-message p:last-child {
-  margin: 0;
 }
 
 /* Boxes */
