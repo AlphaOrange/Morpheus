@@ -6,7 +6,7 @@ export const defaultsBook = {
 }
 export const defaultsBookStart = {
   datetime: '2020-01-01 12:00:00',
-  introduction: 'Your story starts now!',
+  introduction: 'This is where the story begins.',
 }
 export const defaultsBookStyle = {
   base: '',

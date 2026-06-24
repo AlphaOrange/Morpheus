@@ -40,14 +40,7 @@ export default class Protocol {
     this.count = 1
     this.scene = 0
     // this.messages = []
-    this.messages = [
-      {
-        id: 1,
-        type: 'system',
-        time: 0,
-        text: 'This is the start of the game protocol.',
-      },
-    ]
+    this.messages = []
     this.stopper = null
   }
   static fromJSON(data, optionsStore, book) {

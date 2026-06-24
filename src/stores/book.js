@@ -146,7 +146,6 @@ export const useBookStore = defineStore('book', {
         saveSummary: this.saveSummary,
         tags: this.tags,
         startTime: this.startTime,
-        introduction: this.introduction,
         style: this.style,
         _cover: this._cover,
         world: this.world, // stringify will convert world object
@@ -210,18 +209,17 @@ export const useBookStore = defineStore('book', {
             .filter((arrival) => arrival.char.controlledBy === 'player')
             .map((arrival) => arrival.char.name)
           const charArrived = [...charArrivedAi, ...charArrivedPlayer]
-          const text =
-            this.time === 0 && charArrivedAi.length > 0
-              ? `${joinAnd(charArrivedPlayer)} just arrived at ${room.name}, ${joinAnd(charArrivedAi)} also here.`
-              : `${joinAnd(charArrived)} just arrived at ${room.name}`
-          this.protocol.pushHint({
-            subtype: 'move',
-            time: this.time,
-            text: text,
-            room: roomId,
-            present: present,
-            to: ':all',
-          })
+          if (this.time !== 0) {
+            const text = `${joinAnd(charArrived)} just arrived at ${room.name}`
+            this.protocol.pushHint({
+              subtype: 'move',
+              time: this.time,
+              text: text,
+              room: roomId,
+              present: present,
+              to: ':all',
+            })
+          }
         }
       })
     },
@@ -451,11 +449,11 @@ export const useBookStore = defineStore('book', {
       this._cover = data._cover ?? data.cover
       if (data.startTime) {
         this.startTime = new Date(data.startTime)
-        this.introduction = data.introduction
       } else {
         this.startTime = new Date(data.start.datetime)
-        this.introduction = data.start.introduction || 'The Game Begins'
       }
+      this.introduction = data.start.introduction
+
       // Set book options in options
       Object.keys(defaultsBookOptions).forEach((key) => (this.options[key] = data.options[key]))
     },
@@ -540,15 +538,11 @@ export const useBookStore = defineStore('book', {
     async startBook() {
       // start fresh protocol
       this.protocol = new Protocol(this.options, this)
-      this.protocol.pushInfo({
-        time: this.time,
-        text: this.introduction,
-        title: 'Introduction',
-        expire: 999999,
-      })
+
       // build set of AI characters
       const playerIds = Object.keys(this.playerCharacters)
       this.classifyCharacters(playerIds)
+
       // set characters to starting conditions
       for (let id in this.playerCharacters) {
         this.moveChar(id, this.room, 0)
@@ -561,6 +555,17 @@ export const useBookStore = defineStore('book', {
       this.updateRecentPlayerIDs() // set initial active player
       this.narrator = new Narrator(this, this.protocol, this.options) // instantiate narrator
       this.agents = { saveSummary: new SavegameSummaryAgent() } // instantiate agents
+
+      // Place starting message
+      const playerCharsAnd = joinAnd(Object.values(this.playerCharacters).map((char) => char.name))
+      const present = this.room.availableCharacters.map((char) => char.id)
+      this.protocol.pushHint({
+        time: this.time,
+        text: this.introduction.replaceAll('%players%', playerCharsAnd),
+        room: this.roomId,
+        present,
+      })
+
       this.activateBook()
     },
 
