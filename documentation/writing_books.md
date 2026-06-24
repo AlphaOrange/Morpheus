@@ -210,8 +210,8 @@ There must be exactly one book file and it must be named `book.yaml`. The book f
   - `room`: ID of room where the player starts
   - `datetime`: valid datetime of when the story starts in-game (e.g. '2020-03-01 10:00:00')  
     _(optional - default: "2020-01-01 12:00:00")_
-  - `introduction`: an introduction text for the _user_ (not readable for the _characters_) at the very start of the story  
-    _(optional - default: "Your story starts now!")_
+  - `introduction`: an introduction text given to all characters in the starting room at the very start of the story - you can use the _%players%_ placeholder for the characters chosen by the player  
+    _(optional - default: "This is where the story begins.")_
 - `style`: specifications of narrative style, see "Narrative Instructions" for more details on how to build this. May include:
   - `base`: General additional instruction for Non-character AI  
     _(optional - default: "")_
@@ -250,9 +250,9 @@ start:
   datetime: '2077-06-01 09:00:00'
   introduction: >-
     After travelling through the waste lands for several
-    you arrived at the Electric City in the morning.
+    %players% arrive at the Electric City in the morning.
     The town is full of lights and buzzing noises, but the streets
-    are empty, so you enter the first building, the casino.
+    are empty, so they enter the first building, the casino.
 options:
   minPlayerChars: 1
   maxPlayerChars: 2
