@@ -149,9 +149,9 @@ ${this.responseExample}`
     let response = null
     try {
       if (this.options.aiVendor === 'Google') {
-        response = await this.query_google(prompt)
+        response = await this.query_google(prompt, 'text')
       } else if (this.options.aiVendor === 'OpenAI') {
-        response = await this.query_openai(prompt, type)
+        response = await this.query_openai(prompt, 'text')
       } else {
         throw new Error('AI Vendor not supported')
       }
