@@ -843,7 +843,7 @@ export const useBookStore = defineStore('book', {
         }
 
         // Send TALK message
-        const talkTo = this.concretizeTalkTo(command)
+        const talkTo = command.company.length === 1 ? command.company[0] : ':all'
         if (command.message !== null) {
           this.protocol.pushTalk({
             time: this.time,
