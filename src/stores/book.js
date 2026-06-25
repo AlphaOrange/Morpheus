@@ -812,6 +812,15 @@ export const useBookStore = defineStore('book', {
         } else {
           this.setActivePlayerID(command.actor)
         }
+        command.company = command.company.filter((charId) => charId !== command.actor)
+        if (command.company.length === 0) {
+          this.protocol.pushError({
+            time: this.time,
+            title: `No company`,
+            text: `You can only use the move-with command if you choose company to ask`,
+          })
+          return
+        }
 
         // Check for availability
         const availableCharIds = this.room.availableCharacters.map((char) => char.id)
