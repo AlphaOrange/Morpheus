@@ -39,12 +39,13 @@ You can find books here:
 
 ### 5. Set environmental variables
 
-_Morpheus_ uses Google Gemini for controlling the NPC actions. The app does not include a Google API key, it must be entered under "Options" in the app.
+_Morpheus_ uses Google Gemini or OpenAI GPT for controlling the NPC actions. The app does not include any API key, it must be entered under "Options" in the app.
 
 If you want to add your API key as preset, create a file called `.env.local`and put your API key inside:
 
 ```
-VITE_GEMINI_API_KEY=[your key]
+VITE_GEMINI_API_KEY=[your Google key]
+VITE_OPENAI_API_KEY=[your OpenAI key]
 ```
 
 You can also automatically activate storing your API key with your savegames:

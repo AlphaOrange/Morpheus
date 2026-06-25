@@ -7,6 +7,40 @@ features:
   talk: Have conversations with NPCs
   visual: Has images for characters and/or places
 versions:
+  - version: 0.9.0
+    updates: |-
+      **Stoppers**  
+      Stoppers a new kind of actions that only execute after all involved characters agree.
+      - New command `move with` allows to move with other characters if they accept
+      - AI characters decide on accept or decline
+      - New stopper message type to gather decisions for player characters
+      - AI characters now can ask other characters to move along
+
+      **AI**
+      - Include OpenAI as new API to use with models: gpt-5.4-mini, gpt-5.4-nano
+      - API access (both Google and OpenAI) is automatically checked after entering or changing key
+
+      **Books**
+      - New parameter for talk duration calculation: `talkDuration`
+      - New parameters for move duration calculation: `moveDurationRoom`, `moveDurationLocation`, `moveDurationDestination`
+      - New parameter for switching off player character states: `playerCharsHaveStates`
+
+      **Books**
+      - New book parameters for changing style of text generated: `base`, `dialog`, `narration`
+      - New character parameter `activity` for making characters more or less active
+      - New state parameter `regenerable` used for calculating AI sleep duration
+      - Allow locations without rooms (room will be automatically generated)
+      - Book parameter `introduction` is now shown to characters in beginning, supports placeholder %players%
+
+      **Misc + Bugfixes**
+      - Markup optimization
+      - Hint messages got sub-types with visual hints
+      - New command `--ids` lists all currently relevant IDs
+      - Dialog no longer scrolls on start
+      - many more
+    features: [maps, move, talk, states]
+    fullSupport: 0.9.0
+    minSupport: 0.8.0
   - version: 0.8.0
     updates: |-
       **States**

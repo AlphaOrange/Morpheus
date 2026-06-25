@@ -1,6 +1,6 @@
 # Writing Books
 
-_For Morpheus Version 0.8.0_
+_For Morpheus Version 0.9.0_
 
 This documentation contains a detailed specification for book structures and files. Following these specs enables you to write your own _Morpheus_ books that can be played in the _Morpheus_ app for interactive story games.
 
@@ -406,6 +406,8 @@ State files can be defined in two different places:
   - `below`: number between 0 and 100
     `hint`: a hint given to everyone in the room when state decreases below the `below` value. You can use "%selfname%" as placeholder for a character's name  
     _(optional - default: [])_
+- `regenerable`: should this be used to determine length of AI regeneration/sleep duration? Can be `true` or `false`  
+  _(optional - default: false)_
 
 Note: See "Character States" for more information about how states work in the game, how they change and what effects they have.
 
@@ -434,6 +436,7 @@ intervals:
 events:
   - above: 80
     hint: "You hear %selfname%'s stomach growl"
+regenerable: false
 ```
 
 ### Destination File
@@ -503,7 +506,8 @@ image: market.jpg
 
 ### Room File
 
-Rooms are the smallest type of places in the game. There must be at least one room in every location.  
+Rooms are the smallest type of places in the game. Rooms belong to locations. You can omit the rooms folder for a location completely,
+_Morpheus_ will then create one room for the location with the same name and description as the location.  
 The room file must have the same name as the room folder (the room ID) and contain the following items:
 
 - `name`: the room's name
