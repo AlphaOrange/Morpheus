@@ -1,4 +1,4 @@
-import { models, safetySettings } from '@/data/llm'
+import { models } from '@/data/llm'
 
 // Structure per entry:
 // [name, default value, save with book, allow user to change via command]
@@ -58,10 +58,7 @@ export default [
   ['aiModel', models[Object.keys(models)[0]][0], true, true],
   ['aiApiKey', import.meta.env.VITE_GEMINI_API_KEY, true, false], // false -> we don't want people to type their key during play
   ['aiApiKeyAllowSave', import.meta.env.VITE_ALLOW_SAVE_KEY === 'true', true, true],
-  ['aiSafetyHarassment', safetySettings.harassment, true, true],
-  ['aiSafetyHateSpeech', safetySettings.hateSpeech, true, true],
-  ['aiSafetySex', safetySettings.sex, true, true],
-  ['aiSafetyDangerous', safetySettings.dangerous, true, true],
+  ['aiSafety', 'none', true, true],
 
   // Opt-In Legal Consent
   ['legalAllowAI', import.meta.env.VITE_GENERAL_CONSENT === 'true', true, false],

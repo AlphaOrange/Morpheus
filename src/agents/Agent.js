@@ -95,7 +95,7 @@ ${this.responseExample}`
     const body = {
       model: this.options.aiModel,
       reasoning: { effort: 'low' },
-      instructions: this.systemPrompt,
+      instructions: this.systemPrompt + this.options.aiSafetyPromptOpenAi,
       input: prompt,
     }
 

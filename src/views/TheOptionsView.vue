@@ -40,35 +40,13 @@
             <input type="checkbox" id="idAiApiKeyAllowSave" v-model="options.aiApiKeyAllowSave" />
             <label for="idAiApiKeyAllowSave">Store key with savegame</label>
           </div>
-          <h3>Safety Settings:</h3>
+          <h3>AI Settings:</h3>
           <div class="input-group">
-            <label for="selectAiSafetyHarassment">Harassment:</label>
-            <select v-model="options.aiSafetyHarassment" id="selectAiSafetyHarassment">
-              <option value="BLOCK_NONE">None</option>
-              <option value="BLOCK_ONLY_HIGH">Low</option>
-              <option value="BLOCK_MEDIUM_AND_ABOVE">Medium</option>
-              <option value="BLOCK_LOW_AND_ABOVE">High</option>
-            </select>
-            <label for="selectAiSafetyHateSpeech">Hate Speech:</label>
-            <select v-model="options.aiSafetyHateSpeech" id="selectAiSafetyHateSpeech">
-              <option value="BLOCK_NONE">None</option>
-              <option value="BLOCK_ONLY_HIGH">Low</option>
-              <option value="BLOCK_MEDIUM_AND_ABOVE">Medium</option>
-              <option value="BLOCK_LOW_AND_ABOVE">High</option>
-            </select>
-            <label for="selectAiSafetySexual">Sexually Explicit: </label>
-            <select v-model="options.aiSafetySex" id="selectAiSafetySexual">
-              <option value="BLOCK_NONE">None</option>
-              <option value="BLOCK_ONLY_HIGH">Low</option>
-              <option value="BLOCK_MEDIUM_AND_ABOVE">Medium</option>
-              <option value="BLOCK_LOW_AND_ABOVE">High</option>
-            </select>
-            <label for="selectAiSafetyDangerous">Dangerous Content: </label>
-            <select v-model="options.aiSafetyDangerous" id="selectAiSafetyDangerous">
-              <option value="BLOCK_NONE">None</option>
-              <option value="BLOCK_ONLY_HIGH">Low</option>
-              <option value="BLOCK_MEDIUM_AND_ABOVE">Medium</option>
-              <option value="BLOCK_LOW_AND_ABOVE">High</option>
+            <label for="selectAiSafety">AI Safety Moderation</label>
+            <select v-model="options.aiSafety" id="selectAiSafety">
+              <option value="none">None</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
             </select>
             <p>
               Safety Settings work <i>in addition</i> to the inherent safety of the model in use.

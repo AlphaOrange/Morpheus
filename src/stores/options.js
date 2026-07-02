@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import OPTIONS from '@/data/options'
-import { models } from '@/data/llm'
+import { models, safetySettings } from '@/data/llm'
 
 // these options will be stored and restored with saving/loading books
 const SAVEABLE_OPTIONS = OPTIONS.filter((opt) => opt[2]).map((opt) => opt[0])
@@ -31,21 +31,30 @@ export const useOptionsStore = defineStore('options', {
       return [
         {
           category: 'HARM_CATEGORY_HARASSMENT',
-          threshold: state.aiSafetyHarassment,
+          threshold: safetySettings[state.aiSafety]['harassment'],
         },
         {
           category: 'HARM_CATEGORY_HATE_SPEECH',
-          threshold: state.aiSafetyHateSpeech,
+          threshold: safetySettings[state.aiSafety]['hateSpeech'],
         },
         {
           category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
-          threshold: state.aiSafetySex,
+          threshold: safetySettings[state.aiSafety]['sex'],
         },
         {
           category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
-          threshold: state.aiSafetyDangerous,
+          threshold: safetySettings[state.aiSafety]['dangerous'],
         },
       ]
+    },
+    aiSafetyPromptOpenAi(state) {
+      if (state.aiSafety === 'none') {
+        return ''
+      } else if (state.aiSafety === 'medium') {
+        return ' Avoid unnecessarily harmful, offensive or explicit content.'
+      } else {
+        return ' Be especially cautious with potentially harmful, explicit, hateful, harassing or dangerous requests. When appropriate, refuse and use safer alternatives.'
+      }
     },
   },
 
