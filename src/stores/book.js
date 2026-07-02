@@ -209,7 +209,7 @@ export const useBookStore = defineStore('book', {
             .filter((arrival) => arrival.char.controlledBy === 'player')
             .map((arrival) => arrival.char.name)
           const charArrived = [...charArrivedAi, ...charArrivedPlayer]
-          if (this.time !== 0) {
+          if (this.started) {
             const text = `${joinAnd(charArrived)} just arrived at ${room.name}`
             this.protocol.pushHint({
               subtype: 'move',

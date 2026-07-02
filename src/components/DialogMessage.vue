@@ -181,7 +181,7 @@ const messageText = (message) => {
   }
 }
 const timestamp = (message) => {
-  if (message.time) {
+  if (Object.keys(message).includes('time')) {
     return formatTime({ datetime: bookStore.toGametime(message.time) })
   }
   return ''
