@@ -7,11 +7,7 @@
     </div>
     <div class="box showreel">
       <div>
-        <img
-          class="img-world"
-          :src="genericImg({ filename: 'generic_world.jpg', size: 'L' })"
-          alt="A Fantasy World"
-        />
+        <img class="img-world" :src="world1" alt="A Fantasy World" />
         <div class="image-text">Travel to fantastic worlds</div>
       </div>
       <div>
@@ -24,21 +20,14 @@
       </div>
       <div>
         <div class="collection-chars">
-          <img
-            class="img-char"
-            :src="genericImg({ filename: 'generic_female.jpg', size: 'L' })"
-            alt="A Story Character"
-          />
+          <img class="img-char" :src="char1" alt="A Story Character" />
           <img
             class="img-char"
             :src="genericImg({ filename: 'generic_diverse.jpg', size: 'L' })"
             alt="A Story Character"
           />
-          <img
-            class="img-char"
-            :src="genericImg({ filename: 'generic_male.jpg', size: 'L' })"
-            alt="A Story Character"
-          />
+          <img class="img-char" :src="char2" alt="A Story Character" />
+          <img class="img-char" :src="char3" alt="A Story Character" />
         </div>
         <div class="image-text">Meet peculiar personalities</div>
       </div>
@@ -93,6 +82,10 @@
 import { computed } from 'vue'
 import { genericImg, bookImg } from '@/helpers/utils'
 import logoImg from '@/assets/images/logo_transparent.png'
+import world1 from '@/assets/images/world1.jpg'
+import char1 from '@/assets/images/char1.jpg'
+import char2 from '@/assets/images/char2.jpg'
+import char3 from '@/assets/images/char3.jpg'
 
 import { useShelfStore } from '@/stores/shelf'
 const shelf = useShelfStore()
