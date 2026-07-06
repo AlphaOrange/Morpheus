@@ -13,7 +13,7 @@ export const defaultsBookStyle = {
   dialog: 'No long monologues, we want a lively quick dialogue.',
   narration: 'Use it sparse and concise.',
 }
-export const defaultsBookOptions = {
+export const defaultsBookSettings = {
   // Durations
   talkDuration: 30,
   moveDurationRoom: 0,

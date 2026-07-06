@@ -17,7 +17,7 @@ import {
   defaultsBook,
   defaultsBookStart,
   defaultsBookStyle,
-  defaultsBookOptions,
+  defaultsBookSettings,
 } from '@/data/defaults'
 import { useOptionsStore } from '@/stores/options'
 
@@ -434,7 +434,7 @@ export const useBookStore = defineStore('book', {
       const data = { ...defaultsBook, ...rawData }
       data.start = { ...defaultsBookStart, ...data.start }
       data.style = { ...defaultsBookStyle, ...(data.style ?? {}) }
-      data.options = { ...defaultsBookOptions, ...(data.options ?? {}) }
+      data.settings = { ...defaultsBookSettings, ...(data.settings ?? {}) }
 
       this.id = data.id
       this.author = data.author
@@ -454,8 +454,8 @@ export const useBookStore = defineStore('book', {
       }
       this.introduction = data.start.introduction
 
-      // Set book options in options
-      Object.keys(defaultsBookOptions).forEach((key) => (this.options[key] = data.options[key]))
+      // Set book settings in options
+      Object.keys(defaultsBookSettings).forEach((key) => (this.options[key] = data.settings[key]))
     },
 
     // Helper for collecting all rooms by id
