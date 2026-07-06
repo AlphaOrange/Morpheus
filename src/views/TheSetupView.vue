@@ -54,7 +54,17 @@
           </div>
         </div>
         <div class="box">
-          <h3>Book Features</h3>
+          <h3>Book Options</h3>
+          <div class="input-group">
+            <template v-for="option in setupOptions" :key="option.tag">
+              <input type="checkbox" :id="`idBookOption_${option.tag}`" />
+              <label :for="`idBookOption_${option.tag}`">{{ option.description }}</label>
+              <br />
+            </template>
+          </div>
+        </div>
+        <div class="box">
+          <h3>Game Features</h3>
           <div class="input-group">
             <input type="checkbox" id="idUsePlayerStates" v-model="options.usePlayerStates" />
             <label for="idUsePlayerStates">Player Character States</label>
@@ -120,7 +130,7 @@ import Agent from '@/agents/Agent'
 
 import { useBookStore } from '@/stores/book'
 const book = useBookStore()
-const { title, description, world, playableCharacters, coverL } = storeToRefs(book)
+const { title, description, world, playableCharacters, coverL, setupOptions } = storeToRefs(book)
 
 import { useOptionsStore } from '@/stores/options'
 const options = useOptionsStore()

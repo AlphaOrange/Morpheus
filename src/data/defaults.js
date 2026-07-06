@@ -3,6 +3,7 @@ export const defaultsBook = {
   tags: [],
   features: [],
   cover: '',
+  options: [],
 }
 export const defaultsBookStart = {
   datetime: '2020-01-01 12:00:00',
