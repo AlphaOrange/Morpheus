@@ -49,7 +49,7 @@ const setPreview = (book) => (previewBook.value = book)
 
 // Load selected book
 const loadBook = async (book) => {
-  await bookStore.loadBook(book.id)
+  await shelf.loadProtobook(book.id)
   router.push('/setup')
 }
 

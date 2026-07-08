@@ -36,10 +36,6 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  description: {
-    type: String,
-    default: 'default',
-  },
 })
 
 // Content for character busy indicators
@@ -66,11 +62,7 @@ const toggle = () => {
 }
 
 const shortDescription = computed(() => {
-  if (props.description === 'setup') {
-    return truncateString(props.character.selectionDescription, 300)
-  } else {
-    return truncateString(props.character.description, 120)
-  }
+  return truncateString(props.character.description, 120)
 })
 </script>
 

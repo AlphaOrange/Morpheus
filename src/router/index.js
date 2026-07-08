@@ -67,8 +67,8 @@ const router = createRouter({
       name: 'setup',
       component: () => import('@/views/TheSetupView.vue'),
       beforeEnter: () => {
-        const book = useBookStore()
-        if (!book.loaded) {
+        const shelf = useShelfStore()
+        if (shelf.protobook === null) {
           return '/'
         }
       },
