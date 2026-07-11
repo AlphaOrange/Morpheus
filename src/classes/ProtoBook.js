@@ -17,6 +17,11 @@ export default class ProtoBook {
         this.playableCharacters[char.id] = new Character(char, [])
       }
     }
+    this.playerCharacters = new Set()
+    this.optionValues = {}
+    for (const option of this.options) {
+      this.optionValues[option.tag] = option.default
+    }
   }
 
   get coverImage() {
@@ -33,5 +38,13 @@ export default class ProtoBook {
     } else {
       return genericImg({ filename: 'generic_world.jpg', size: 'M' })
     }
+  }
+
+  // Are all settings correct, ready to start?
+  ready() {
+    return (
+      this.playerCharacters.size >= this.settings.minPlayerChars &&
+      this.playerCharacters.size <= this.settings.maxPlayerChars
+    )
   }
 }

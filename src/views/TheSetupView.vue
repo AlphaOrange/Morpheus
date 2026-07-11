@@ -57,7 +57,11 @@
           <h3>Book Options</h3>
           <div class="input-group">
             <template v-for="option in protobook.options" :key="option.tag">
-              <input type="checkbox" :id="`idBookOption_${option.tag}`" />
+              <input
+                type="checkbox"
+                :id="`idBookOption_${option.tag}`"
+                v-model="protobook.optionValues[option.tag]"
+              />
               <label :for="`idBookOption_${option.tag}`">{{ option.description }}</label>
               <br />
             </template>
@@ -138,21 +142,20 @@ const options = useOptionsStore()
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
-const playerSelection = ref(new Set()) // selected player characters
 const apiKeyValid = ref(false)
 
 // Select or unselect character as player character
 const selectPlayer = (id) => {
-  if (playerSelection.value.has(id)) {
-    playerSelection.value.delete(id)
+  if (protobook.value.playerCharacters.has(id)) {
+    protobook.value.playerCharacters.delete(id)
   } else {
-    playerSelection.value.add(id)
+    protobook.value.playerCharacters.add(id)
   }
 }
 
 // Is a character (id) selected as player?
 const isSelected = (id) => {
-  if (playerSelection.value.has(id)) {
+  if (protobook.value.playerCharacters.has(id)) {
     return 'selected'
   } else {
     return ''
@@ -189,23 +192,19 @@ onMounted(apiCheck)
 watch(() => options.aiApiKey, apiCheck)
 
 // Check if settings are okay and user may start book
-const checkConditions = computed(() => {
-  return (
-    playerSelection.value.size >= protobook.value.settings.minPlayerChars &&
-    playerSelection.value.size <= protobook.value.settings.maxPlayerChars
-  )
-})
+const checkConditions = computed(() => protobook.value.ready())
 
 // Start the book
 const startBook = async () => {
-  // collect options
+  // protobook => book
+  // await shelf.startBook()
+  // await book.startBook()
   // create book
   // set options
   // start book
   // router push
-  book.classifyCharacters(playerSelection.value)
-  await book.startBook()
-  router.push('/book')
+  // book.classifyCharacters(playerSelection.value)
+  // router.push('/book')
 }
 </script>
 
