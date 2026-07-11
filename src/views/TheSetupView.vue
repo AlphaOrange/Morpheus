@@ -196,15 +196,8 @@ const checkConditions = computed(() => protobook.value.ready())
 
 // Start the book
 const startBook = async () => {
-  // protobook => book
-  // await shelf.startBook()
-  // await book.startBook()
-  // create book
-  // set options
-  // start book
-  // router push
-  // book.classifyCharacters(playerSelection.value)
-  // router.push('/book')
+  await shelf.startBook()
+  router.push('/book')
 }
 </script>
 

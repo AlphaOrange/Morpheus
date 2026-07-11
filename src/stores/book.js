@@ -160,8 +160,6 @@ export const useBookStore = defineStore('book', {
         aiCharacters: Object.fromEntries(
           Object.entries(this.aiCharacters).map(([key, obj]) => [key, obj.id]),
         ), // only store ids
-        states: this.states, // Do we need to save these?
-        agendas: this.agendas, // Do we need to save these?
         protocol: this.protocol, // stringify will convert character objects
         busyCharacterIDs: this.busyCharacterIDs,
         roomId: this.roomId,
@@ -498,79 +496,71 @@ export const useBookStore = defineStore('book', {
       this.started = started
     },
 
-    // load book content
-    async loadBook(id) {
+    // Last setup steps before start
+    async startBook(protobook) {
       this.$reset() // reset book to blank
       try {
-        // In case sth goes wrong the book is inactive
+        // In case something goes wrong make book inactive
         this.deactivateBook()
 
         // Load data
-        const response = await fetch(`/books/${id}/book.json`)
+        const response = await fetch(`/books/${protobook.id}/book.json`)
         const data = await response.json()
 
         // Store book base data
         this.assignBaseBookData(data)
-
-        // Store singular components
         this.world = new World(data.world)
 
         // Prepare state data
         const globalStates = data?.states ?? []
 
-        // Build and store components collections
+        // Create characters and destinations/locations/rooms
         this.buildCharacters(data.characters, (data) => new Character(data, globalStates))
         this.buildDestinations(data.destinations, (data) => new Destination(data))
         this.collectRooms()
-
-        // More components // TBD as classes .. maybe we don't even need these here but just pass to chars as prototype data
-        this.states = data.states
-        this.agendas = data.agendas
 
         // Set up start conditions
         this.roomId = data.start.destination + '/' + data.start.location + '/' + data.start.room
         this.wireCharacterRoomReferences()
 
-        // Book is now active but not yet started
-        this.activateBook(false)
+        // create list of player and ai characters
+        this.classifyCharacters(Array.from(protobook.playerCharacters))
+
+        // start fresh protocol
+        this.protocol = new Protocol(this.options, this)
+
+        // set characters to starting conditions
+        for (let id in this.playerCharacters) {
+          this.moveChar(id, this.room, 0)
+        }
+        for (let id in this.aiCharacters) {
+          const startRoom = this.rooms[this.characters[id].start]
+          this.moveChar(id, startRoom, 0)
+        }
+        this.addTime(0) // triggering arrivals and timed events at 0
+        this.updateRecentPlayerIDs() // set initial active player
+
+        // instantiate narrator and agents
+        this.narrator = new Narrator(this, this.protocol, this.options) // instantiate narrator
+        this.agents = { saveSummary: new SavegameSummaryAgent() } // instantiate agents
+
+        // Place starting message
+        const playerCharsAnd = joinAnd(
+          Object.values(this.playerCharacters).map((char) => char.name),
+        )
+        const present = this.room.availableCharacters.map((char) => char.id)
+        this.protocol.pushHint({
+          time: this.time,
+          text: this.introduction.replaceAll('%players%', playerCharsAnd),
+          room: this.roomId,
+          present,
+        })
+
+        // now activate book for play
+        this.activateBook()
       } catch (error) {
-        console.error('Error fetching book data with id ' + id, error)
+        console.error('Error starting book', error)
       }
-    },
-
-    // Last setup steps before start
-    async startBook() {
-      // start fresh protocol
-      this.protocol = new Protocol(this.options, this)
-
-      // build set of AI characters
-      const playerIds = Object.keys(this.playerCharacters)
-      this.classifyCharacters(playerIds)
-
-      // set characters to starting conditions
-      for (let id in this.playerCharacters) {
-        this.moveChar(id, this.room, 0)
-      }
-      for (let id in this.aiCharacters) {
-        const startRoom = this.rooms[this.characters[id].start]
-        this.moveChar(id, startRoom, 0)
-      }
-      this.addTime(0) // triggering arrivals and timed events at 0
-      this.updateRecentPlayerIDs() // set initial active player
-      this.narrator = new Narrator(this, this.protocol, this.options) // instantiate narrator
-      this.agents = { saveSummary: new SavegameSummaryAgent() } // instantiate agents
-
-      // Place starting message
-      const playerCharsAnd = joinAnd(Object.values(this.playerCharacters).map((char) => char.name))
-      const present = this.room.availableCharacters.map((char) => char.id)
-      this.protocol.pushHint({
-        time: this.time,
-        text: this.introduction.replaceAll('%players%', playerCharsAnd),
-        room: this.roomId,
-        present,
-      })
-
-      this.activateBook()
     },
 
     // restore book from savegame
@@ -596,17 +586,15 @@ export const useBookStore = defineStore('book', {
         this.classifyCharacters(Object.keys(data.playerCharacters))
 
         // more book data
-        this.states = data.states
-        this.agendas = data.agendas
         this.protocol = Protocol.fromJSON(data.protocol, this.options, this)
         this.busyCharacterIDs = data.busyCharacterIDs
         this.roomId = data.roomId
         this.time = data.time
         this.recentPlayerIDs = data.recentPlayerIDs
 
-        // instantiate narrator
+        // instantiate narrator and agents
         this.narrator = new Narrator(this, this.protocol, this.options)
-        this.agents = { saveSummary: new SavegameSummaryAgent() } // instantiate agents
+        this.agents = { saveSummary: new SavegameSummaryAgent() }
 
         // now activate book for play
         this.activateBook()

@@ -42,6 +42,9 @@ export const useShelfStore = defineStore('shelf', {
         console.error('Error fetching shelf data', error)
       }
     },
+    async startBook() {
+      await this.book.startBook(this.protobook)
+    },
     async saveBook() {
       // check if permission for localStorage was given
       if (!this.options.legalAllowLocalStorage) {
