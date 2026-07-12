@@ -12,6 +12,7 @@ import {
   joinAnd,
   genericImg,
   bookImg,
+  checkConditions,
 } from '@/helpers/utils'
 import {
   defaultsBook,
@@ -416,10 +417,15 @@ export const useBookStore = defineStore('book', {
     // ########## Loading and Construction ##########
 
     // Build Character objects using a factory (different for loading/restoring)
-    buildCharacters(rawCharacters, factory) {
+    buildCharacters(rawCharacters, factory, conditions) {
       this.characters = {}
       for (const id in rawCharacters) {
-        this.characters[id] = factory(rawCharacters[id])
+        if (
+          !rawCharacters[id].conditions ||
+          checkConditions(rawCharacters[id].conditions, conditions)
+        ) {
+          this.characters[id] = factory(rawCharacters[id])
+        }
       }
     },
     // Build Destination objects using a factory (different for loading/restoring)
@@ -515,7 +521,11 @@ export const useBookStore = defineStore('book', {
         const globalStates = data?.states ?? []
 
         // Create characters and destinations/locations/rooms
-        this.buildCharacters(data.characters, (data) => new Character(data, globalStates))
+        this.buildCharacters(
+          data.characters,
+          (data) => new Character(data, globalStates),
+          protobook.optionTags,
+        )
         this.buildDestinations(data.destinations, (data) => new Destination(data))
         this.collectRooms()
 

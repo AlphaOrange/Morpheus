@@ -56,6 +56,34 @@ export function sampleKey(obj) {
   }
 }
 
+// Check whether a set of tags satisfies a required condition
+export function checkConditions(required, provided) {
+  // empty array: no requirements, always satisfied
+  if (Array.isArray(required) && required.length === 0) {
+    return true
+  }
+
+  // string: single condition
+  if (typeof required === 'string') {
+    return provided.includes(required)
+  }
+
+  // Array: logical terms
+  if (Array.isArray(required)) {
+    // Array of strings -> OR
+    if (required.every((item) => typeof item === 'string')) {
+      return required.some((item) => provided.includes(item))
+    }
+
+    // Array of arrays -> AND (inner arrays still: OR)
+    if (required.every(Array.isArray)) {
+      return required.every((group) => checkConditions(provided, group))
+    }
+  }
+
+  throw new TypeError('Invalid required value')
+}
+
 // ----- Distance Calculation -----
 
 // Calculate distance to target and return as text

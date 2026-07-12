@@ -40,6 +40,16 @@ export default class ProtoBook {
     }
   }
 
+  get optionTags() {
+    let tags = []
+    for (let key in this.optionValues) {
+      if (this.optionValues[key]) {
+        tags.push(key)
+      }
+    }
+    return tags
+  }
+
   // Are all settings correct, ready to start?
   ready() {
     return (
