@@ -417,15 +417,10 @@ export const useBookStore = defineStore('book', {
     // ########## Loading and Construction ##########
 
     // Build Character objects using a factory (different for loading/restoring)
-    buildCharacters(rawCharacters, factory, conditions) {
+    buildCharacters(rawCharacters, factory) {
       this.characters = {}
-      for (const id in rawCharacters) {
-        if (
-          !rawCharacters[id].conditions ||
-          checkConditions(rawCharacters[id].conditions, conditions)
-        ) {
-          this.characters[id] = factory(rawCharacters[id])
-        }
+      for (const char of rawCharacters) {
+        this.characters[char.id] = factory(char)
       }
     },
     // Build Destination objects using a factory (different for loading/restoring)
@@ -521,11 +516,11 @@ export const useBookStore = defineStore('book', {
         const globalStates = data?.states ?? []
 
         // Create characters and destinations/locations/rooms
-        this.buildCharacters(
-          data.characters,
-          (data) => new Character(data, globalStates),
-          protobook.optionTags,
-        )
+        const characterList = Object.values(data.characters).filter((char) => {
+          return !char.conditions || checkConditions(char.conditions, protobook.optionTags)
+        })
+        console.log(characterList)
+        this.buildCharacters(characterList, (data) => new Character(data, globalStates))
         this.buildDestinations(data.destinations, (data) => new Destination(data))
         this.collectRooms()
 
@@ -585,7 +580,8 @@ export const useBookStore = defineStore('book', {
         this.world = World.fromJSON(data.world)
 
         // Create characters and destinations/locations/rooms
-        this.buildCharacters(data.characters, (data) => Character.fromJSON(data))
+        const characterList = Object.values(data.characters)
+        this.buildCharacters(characterList, (data) => Character.fromJSON(data))
         this.buildDestinations(data.destinations, (data) => Destination.fromJSON(data))
         this.collectRooms()
 
