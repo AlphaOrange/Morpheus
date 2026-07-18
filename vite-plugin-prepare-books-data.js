@@ -6,29 +6,34 @@ import yaml from 'js-yaml'
 import chokidar from 'chokidar'
 
 // Prefix images in json
-function _prefixImages(json, prefix) {
+function _prefixImages(json, nesting) {
   // If the value is an array → recurse on each element
   if (Array.isArray(json)) {
-    return json.map((item) => _prefixImages(item, prefix))
+    return json.map((item) => _prefixImages(item, nesting))
   }
 
   // If the value is an object → recurse on each property
   if (json && typeof json === 'object') {
     const result = {}
     for (const key in json) {
-      result[key] = _prefixImages(json[key], prefix)
+      result[key] = _prefixImages(json[key], nesting)
     }
     return result
   }
 
+  // Prepare the in place prefix
+  let prefix = ''
+  if (nesting.length > 1) {
+    prefix = nesting.slice(1).join('_') + '_'
+  }
+
   // If the value is a string → check if it's an image filename
   if (typeof json === 'string') {
-    // If begins with /, just remove at and do not prefix
-    if (json.match(/\/.+\.(jpg|jpeg|png)$/i)) {
-      return json.substring(1)
-    }
-    // Otherwse prefix image filenames
-    if (json.match(/\.(jpg|jpeg|png)$/i)) {
+    if (json.match(/^\/.+\.(jpg|jpeg|png)$/i)) {
+      // Starts with /: images folder file => image folder prefix
+      return 'images' + json
+    } else if (json.match(/.+\.(jpg|jpeg|png)$/i)) {
+      // Else: same folder file => nesting path prefix
       return prefix + json
     }
   }
@@ -58,9 +63,7 @@ function _readDeepYaml(inputPath, nesting) {
         const bookYaml = readFileSync(entryPath, 'utf-8')
         let parsed = yaml.load(bookYaml)
         // Prefix images from deeper files
-        if (nesting.length > 1) {
-          parsed = _prefixImages(parsed, nesting.slice(1).join('_') + '_')
-        }
+        parsed = _prefixImages(parsed, nesting)
         const id = basename(entry.name, '.yaml')
         if (id !== nesting.slice(-1)[0]) {
           content[id] = parsed

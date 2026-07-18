@@ -30,12 +30,12 @@ const SIZES = {
         height: 630,
       },
       M: {
-        width: 150,
-        height: 186,
+        width: 200,
+        height: 280,
       },
       S: {
         width: 75,
-        height: 93,
+        height: 105,
       },
     },
   },
@@ -73,8 +73,13 @@ function _collectImages(inputBookDir, trace, outputImageDir) {
       if (['.png', '.jpg', '.jpeg'].includes(ext)) {
         const srcPath = join(inputDir, entry.name)
         const destFilename = [...trace, entry.name].join('_')
-        const destPath = join(outputImageDir, destFilename)
-        mkdirSync(outputImageDir, { recursive: true })
+        let destPath
+        if (trace[0] === 'images') {
+          destPath = join(outputImageDir, ...trace, entry.name)
+        } else {
+          destPath = join(outputImageDir, destFilename)
+        }
+        mkdirSync(dirname(destPath), { recursive: true })
         copyFileSync(srcPath, destPath)
         console.log(`🖼 Copied image: ${srcPath} => ${destPath}`)
       }
