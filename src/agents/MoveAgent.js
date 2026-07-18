@@ -42,13 +42,13 @@ export default class MoveAgent extends Agent {
     const room = actor.room
     const you_profile = actor.selfDescription
     const others_profiles = this.others_profiles({ actor: actor })
-    const place_description = room.describeMoveOptions()
+    const move_options = room.describeMoveOptions()
     const prompt = TEMPLATES.user
       .replace('%dialog%', dialog)
       .replaceAll('%you%', actor.name)
       .replace('%you_profile%', you_profile)
       .replace('%others_profiles%', others_profiles)
-      .replace('%place_description%', place_description)
+      .replace('%move_options%', move_options)
       .replace('%room%', room.name)
       .replace('%style_base%', this.book.style.base)
       .replace('%room_description%', room.enhancedDescription)

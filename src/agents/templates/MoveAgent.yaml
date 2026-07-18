@@ -21,9 +21,9 @@ user: |-
 
   %others_profiles%
 
-  ### YOU ARE HERE ###
+  ### MOVE OPTIONS ###
 
-  %place_description%
+  %move_options%
 
   ### INSTRUCTIONS ###
 

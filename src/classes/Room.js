@@ -131,10 +131,7 @@ export default class Room {
         return `- ${loc.name} [Type: location, ID: ${loc.commandId}]: ${loc.description} [takes time: ${time}]`
       })
       .join('\n')
-    const description = `**${this.name}**
-${this.description}
-
-Rooms you can go to:
+    const description = `Rooms you can go to:
 ${avRooms}
 
 Locations you can go to:
