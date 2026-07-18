@@ -1,15 +1,15 @@
 <template>
   <div class="vertical-center-flex">
     <div v-if="showTopBox" class="box">
-      <div v-if="movingchars" class="shelf horizontal-flex">
+      <div v-if="busychars" class="shelf horizontal-flex">
         <CharacterMarker
-          v-for="char in movingPlayerCharacters"
+          v-for="char in outsideBusyPlayerCharacters"
           :key="char.id"
           :character="char"
-          :icon="`person-walking`"
+          :icon="busyIconType(char)"
           :text="periodText(char.action.until - time)"
           @click="showProfile(char)"
-          class="moving-marker"
+          class="busy-marker"
         />
       </div>
       <div v-if="multiroom" class="shelf horizontal-flex item-selection">
@@ -147,7 +147,7 @@ const book = useBookStore()
 import { useOptionsStore } from '@/stores/options'
 const options = useOptionsStore()
 
-const { activeRooms, movingPlayerCharacters, activePlayerID, time, room } = storeToRefs(book)
+const { activeRooms, busyPlayerCharacters, activePlayerID, time, room } = storeToRefs(book)
 const emits = defineEmits(['talk', 'move', 'sleep', 'wake', 'runNarrator', 'save'])
 
 const switchTo = (room) => {
@@ -209,13 +209,25 @@ const save = () => {
 }
 
 const multiroom = computed(() => activeRooms.value.length > 1)
-const movingchars = computed(() => movingPlayerCharacters.value.length > 0)
-const showTopBox = computed(() => multiroom.value || movingchars.value)
+
+const outsideBusyPlayerCharacters = computed(() => {
+  return busyPlayerCharacters.value.filter((char) => !char.room || char.room.id !== room.value.id)
+})
+const busychars = computed(() => outsideBusyPlayerCharacters.value.length > 0)
+const showTopBox = computed(() => multiroom.value || busychars.value)
 const roomButtonClass = (room) => {
   if (room.id === book.roomId) {
     return ['selected-toned']
   } else {
     return []
+  }
+}
+
+const busyIconType = (char) => {
+  if (char.action.type === 'move') {
+    return 'person-walking'
+  } else if (char.action.type === 'sleep') {
+    return 'moon'
   }
 }
 
@@ -232,7 +244,7 @@ const showProfile = (character) => {
 * {
   user-select: none;
 }
-.moving-marker,
+.busy-marker,
 .char-header {
   cursor: pointer;
 }

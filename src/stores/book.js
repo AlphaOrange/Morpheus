@@ -113,10 +113,10 @@ export const useBookStore = defineStore('book', {
       return chars
     },
 
-    // Playable characters who are currently moving + time left
-    movingPlayerCharacters() {
+    // Playable characters who are currently busy
+    busyPlayerCharacters() {
       return Object.values(this.playerCharacters).filter(
-        (char) => this.busyCharacterIDs.includes(char.id) && char.action.type === 'move',
+        (char) => this.busyCharacterIDs.includes(char.id)
       )
     },
 
