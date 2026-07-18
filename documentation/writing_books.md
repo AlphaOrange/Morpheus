@@ -102,9 +102,13 @@ If you want to reference an image in the same folder, just use the filename:
 
 - `image: alice.jpg`
 
-If you want to reference an image in the root folder (the folder with your `book.yaml`), prepend with a slash `/`:
+You can also create a root folder `images` and put your images there. For references an image from the images folder, prepend with a slash `/`:
 
 - `image: /alice.jpg`
+
+If you want to organize your `images` folder with subfolders, you just need to use the whole path within your `image` folder for references:
+
+- `image: /characters/alice.jpg` (references to your book's `images/characters/alice.jpg`)
 
 ### Additional YAML files
 
