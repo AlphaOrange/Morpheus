@@ -87,6 +87,7 @@ export const defaultsLocation = {
 
 export const defaultsRoom = {
   description: 'No description',
+  description_detailed: '',
   image: '',
   actions: [],
 }

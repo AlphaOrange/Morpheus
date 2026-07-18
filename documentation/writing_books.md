@@ -513,6 +513,8 @@ The room file must have the same name as the room folder (the room ID) and conta
 - `name`: the room's name
 - `description`: a short description, try to stay under 200 characters  
   _(optional - default: "No description")_
+- `description_detailed`: a more detailed description that gives AI characters more information about the environment  
+  _(optional)_
 - `image`: name of an image file in the same folder, or "" for using the default room image  
   _(optional - default: "")_
 - `actions`: list of special actions that are enabled in this room, see "Special Character Actions" for list of possible entries  
@@ -529,6 +531,12 @@ description: >-
   The spice stand displays fragrant spices
   of all colors and shapes in small boxes
   and rainbow-colored test tubes.
+description_detailed: >-
+  The spice stand displays fragrant spices
+  of all colors and shapes in small boxes
+  and rainbow-colored test tubes.
+  There is salt, pepper, safran, cinnamon and lavender.
+  The stand is made of light wood and draped with red sheets.
 image: market.jpg
 actions: []
 ```

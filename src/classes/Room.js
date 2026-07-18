@@ -8,7 +8,7 @@ export default class Room {
 
   constructor(rawData, location, full = true) {
     const data = { ...defaultsRoom, ...rawData }
-    ;['name', 'description', 'actions'].forEach((key) => (this[key] = data[key]))
+    ;['name', 'description', 'description_detailed', 'actions'].forEach((key) => (this[key] = data[key]))
 
     // Derive unique ID from location
     this.location = location
@@ -140,7 +140,8 @@ ${avLocations}`
   }
 
   get enhancedDescription() {
-    return `${this.name}\n${this.description}`
+    const description = this.description_detailed === '' ? this.description : this.description_detailed
+    return `${this.name}\n${description}`
   }
 
   // Adding and removing characters
