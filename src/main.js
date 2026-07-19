@@ -16,7 +16,6 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import {
   faArrowLeft,
   faBan,
-  faBookAtlas,
   faBookBookmark,
   faBookmark,
   faBookOpenReader,
@@ -30,7 +29,6 @@ import {
   faDoorOpen,
   faFlag,
   faHourglassHalf,
-  faMapLocationDot,
   faMaximize,
   faMoon,
   faPersonWalking,
@@ -41,7 +39,6 @@ import {
 library.add(
   faArrowLeft,
   faBan,
-  faBookAtlas,
   faBookBookmark,
   faBookmark,
   faBookOpenReader,
@@ -55,7 +52,6 @@ library.add(
   faDoorOpen,
   faFlag,
   faHourglassHalf,
-  faMapLocationDot,
   faMaximize,
   faMoon,
   faPersonWalking,
