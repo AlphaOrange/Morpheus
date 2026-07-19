@@ -170,6 +170,12 @@ commands:
     `sleep [minutes] minutes`
     `sleep [hours] hours`
 
+    **TALK TO ALL THEN SLEEP FOR A CERTAIN AMOUNT OF TIME**
+
+    `[acting char id] sleep [minutes]: [message]`
+    `[acting char id] sleep [minutes] minutes: [message]`
+    `[acting char id] sleep [hours] hours: [message]`
+
     **WAKE SOMEONE UP (OPTIONAL TALK)**
 
     `[acting char id] wake [sleeping char id]`
@@ -242,6 +248,10 @@ natural:
     `sleep [minutes]`
     `sleep [hours] hours`
     Whole group goes to sleep for certain amount of time
+
+    `[acting char id] sleep [minutes]: [message]`
+    `[acting char id] sleep [hours] hours: [message]`
+    Talk to all, then go to sleep for certain amount of time
 
     `[acting char id] wake [sleeping char id]`
     Wake someone up
