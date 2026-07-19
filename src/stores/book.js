@@ -900,6 +900,16 @@ export const useBookStore = defineStore('book', {
           return
         }
 
+        // Check for validity of talk message
+        if (command.message !== null && command.actor === ':group') {
+          this.protocol.pushError({
+            time: this.time,
+            title: 'Invalid Command',
+            text: `You cannot send message for whole group before sleep.\n\nTried to say: "${command.message}"`,
+          })
+          return
+        }
+
         // Construct info message
         let charsSleeping
         if (command.actor === ':group') {
@@ -908,6 +918,18 @@ export const useBookStore = defineStore('book', {
           charsSleeping = [this.characters[command.actor].name]
         }
         const infoMessage = `${joinAnd(charsSleeping)} just went to sleep`
+
+        // Send TALK message
+        if (command.message !== null) {
+          this.protocol.pushTalk({
+            time: this.time,
+            text: command.message,
+            room: this.room.id,
+            present: present,
+            from: command.actor,
+            to: ':all',
+          })
+        }
 
         // Start sleeping periods
         if (command.actor === ':group') {

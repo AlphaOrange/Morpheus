@@ -119,7 +119,7 @@ const rx = {
   switch2: /^switch ([a-z0-9_]+)$/i, // switch taproom
   switch3: /^switch$/i, // switch (next room in the room row)
   wait: /^wait ([0-9]+) ?(min|mins|minute|minutes|hour|hours)?$/i, // wait x (minutes) (max 120 minutes)
-  sleep: /^(?:([a-z0-9_]+) )?sleep ([0-9]+) ?(min|mins|minute|minutes|hour|hours)?$/i, // sleep x (minutes) (max 720 minutes)
+  sleep: /^(?:([a-z0-9_]+) )?sleep ([0-9]+) ?(min|mins|minute|minutes|hour|hours)?(?::(.*))?$/i, // sleep x (minutes) (max 720 minutes)
   wake: /^(?:([a-z0-9_]+) )?wake ([a-z0-9_]+)(?::(.*))?$/is, // alice wake bob: Wake up!
 
   move_room: /^(?:([a-z0-9_]+) )?(move room |move to room )([a-z0-9_]+)(?::(.*))?$/is,
@@ -204,16 +204,24 @@ export function messageToCommand(message) {
     const actor = res[1] || ':group'
     const factor = res[3] && ['hour', 'hours'].includes(res[3]) ? 3600 : 60
     const sleepSeconds = Math.min(res[2] * factor, 720 * 60)
-    command = { action: 'sleep', actor: actor, seconds: sleepSeconds }
+    const msg = res[4] ? res[4].trim() : null
+    command = {
+      action: 'sleep',
+      actor: actor,
+      seconds: sleepSeconds,
+      message: msg,
+    }
     return command
   }
+
   // Wake someone up
   res = rx.wake.exec(message)
   if (res) {
-    let msg = res[3] ? res[3].trim() : null
+    const actor = res[1] || ':active'
+    const msg = res[3] ? res[3].trim() : null
     command = {
       action: 'wake',
-      actor: res[1] || ':active',
+      actor: actor,
       target: res[2].toLowerCase(),
       message: msg,
     }
