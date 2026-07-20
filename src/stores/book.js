@@ -24,9 +24,6 @@ import { useOptionsStore } from '@/stores/options'
 
 export const useBookStore = defineStore('book', {
   state: () => ({
-    // Setup Data
-    setupOptions: null,
-
     // Static Book Information
     id: null,
     author: null,
@@ -455,7 +452,6 @@ export const useBookStore = defineStore('book', {
         this.startTime = new Date(data.start.datetime)
       }
       this.introduction = data.start.introduction
-      this.setupOptions = data.options
 
       // Set book settings in options
       Object.keys(defaultsBookSettings).forEach((key) => (this.options[key] = data.settings[key]))
