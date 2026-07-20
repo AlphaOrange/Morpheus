@@ -1,4 +1,4 @@
-import { genericImg, bookImg } from '@/helpers/utils'
+import { genericImg, bookImg, checkConditions } from '@/helpers/utils'
 import { defaultsLocation } from '@/data/defaults'
 import Room from '@/classes/Room'
 
@@ -22,7 +22,10 @@ export default class Location {
   // only to be used in original construction, not restore
   fullConstructor(data) {
     if (data.rooms) {
-      for (let roomData of Object.values(data.rooms)) {
+      const roomList = Object.values(data.rooms).filter((room) => {
+        return !room.conditions || checkConditions(room.conditions, data.optionTags)
+      })
+      for (let roomData of roomList) {
         let room = new Room(roomData, this)
         this.rooms[room.id] = room
       }

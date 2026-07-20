@@ -423,8 +423,8 @@ export const useBookStore = defineStore('book', {
     // Build Destination objects using a factory (different for loading/restoring)
     buildDestinations(rawDestinations, factory) {
       this.destinations = {}
-      for (const id in rawDestinations) {
-        this.destinations[id] = factory(rawDestinations[id])
+      for (const dest of rawDestinations) {
+        this.destinations[dest.id] = factory(dest)
       }
     },
 
@@ -511,13 +511,20 @@ export const useBookStore = defineStore('book', {
         // Prepare state data
         const globalStates = data?.states ?? []
 
-        // Create characters and destinations/locations/rooms
+        // Create characters
         const characterList = Object.values(data.characters).filter((char) => {
           return !char.conditions || checkConditions(char.conditions, protobook.optionTags)
         })
-        console.log(characterList)
         this.buildCharacters(characterList, (data) => new Character(data, globalStates))
-        this.buildDestinations(data.destinations, (data) => new Destination(data))
+
+        // Create destinations/locations/rooms
+        const destinationList = Object.values(data.destinations).filter((dest) => {
+          return !dest.conditions || checkConditions(dest.conditions, protobook.optionTags)
+        })
+        this.buildDestinations(
+          destinationList,
+          (data) => new Destination({ ...data, optionTags: protobook.optionTags }),
+        )
         this.collectRooms()
 
         // Set up start conditions
@@ -578,7 +585,8 @@ export const useBookStore = defineStore('book', {
         // Create characters and destinations/locations/rooms
         const characterList = Object.values(data.characters)
         this.buildCharacters(characterList, (data) => Character.fromJSON(data))
-        this.buildDestinations(data.destinations, (data) => Destination.fromJSON(data))
+        const destinationList = Object.values(data.destinations)
+        this.buildDestinations(destinationList, (data) => Destination.fromJSON(data))
         this.collectRooms()
 
         // fix bidirectional referencing of characters and rooms

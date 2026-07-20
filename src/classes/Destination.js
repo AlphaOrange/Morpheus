@@ -1,4 +1,4 @@
-import { genericImg, bookImg } from '@/helpers/utils'
+import { genericImg, bookImg, checkConditions } from '@/helpers/utils'
 import { defaultsDestination } from '@/data/defaults'
 import Location from '@/classes/Location'
 
@@ -17,8 +17,11 @@ export default class Destination {
 
   // only to be used in original construction, not restore
   fullConstructor(data) {
-    for (let locationData of Object.values(data.locations)) {
-      let location = new Location(locationData, this)
+    const locationList = Object.values(data.locations).filter((location) => {
+      return !location.conditions || checkConditions(location.conditions, data.optionTags)
+    })
+    for (let locationData of locationList) {
+      let location = new Location({ ...locationData, optionTags: data.optionTags }, this)
       this.locations[location.id] = location
     }
     if (data.entry === '') {
