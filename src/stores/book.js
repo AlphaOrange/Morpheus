@@ -542,8 +542,11 @@ export const useBookStore = defineStore('book', {
           this.moveChar(id, this.room, 0)
         }
         for (let id in this.aiCharacters) {
-          const startRoom = this.rooms[this.characters[id].start]
-          this.moveChar(id, startRoom, 0)
+          // if room does not exist (e.g. if optional room) keep at null room
+          if (this.rooms[this.characters[id].start]) {
+            const startRoom = this.rooms[this.characters[id].start]
+            this.moveChar(id, startRoom, 0)
+          }
         }
         this.addTime(0) // triggering arrivals and timed events at 0
         this.updateRecentPlayerIDs() // set initial active player
