@@ -3,6 +3,7 @@ export const defaultsBook = {
   tags: [],
   features: [],
   cover: '',
+  options: [],
 }
 export const defaultsBookStart = {
   datetime: '2020-01-01 12:00:00',
@@ -13,7 +14,7 @@ export const defaultsBookStyle = {
   dialog: 'No long monologues, we want a lively quick dialogue.',
   narration: 'Use it sparse and concise.',
 }
-export const defaultsBookOptions = {
+export const defaultsBookSettings = {
   // Durations
   talkDuration: 30,
   moveDurationRoom: 0,

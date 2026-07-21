@@ -4,6 +4,7 @@ import { defineStore } from 'pinia'
 import { useOptionsStore } from '@/stores/options'
 import { useBookStore } from '@/stores/book'
 import ThePopupLocalStorage from '@/components/ThePopupLocalStorage.vue'
+import ProtoBook from '@/classes/ProtoBook'
 
 // Initial load of saveData
 const saveString = localStorage.getItem('savegame')
@@ -13,6 +14,7 @@ export const useShelfStore = defineStore('shelf', {
   state: () => ({
     books: [],
     saveData: saveData,
+    protobook: null,
     tokenUsage: 0,
   }),
 
@@ -40,6 +42,9 @@ export const useShelfStore = defineStore('shelf', {
         console.error('Error fetching shelf data', error)
       }
     },
+    async startBook() {
+      await this.book.startBook(this.protobook)
+    },
     async saveBook() {
       // check if permission for localStorage was given
       if (!this.options.legalAllowLocalStorage) {
@@ -65,6 +70,11 @@ export const useShelfStore = defineStore('shelf', {
           text: 'There was an error when trying to save the book progress.',
         })
       }
+    },
+    async loadProtobook(id) {
+      const response = await fetch(`/books/${id}/book.json`)
+      const data = await response.json()
+      this.protobook = new ProtoBook(data)
     },
     loadBook() {
       const saveString = localStorage.getItem('savegame')

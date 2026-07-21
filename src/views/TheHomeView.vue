@@ -118,14 +118,14 @@ const starterBook = computed(() => {
 const starterCover = computed(() => {
   console.log(starterBook.value)
   if (starterBook.value.cover) {
-    return bookImg({ filename: starterBook.value.cover, size: 'M', bookId: starterBook.value.id })
+    return bookImg({ filename: starterBook.value.cover, size: 'L', bookId: starterBook.value.id })
   } else {
-    return genericImg({ filename: 'generic_cover.jpg', size: 'M' })
+    return genericImg({ filename: 'generic_cover.jpg', size: 'L' })
   }
 })
 
 const runStarter = async () => {
-  await bookStore.loadBook(starterBook.value.id)
+  await shelf.loadProtobook(starterBook.value.id)
   router.push('/setup')
 }
 </script>

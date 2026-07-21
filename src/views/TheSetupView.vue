@@ -54,7 +54,21 @@
           </div>
         </div>
         <div class="box">
-          <h3>Book Features</h3>
+          <h3>Book Options</h3>
+          <div class="input-group">
+            <template v-for="option in protobook.options" :key="option.tag">
+              <input
+                type="checkbox"
+                :id="`idBookOption_${option.tag}`"
+                v-model="protobook.optionValues[option.tag]"
+              />
+              <label :for="`idBookOption_${option.tag}`">{{ option.description }}</label>
+              <br />
+            </template>
+          </div>
+        </div>
+        <div class="box">
+          <h3>Game Features</h3>
           <div class="input-group">
             <input type="checkbox" id="idUsePlayerStates" v-model="options.usePlayerStates" />
             <label for="idUsePlayerStates">Player Character States</label>
@@ -78,17 +92,17 @@
     <template #middleSlot>
       <div class="page-header">
         <h1>One more step</h1>
-        <p class="sub-heading">{{ title }}</p>
+        <p class="sub-heading">{{ protobook.title }}</p>
       </div>
       <div class="page-content">
         <h3>{{ headlineChooseChars }}</h3>
         <div class="horizontal-flex item-selection">
-          <CharacterInfoBox
-            v-for="char in playableCharacters"
+          <CharacterSetupBox
+            v-for="char in protobook.playableCharacters"
             :character="char"
+            :bookId="protobook.id"
             :key="char"
             :class="isSelected(char.id)"
-            description="setup"
             @click="selectPlayer(char.id)"
           />
         </div>
@@ -96,12 +110,12 @@
     </template>
     <template #rightSlot>
       <div class="vertical-center-flex">
-        <img class="cover" :src="coverL" />
+        <img class="cover" :src="protobook.coverImage" />
         <div class="book-info">
-          <span>{{ description }}</span>
-          <h3>{{ world.name }}</h3>
-          <img :src="world.imageM" />
-          {{ world.description }}
+          <span>{{ protobook.description }}</span>
+          <h3>{{ protobook.world.name }}</h3>
+          <img :src="protobook.worldImage" />
+          {{ protobook.world.description }}
         </div>
       </div>
     </template>
@@ -112,15 +126,15 @@
 import { computed, ref, watch, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import TheThirdsLayout from '@/layouts/TheThirdsLayout.vue'
-import CharacterInfoBox from '@/components/CharacterInfoBox.vue'
+import CharacterSetupBox from '@/components/CharacterSetupBox.vue'
 import ActionButton from '@/components/ActionButton.vue'
 import { models } from '@/data/llm'
 import { debounce } from '@/helpers/utils'
 import Agent from '@/agents/Agent'
 
-import { useBookStore } from '@/stores/book'
-const book = useBookStore()
-const { title, description, world, playableCharacters, coverL } = storeToRefs(book)
+import { useShelfStore } from '@/stores/shelf'
+const shelf = useShelfStore()
+const { protobook } = storeToRefs(shelf)
 
 import { useOptionsStore } from '@/stores/options'
 const options = useOptionsStore()
@@ -128,21 +142,20 @@ const options = useOptionsStore()
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
-const playerSelection = ref(new Set()) // selected player characters
 const apiKeyValid = ref(false)
 
 // Select or unselect character as player character
 const selectPlayer = (id) => {
-  if (playerSelection.value.has(id)) {
-    playerSelection.value.delete(id)
+  if (protobook.value.playerCharacters.has(id)) {
+    protobook.value.playerCharacters.delete(id)
   } else {
-    playerSelection.value.add(id)
+    protobook.value.playerCharacters.add(id)
   }
 }
 
 // Is a character (id) selected as player?
 const isSelected = (id) => {
-  if (playerSelection.value.has(id)) {
+  if (protobook.value.playerCharacters.has(id)) {
     return 'selected'
   } else {
     return ''
@@ -151,21 +164,21 @@ const isSelected = (id) => {
 
 // Character Choosing headline depending on allowed number of characters
 const headlineChooseChars = computed(() => {
-  if (options.minPlayerChars === options.maxPlayerChars) {
-    if (options.minPlayerChars === 1) {
+  if (protobook.value.settings.minPlayerChars === protobook.value.settings.maxPlayerChars) {
+    if (protobook.value.settings.minPlayerChars === 1) {
       return 'Choose your player character:'
     } else {
-      return `Choose ${options.minPlayerChars} player characters:`
+      return `Choose ${protobook.value.settings.minPlayerChars} player characters:`
     }
   } else {
-    if (options.maxPlayerChars === 99) {
-      if (options.minPlayerChars === 1) {
+    if (protobook.value.settings.maxPlayerChars === 99) {
+      if (protobook.value.settings.minPlayerChars === 1) {
         return `Choose at least 1 player character:`
       } else {
-        return `Choose at least ${options.minPlayerChars} player characters:`
+        return `Choose at least ${protobook.value.settings.minPlayerChars} player characters:`
       }
     } else {
-      return `Choose ${options.minPlayerChars} to ${options.maxPlayerChars} player characters:`
+      return `Choose ${protobook.value.settings.minPlayerChars} to ${protobook.value.settings.maxPlayerChars} player characters:`
     }
   }
 })
@@ -179,17 +192,11 @@ onMounted(apiCheck)
 watch(() => options.aiApiKey, apiCheck)
 
 // Check if settings are okay and user may start book
-const checkConditions = computed(() => {
-  return (
-    playerSelection.value.size >= options.minPlayerChars &&
-    playerSelection.value.size <= options.maxPlayerChars
-  )
-})
+const checkConditions = computed(() => protobook.value.ready())
 
 // Start the book
 const startBook = async () => {
-  book.classifyCharacters(playerSelection.value)
-  await book.startBook()
+  await shelf.startBook()
   router.push('/book')
 }
 </script>
