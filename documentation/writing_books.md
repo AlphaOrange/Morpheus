@@ -219,8 +219,14 @@ There must be exactly one book file and it must be named `book.yaml`. The book f
     _(optional - default: "No long monologues, we want a lively quick dialogue.")_
   - `narration`: Instruction on how to you narrative notes in dialog like gesture and facial expressions  
     _(optional - default: "Use it sparse and concise.")_
-- `options`: an object with book options - see "Book Options"  
-  _(completely optional, all options entries optional - see "Book Options" for defaults)_
+- `settings`: an object with book settings - see "Book Settings"  
+  _(completely optional, all settings entries optional - see "Book Settings" for defaults)_
+- `options`: a list of options for the player to choose, each an object with entries:
+  - `tag`: short id string, avoid whitespace
+  - `description`: short description, stay below 80 characters
+  - `default`: true or false
+
+  _(optional - see "Book Options")_
 
 Make sure the IDs in `start` do not contradict each other.
 
@@ -253,9 +259,13 @@ start:
     %players% arrive at the Electric City in the morning.
     The town is full of lights and buzzing noises, but the streets
     are empty, so they enter the first building, the casino.
-options:
+settings:
   minPlayerChars: 1
   maxPlayerChars: 2
+options:
+  - tag: shop
+    description: Include the Shop
+    default: true
 ```
 
 ### World File
@@ -287,6 +297,8 @@ Each character in the game has their own folder and character file. A character 
 The character file must have the same name as the character folder (the character ID) and contain the following items:
 
 - `name`: character name
+- `conditions`: conditions string, see "Book Options"  
+  _(optional)_
 - `isPlayable`: if "true" the player can choose to control this character, otherwise set to "false"  
   _(optional - default: false)_
 - `isNPC`: if "true" the character will appear as an NPC in the game (if not playable _and_ chosen by the player)  
@@ -445,6 +457,8 @@ Destinations are the largest type of places in the game. There must be at least 
 The destination file must have the same name as the destination folder (the destination ID) and contain the following items:
 
 - `name`: the destination's name
+- `conditions`: conditions string, see "Book Options"  
+  _(optional)_
 - `description`: a short description, try to stay under 200 characters  
   _(optional - default: "No description")_
 - `position`: a list with two numbers, see "Position and Detour"  
@@ -477,6 +491,8 @@ Locations are the middle-size type of places in the game. There must be at least
 The location file must have the same name as the location folder (the location ID) and contain the following items:
 
 - `name`: the location's name
+- `conditions`: conditions string, see "Book Options"  
+  _(optional)_
 - `description`: a short description, try to stay under 200 characters  
   _(optional - default: "No description")_
 - `position`: a list with two numbers, see "Position and Detour"  
@@ -511,6 +527,8 @@ _Morpheus_ will then create one room for the location with the same name and des
 The room file must have the same name as the room folder (the room ID) and contain the following items:
 
 - `name`: the room's name
+- `conditions`: conditions string, see "Book Options"  
+  _(optional)_
 - `description`: a short description, try to stay under 200 characters  
   _(optional - default: "No description")_
 - `image`: name of an image file in the same folder, or "" for using the default room image  
@@ -537,7 +555,67 @@ actions: []
 
 #### Book Options
 
-In the book file you can define options for your book. The following options are available:
+With Book Options you can make content of your book optional. First you must make the options available to the users with the `options` parameter of the `book.yaml` file like this:
+
+```
+options:
+  - tag: kara
+    description: Include Cyber Detective Kara
+    default: false
+  - tag: shop
+    description: Include the Shop
+    default: true
+```
+
+`tag` serves as an identifier, `description` is the text shown to the user in the book setup and `default` is the pre-set of the option shown there.
+
+The following currently can be made optional in **Morpheus** books:
+
+- characters
+- destinations
+- locations
+- rooms
+
+All of these can have a `conditions` parameter in their respective .yaml files that decides whether they are available or not. For example, `shop.yaml` (for the shop location) can have this line:
+
+```
+conditions: 'shop'
+```
+
+Now the shop is only available if the condition with tag `shop` is switched on at game start. After the game has started this can not be changed again without starting a new game.
+
+If switched off, characters will just not appear in the game. Destinations, locations and rooms will not be available. Characters, that are positioned in any of these
+
+##### Advanced Conditions
+
+There are ways to construct complex conditions. You might not need them at the moment, but they will be more important in the future.
+
+```
+conditions: 'condition1'
+```
+
+This is the simplest condition. It is _true_ exactly if `condition1` is set to `true`.
+
+```
+conditions: ['condition1', 'condition2']
+conditions: ['condition1', 'condition2', 'condition3']
+...
+```
+
+This is the OR condition: If you put multiple condition tags in an array, the condition is _true_ if _at least_ once of the conditions is set to `true`. There can be any number of condition tags combined.
+
+```
+conditions: [['condition1', 'condition2'], ['condition3']]
+conditions: [['con1', 'con2', 'con3'], ['con4', 'con5'], ['con2', 'con6']]
+...
+```
+
+This is the AND condition: If you put multiple condition arrays in an array again, the condition is _true_ if _all_ of the OR conditions in the array are _true_.
+You can use any kind of combinations here, you can even use the same condition tag multiple times. You must not use simple strings as element of the AND array, always enclose it within brackets (see `'condition3'` in the example).
+
+#### Book Settings
+
+In the book file you can define settings for your book. The following settings are available:
 
 ##### Duration of Game Actions
 
@@ -547,23 +625,6 @@ In the book file you can define options for your book. The following options are
 - `moveDurationDestination` (Default: 3600) # Time in seconds required for arriving in another destination per travel distance unit -> see "Position and Detour" for calculation details
 
 _Example: Moving from a location at `position = [0, 0]` and `detour = 0` to another location at `position = [2, 0]` with `detour = 1` with `moveDurationLocation = 60` (default value) takes `3 * 60 = 180` seconds, so 3 minutes of in-game time._
-
-##### Narrative Instructions
-
-You can tweak the narrative style the AI follows for your book to give it a distinct feel. Therefore you can set the book's "style" parameter that can have any of the following entries:
-
-- `base`: This is used for all AI that is used for writing dialog and deciding on actions. Use this for tweaking the general behaviour of the characters in your world. Don't be too specific, don't write any specifics about how the dialog text should look like.  
-  Write in the "you" form, directly instructing an AI that controls the game world.
-  For example you could write "Your characters often behave irrational and change their mind by the minute." or "You are very meticulous and spell things out explicitly instead of just hinting at them."  
-  _The default value is an empty string: ""_
-- `dialog`: This is instructing the AI on how to write dialog, i.e. the way how the characters speak in general (for character-specific behaviour use `behavior` in individual character definitions).  
-  Write in the "you" form, directly instructing the _character_.  
-  For example you could instruct "Write lively, you want to sound exciting and engaging."  
-  _The default value is: "No long monologues, we want a lively quick dialogue."_
-- `narration`: This is instructing the AI on how to write the narrative notes (stage directions, actions description, there are a lot of labels for this), i.e. the descriptions of gesture, facial expressions, movements, little actions before, after and in between the sentences said by the characters.  
-  Write in the "you" form, directly instructing the _character_.  
-  For example you could instruct "You it extensive, the reader shall be able to pick up on every detail."
-  _The default value is: "Use it sparse and concise."_
 
 ##### Playable Number of Characters
 
@@ -643,6 +704,23 @@ If for example a character eats a chocolate bar, the AI then evaluates and proba
 AI characters do not act if not in a scene with at least one player character present (this is called "idling"). That also means AI characters can not decide to eat if hungry or to sleep if tired if no one is around. Therefore if you encounter an AI character that was idling for at least 1 hour, their state values are reset to the value defined by the state attribute `base`. It's also the start value for all characters.
 
 _NOTE: This only applies after longer idling. If an AI character accompanies you for a longer time they might need to eat and sleep explicitly just as your characters!_
+
+#### Narrative Instructions
+
+You can tweak the narrative style the AI follows for your book to give it a distinct feel. Therefore you can set the book's "style" parameter that can have any of the following entries:
+
+- `base`: This is used for all AI that is used for writing dialog and deciding on actions. Use this for tweaking the general behaviour of the characters in your world. Don't be too specific, don't write any specifics about how the dialog text should look like.  
+  Write in the "you" form, directly instructing an AI that controls the game world.
+  For example you could write "Your characters often behave irrational and change their mind by the minute." or "You are very meticulous and spell things out explicitly instead of just hinting at them."  
+  _The default value is an empty string: ""_
+- `dialog`: This is instructing the AI on how to write dialog, i.e. the way how the characters speak in general (for character-specific behaviour use `behavior` in individual character definitions).  
+  Write in the "you" form, directly instructing the _character_.  
+  For example you could instruct "Write lively, you want to sound exciting and engaging."  
+  _The default value is: "No long monologues, we want a lively quick dialogue."_
+- `narration`: This is instructing the AI on how to write the narrative notes (stage directions, actions description, there are a lot of labels for this), i.e. the descriptions of gesture, facial expressions, movements, little actions before, after and in between the sentences said by the characters.  
+  Write in the "you" form, directly instructing the _character_.  
+  For example you could instruct "You it extensive, the reader shall be able to pick up on every detail."
+  _The default value is: "Use it sparse and concise."_
 
 #### Position and Detour
 
