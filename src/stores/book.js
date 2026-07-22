@@ -116,8 +116,8 @@ export const useBookStore = defineStore('book', {
 
     // Playable characters who are currently busy
     busyPlayerCharacters() {
-      return Object.values(this.playerCharacters).filter(
-        (char) => this.busyCharacterIDs.includes(char.id)
+      return Object.values(this.playerCharacters).filter((char) =>
+        this.busyCharacterIDs.includes(char.id),
       )
     },
 

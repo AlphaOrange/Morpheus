@@ -33,6 +33,7 @@ export default class Location {
       // Use location as fallback for room (location/room hybrid)
       let room = new Room(
         {
+          id: data.id,
           name: this.name,
           description: this.description,
           image: this._image,
