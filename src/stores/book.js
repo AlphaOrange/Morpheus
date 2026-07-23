@@ -372,7 +372,11 @@ export const useBookStore = defineStore('book', {
           const destination = this.availableDestinations.find(
             (destination) => destination.commandId === targetId,
           )
-          return { target: destination, targetRoom: destination.entry, distanceTo: destination }
+          return {
+            target: destination,
+            targetRoom: destination.entry.entry,
+            distanceTo: destination,
+          }
         },
       }
       const resolver = resolvers[spec]
@@ -647,7 +651,7 @@ export const useBookStore = defineStore('book', {
       } else if (
         this.availableDestinations.map((dest) => dest.commandId).includes(command.target)
       ) {
-        return 'destinations'
+        return 'destination'
       } else {
         this.protocol.pushError({
           time: this.time,
