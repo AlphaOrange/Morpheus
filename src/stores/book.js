@@ -123,7 +123,11 @@ export const useBookStore = defineStore('book', {
 
     // Available Travel Targets
     availableDestinations: (state) => {
-      return Object.values(state.destinations).filter((dest) => dest.id !== state.destinationId)
+      if (state.rooms[state.roomId].actions.includes('travel')) {
+        return Object.values(state.destinations).filter((dest) => dest.id !== state.destinationId)
+      } else {
+        return []
+      }
     },
 
     // Rooms with current player characters
@@ -200,6 +204,11 @@ export const useBookStore = defineStore('book', {
       Object.keys(roomArrivals).forEach((roomId) => {
         const room = this.rooms[roomId]
         if (room.numberOfPlayers > 0) {
+          // Switch to this room if necessary
+          if (!this.activeRooms.map((room) => room.id).includes(this.roomId)) {
+            this.switchTo(room)
+          }
+          // Send hint
           const present = room.availableCharacters.map((char) => char.id)
           const charArrivedAi = roomArrivals[roomId]
             .filter((arrival) => arrival.char.controlledBy === 'ai')
@@ -256,7 +265,7 @@ export const useBookStore = defineStore('book', {
     handleEventHints(hints) {
       // Sent HINT messages for all rooms where player characters present
       for (const hint of hints) {
-        if (hint.room.numberOfPlayers > 0) {
+        if (hint.room && hint.room.numberOfPlayers > 0) {
           const present = hint.room.availableCharacters.map((char) => char.id)
           this.protocol.pushHint({
             subtype: 'info',
@@ -312,7 +321,6 @@ export const useBookStore = defineStore('book', {
       }, 99999999)
       if (finishTime > this.time) {
         this.addTime(finishTime - this.time)
-        this.switchTo(this.activeRooms[0])
       } else {
         console.error('Cannot jump to point in time with active players.')
       }
@@ -752,7 +760,11 @@ export const useBookStore = defineStore('book', {
             const spec = this.findSpec(command)
             command.spec = spec
           } catch {
-            return
+            this.protocol.pushError({
+              time: this.time,
+              title: 'Invalid Command',
+              text: `Could not resolve the move target: ${command.target}`,
+            })
           }
         }
 

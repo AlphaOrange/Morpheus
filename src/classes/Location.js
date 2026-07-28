@@ -37,6 +37,7 @@ export default class Location {
           name: this.name,
           description: this.description,
           image: this._image,
+          actions: data.actions ?? [],
         },
         this,
       )
