@@ -49,6 +49,16 @@
           :compact="compact"
         />
         <ActionButton
+          v-for="destination in availableDestinations"
+          :key="destination.id"
+          @click="moveToDestination(destination)"
+          :text="destination.name"
+          icon="person-walking"
+          :pill="pilltext(distancePeriodText(room, destination))"
+          :hint="destination.commandId"
+          :compact="compact"
+        />
+        <ActionButton
           v-if="room.hasAction('sleep')"
           @click="sleep6()"
           text="Sleep 6 Hours"
@@ -68,7 +78,7 @@
           v-if="room.numberOfPlayers + room.numberOfAis > 2"
           @click="talkToAll(char)"
           :text="'Talk to all'"
-          :icon="'comment'"
+          icon="comment"
           :compact="compact"
         />
         <ActionButton
@@ -76,7 +86,7 @@
           :key="partner.id"
           @click="talkTo(char, partner)"
           :text="`Talk to ${partner.name}`"
-          :icon="'comments'"
+          icon="comments"
           :compact="compact"
         />
         <ActionButton
@@ -92,7 +102,7 @@
           :key="avRoom.id"
           @click="moveCharToRoom(char, avRoom)"
           :text="avRoom.name"
-          :icon="'door-open'"
+          icon="door-open"
           :pill="pilltext(distancePeriodText(room, avRoom))"
           :hint="room.numberOfPlayers === 1 ? avRoom.commandId : null"
           :compact="compact"
@@ -102,9 +112,19 @@
           :key="location.id"
           @click="moveCharToLocation(char, location)"
           :text="location.name"
-          :icon="'person-walking'"
+          icon="person-walking"
           :pill="pilltext(distancePeriodText(room, location))"
           :hint="room.numberOfPlayers === 1 ? location.commandId : null"
+          :compact="compact"
+        />
+        <ActionButton
+          v-for="destination in availableDestinations"
+          :key="destination.id"
+          @click="moveCharToDestination(char, destination)"
+          :text="destination.name"
+          icon="person-walking"
+          :pill="pilltext(distancePeriodText(room, destination))"
+          :hint="room.numberOfPlayers === 1 ? destination.commandId : null"
           :compact="compact"
         />
         <ActionButton
@@ -147,7 +167,8 @@ const book = useBookStore()
 import { useOptionsStore } from '@/stores/options'
 const options = useOptionsStore()
 
-const { activeRooms, busyPlayerCharacters, activePlayerID, time, room } = storeToRefs(book)
+const { activeRooms, busyPlayerCharacters, activePlayerID, time, room, availableDestinations } =
+  storeToRefs(book)
 const emits = defineEmits(['talk', 'move', 'sleep', 'wake', 'runNarrator', 'save'])
 
 const switchTo = (room) => {
@@ -187,11 +208,17 @@ const moveToRoom = (room) => {
 const moveToLocation = (location) => {
   emits('move', { location })
 }
+const moveToDestination = (destination) => {
+  emits('move', { destination })
+}
 const moveCharToRoom = (char, room) => {
   emits('move', { room, char })
 }
 const moveCharToLocation = (char, location) => {
   emits('move', { location, char })
+}
+const moveCharToDestination = (char, destination) => {
+  emits('move', { destination, char })
 }
 const sleep6 = (char = null) => {
   emits('sleep', { char, duration: 360 })

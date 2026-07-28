@@ -64,7 +64,8 @@ const talk = function ({ fromChar, toChar = null } = {}) {
   messageBox.value?.setMessage(text)
 }
 
-const move = function ({ location = null, room = null, char = null } = {}) {
+// move + travel
+const move = function ({ destination = null, location = null, room = null, char = null } = {}) {
   let text
   if (location) {
     text = char
@@ -72,6 +73,10 @@ const move = function ({ location = null, room = null, char = null } = {}) {
       : 'move to location ' + location.commandId
   } else if (room) {
     text = char ? char.id + ' move to room ' + room.commandId : 'move to room ' + room.commandId
+  } else if (destination) {
+    text = char
+      ? char.id + ' travel to ' + destination.commandId
+      : 'travel to ' + destination.commandId
   }
   if (text) messageBox.value?.setMessage(text)
 }
