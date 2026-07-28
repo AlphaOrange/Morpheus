@@ -124,20 +124,20 @@ commands:
 
     **TRAVEL TO ANOTHER DESTINATION**
 
-    `[acting char id] move to destination [destination id]`
-    `[acting char id] move destination [destination id]`
+    `[acting char id] travel to [destination id]`
+    `[acting char id] travel [destination id]`
     `[acting char id]>>>[destination id]`
 
     **TRAVEL WHOLE GROUP TO ANOTHER DESTINATION**
 
-    `move to destination [destination id]`
-    `move destination [destination id]`
+    `travel to [destination id]`
+    `travel [destination id]`
     `>>>[destination id]`
 
     **TALK TO ALL THEN TRAVEL TO ANOTHER DESTINATION**
 
-    `[acting char id] move to destination [destination id]: [message]`
-    `[acting char id] move destination [destination id]: [message]`
+    `[acting char id] travel to [destination id]: [message]`
+    `[acting char id] travel [destination id]: [message]`
     `[acting char id]>>>[destination id]: [message]`
 
     **MOVE TO ANOTHER ROOM/LOCATION/DESTINATION**
@@ -230,14 +230,14 @@ natural:
     `[acting char id] move to location [location id]: [message]`
     Talk to all, then move to another location
 
-    `[acting char id] move to destination [destination id]`
+    `[acting char id] travel to [destination id]`
     Travel to another destination
 
-    `move to destination [destination id]`
-    Whole group travel to another location
+    `travel to [destination id]`
+    Whole group travel to another destination
 
-    `[acting char id] move to destination [destination id]: [message]`
-    Talk to all, then whole group travel to another location
+    `[acting char id] travel to [destination id]: [message]`
+    Talk to all, then whole group travel to another destination
 
     **SLEEP AND WAKE UP COMMANDS**
 
@@ -313,10 +313,10 @@ short:
     Travel to another destination
 
     `>>>[destination id]`
-    Whole group travel to another location
+    Whole group travel to another destination
 
     `[acting char id]>>>[destination id]: [message]`
-    Talk to all, then whole group travel to another location
+    Talk to all, then whole group travel to another destination
 
     _Note: There are action without short commands that are not listed here_
 meta:

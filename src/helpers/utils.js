@@ -152,24 +152,23 @@ const rx = {
 
   move_room: /^(?:([a-z0-9_]+) )?(move room |move to room )([a-z0-9_]+)(?::(.*))?$/is,
   move_location: /^(?:([a-z0-9_]+) )?(move location |move to location )([a-z0-9_]+)(?::(.*))?$/is,
-  move_destination:
-    /^(?:([a-z0-9_]+) )?(move destination |move to destination )([a-z0-9_]+)(?::(.*))?$/is,
+  travel: /^(?:([a-z0-9_]+) )?(travel |travel to )([a-z0-9_]+)(?::(.*))?$/is, // was: "move to destination"
   move_undefined: /^(?:([a-z0-9_]+) )?(move |move to )([a-z0-9_]+)(?::(.*))?$/is,
   move2_room: /^([a-z0-9_]+)? ?(>) ?([a-z0-9_]+)(?::(.*))?$/is,
   move2_location: /^([a-z0-9_]+)? ?(>>) ?([a-z0-9_]+)(?::(.*))?$/is,
-  move2_destination: /^([a-z0-9_]+)? ?(>>>) ?([a-z0-9_]+)(?::(.*))?$/is,
+  travel2: /^([a-z0-9_]+)? ?(>>>) ?([a-z0-9_]+)(?::(.*))?$/is,
 
   movewith_room:
     /^(?:([a-z0-9_]+) )?(move room |move to room )([a-z0-9_]+) with ([a-z0-9_, ]+)(?::(.*))?$/is,
   movewith_location:
     /^(?:([a-z0-9_]+) )?(move location |move to location )([a-z0-9_]+) with ([a-z0-9_, ]+)(?::(.*))?$/is,
-  movewith_destination:
-    /^(?:([a-z0-9_]+) )?(move destination |move to destination )([a-z0-9_]+) with ([a-z0-9_, ]+)(?::(.*))?$/is,
+  travelwith:
+    /^(?:([a-z0-9_]+) )?(travel |travel to )([a-z0-9_]+) with ([a-z0-9_, ]+)(?::(.*))?$/is,
   movewith_undefined:
     /^(?:([a-z0-9_]+) )?(move |move to )([a-z0-9_]+) with ([a-z0-9_, ]+)(?::(.*))?$/is,
   movewith2_room: /^([a-z0-9_]+)? ?(>) ?([a-z0-9_]+) ?\/ ?([a-z0-9_, ]+)(?::(.*))?$/is,
   movewith2_location: /^([a-z0-9_]+)? ?(>>) ?([a-z0-9_]+) ?\/ ?([a-z0-9_, ]+)(?::(.*))?$/is,
-  movewith2_destination: /^([a-z0-9_]+)? ?(>>>) ?([a-z0-9_]+) ?\/ ?([a-z0-9_, ]+)(?::(.*))?$/is,
+  travelwith2: /^([a-z0-9_]+)? ?(>>>) ?([a-z0-9_]+) ?\/ ?([a-z0-9_, ]+)(?::(.*))?$/is,
 
   talk_colons: /^((?:[^:]+ ){6}.*)$/is, // after 6 spaces without colon, this is just a talk message and user may use colons
 
@@ -293,8 +292,8 @@ export function messageToCommand(message) {
     return command
   }
 
-  // Move to destination
-  res = rx.move_destination.exec(message) || rx.move2_destination.exec(message)
+  // Travel to destination
+  res = rx.travel.exec(message) || rx.travel2.exec(message)
   if (res) {
     let actor = res[1] || ':group'
     let msg = res[4] ? res[4].trim() : null
@@ -357,8 +356,8 @@ export function messageToCommand(message) {
     return command
   }
 
-  // Move with people to destination
-  res = rx.movewith_destination.exec(message) || rx.movewith2_destination.exec(message)
+  // Travel with people to destination
+  res = rx.travelwith.exec(message) || rx.travelwith2.exec(message)
   if (res) {
     let actor = res[1] || ':active'
     let msg = res[5] ? res[5].trim() : null
