@@ -42,11 +42,11 @@ const send = () => {
   } else if (lower === 'undo') {
     emits('undo')
   } else {
-    const rx_answer = /^(accept|decline)( [a-z]+)?$/i
+    const rx_answer = /^([a-z]+ )?(accept|decline)$/i
     const res_answer = rx_answer.exec(lower)
     if (res_answer) {
-      let charId = res_answer[2] ? res_answer[2].trim() : null
-      emits('answerStopper', { charId: charId, answer: res_answer[1] === 'accept' })
+      let charId = res_answer[1] ? res_answer[1].trim() : null
+      emits('answerStopper', { charId: charId, answer: res_answer[2] === 'accept' })
     } else {
       book.sendMessage(trimmed)
     }

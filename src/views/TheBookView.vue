@@ -99,7 +99,11 @@ const save = () => {
 }
 
 const undo = () => {
-  book.protocol.remove({})
+  if (book.protocol.hasStopper()) {
+    book.protocol.cancelStopper()
+  } else {
+    book.protocol.remove({})
+  }
 }
 
 const answerStopper = ({ charId, answer }) => {

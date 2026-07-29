@@ -185,6 +185,16 @@ commands:
 
     `wake [sleeping char id]`
     `wake [sleeping char id]: [message]`
+
+    **ACCEPT/DECLINE AN OFFER**
+
+    `[acting char id] accept`
+    `[acting char id] decline`
+
+    **WHOLE GROUP ACCEPT/DECLINE AN OFFER**
+
+    `accept`
+    `decline`
 natural:
   title: Natural Language Commands
   text: |-
@@ -264,6 +274,14 @@ natural:
 
     `wake [sleeping char id]: [message]`
     ⭐ character wake someone up and talk to them
+
+    `[acting char id] accept`
+    `[acting char id] decline`
+    Accept/decline an offer
+
+    `accept`
+    `decline`
+    Whole group accept/decline an offer
 short:
   title: Short Commands
   text: |-
@@ -334,6 +352,9 @@ meta:
     `switch [number]`
     `switch [room id]`
     Switch view to another active room (i.e. there is another player-controlled character). If command is just `switch` game switches to next active room in order, if there is a number it uses the order of the switch buttons in the upper left.
+
+    `undo`
+    Remove the most recent dialog message. If a decision box waits for an answer, the decision box is removed instead.
 
     `wait [minutes]`
     `wait [minutes] minutes`
