@@ -19,7 +19,7 @@
     <template #middleSlot>
       <div class="center">
         <div class="dialog-box">
-          <TheDialog ref="dialog" />
+          <TheDialog ref="dialog" @answerStopper="answerStopper" />
         </div>
         <TheMessageBox
           ref="messageBox"
@@ -27,6 +27,7 @@
           @runNarrator="manualNarrator"
           @save="save"
           @undo="undo"
+          @answerStopper="answerStopper"
         />
       </div>
     </template>
@@ -99,6 +100,16 @@ const save = () => {
 
 const undo = () => {
   book.protocol.remove({})
+}
+
+const answerStopper = ({ charId, answer }) => {
+  if (charId) {
+    book.protocol.answerStopper(charId, answer)
+  } else {
+    book.room.availablePlayerCharacters.forEach((char) => {
+      book.protocol.answerStopper(char.id, answer)
+    })
+  }
 }
 
 // --- running NPC actions on idling

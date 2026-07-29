@@ -19,7 +19,7 @@ import { ref, watch } from 'vue'
 import { useBookStore } from '@/stores/book'
 import { useOptionsStore } from '@/stores/options'
 
-const emits = defineEmits(['activity', 'runNarrator', 'save', 'undo'])
+const emits = defineEmits(['activity', 'runNarrator', 'save', 'undo', 'answerStopper'])
 
 const book = useBookStore()
 const options = useOptionsStore()
@@ -42,7 +42,14 @@ const send = () => {
   } else if (lower === 'undo') {
     emits('undo')
   } else {
-    book.sendMessage(trimmed)
+    const rx_answer = /^(accept|decline)( [a-z]+)?$/i
+    const res_answer = rx_answer.exec(lower)
+    if (res_answer) {
+      let charId = res_answer[2] ? res_answer[2].trim() : null
+      emits('answerStopper', { charId: charId, answer: res_answer[1] === 'accept' })
+    } else {
+      book.sendMessage(trimmed)
+    }
   }
   message.value = ''
 }

@@ -34,6 +34,8 @@ const bookStore = useBookStore()
 const { protocol } = storeToRefs(bookStore)
 const options = useOptionsStore()
 
+const emits = defineEmits(['answerStopper'])
+
 const dialog = computed(() => {
   // Get messages from protocol
   let dialog = protocol.value.filterDialog({ types: 'show' })
@@ -60,7 +62,7 @@ function removeMessage(message) {
 }
 
 function answerStopper({ charId, answer }) {
-  protocol.value.answerStopper(charId, answer)
+  emits('answerStopper', { charId, answer })
 }
 
 function cancelStopper() {
