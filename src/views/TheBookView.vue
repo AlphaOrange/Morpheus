@@ -8,11 +8,13 @@
         </div>
       </div>
       <TheActionBar
+        :narratorRunning="narratorRunning"
         @talk="talk"
         @move="move"
         @sleep="sleep"
         @wake="wake"
         @runNarrator="manualNarrator"
+        @stopNarrator="stopNarrator"
         @save="save"
       />
     </template>
@@ -25,6 +27,7 @@
           ref="messageBox"
           @activity="startNpcTimer"
           @runNarrator="manualNarrator"
+          @stopNarrator="stopNarrator"
           @save="save"
           @undo="undo"
           @answerStopper="answerStopper"
@@ -54,6 +57,7 @@ const shelf = useShelfStore()
 
 const dialog = ref(null)
 const messageBox = ref(null)
+const narratorRunning = ref(false)
 
 // --- Commands that manipulate the message box ---
 const talk = function ({ fromChar, toChar = null } = {}) {
@@ -120,25 +124,29 @@ const answerStopper = ({ charId, answer }) => {
 
 // Start and block NPC narrator
 const runNarrator = async function ({ force = false } = {}) {
-  narratorRunning = true
+  narratorRunning.value = true
   await book.narrator.run({ force })
-  narratorRunning = false
+  narratorRunning.value = false
   startNpcTimer()
 }
 
 // Looped timer for automatic NPC actions
 let npcTimeout = null
-let narratorRunning = false
 const startNpcTimer = () => {
-  if (narratorRunning) return
+  if (narratorRunning.value) return
   clearTimeout(npcTimeout)
   npcTimeout = setTimeout(runNarrator, options.idlingBeforeTriggerNpc * 1000)
 }
 
 // Manual NPC actions
 const manualNarrator = () => {
-  if (narratorRunning) return
+  if (narratorRunning.value) return
   runNarrator({ force: true })
+}
+
+const stopNarrator = () => {
+  clearTimeout(npcTimeout) // prevent subsequent narrator runs
+  book.narrator.stop() // stop narrator from executing current action
 }
 
 // start/stop with Book view, focus message box on entry

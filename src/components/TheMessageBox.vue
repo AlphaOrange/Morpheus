@@ -19,7 +19,14 @@ import { ref, watch } from 'vue'
 import { useBookStore } from '@/stores/book'
 import { useOptionsStore } from '@/stores/options'
 
-const emits = defineEmits(['activity', 'runNarrator', 'save', 'undo', 'answerStopper'])
+const emits = defineEmits([
+  'activity',
+  'runNarrator',
+  'stopNarrator',
+  'save',
+  'undo',
+  'answerStopper',
+])
 
 const book = useBookStore()
 const options = useOptionsStore()
@@ -37,6 +44,8 @@ const send = () => {
   const lower = trimmed.toLowerCase()
   if (lower === 'skip') {
     emits('runNarrator')
+  } else if (lower === 'stop') {
+    emits('stopNarrator')
   } else if (lower === 'save') {
     emits('save')
   } else if (lower === 'undo') {

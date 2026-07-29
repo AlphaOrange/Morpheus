@@ -13,6 +13,7 @@ export default class Narrator {
   // Narrator does not hold any game data and does not need to be saved with the game
 
   running = false
+  abort = false
   updateQueue = []
 
   constructor(book, protocol, options) {
@@ -171,33 +172,39 @@ export default class Narrator {
     })
     if (!actorId) return false
 
-    // if state changed: return without action
+    // if state changed or narrator abort: return without action
     if (state.roomId !== this.book.roomId) return false
+    if (this.abort) return false
 
     if (action === 'talk') {
       let response = await this.runTalkAction({ actorId })
+      if (this.abort) return false
       if (state.roomId !== this.book.roomId) return false
       if (response.error) return false
       this.book.executeCommand(response.command)
       action = response.additionalAction
     }
 
-    // return if state changed
+    // return if state changed or narrator abort
     if (state.roomId !== this.book.roomId) return false
+    if (this.abort) return false
 
     // run additional action
     if (action === 'move') {
       let response = await this.runMoveAction({ actorId })
+      if (this.abort) return false
       if (!response || response.error) return false
       this.book.executeCommand(response.command)
     }
     if (action === 'sleep') {
       let response = await this.runSleepAction({ actorId })
+      if (this.abort) return false
       if (!response || response.error) return false
       this.book.executeCommand(response.command)
     }
     if (action === 'wake') {
       let response = await this.runWakeAction({ actorId })
+      if (this.abort) return false
       if (!response || response.error) return false
       this.book.executeCommand(response.command)
     }
@@ -232,13 +239,18 @@ export default class Narrator {
     for (let cycle = 1; cycle <= this.options.multiActionMaxCycles; cycle++) {
       again = false
       again = await this.runNPC({ cycle })
-      if (!again) break
+      if (!again || this.abort) break
       await new Promise((r) => setTimeout(r, this.options.waitBetweenNpcActions * 1000))
     }
 
     this.running = false
+    this.abort = false
     this.options.narratorRunning = false
     this.options.narratorRunningMessage = ''
+  }
+
+  stop() {
+    this.abort = true
   }
 
   // Main Action: update characters for state changes and goals one at a time

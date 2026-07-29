@@ -146,7 +146,14 @@
     <div class="box">
       <h3>User Actions</h3>
       <div class="button-list">
-        <ActionButton @click="runNarrator" text="Run NPCs" icon="circle-play" :compact="compact" />
+        <ActionButton
+          v-if="!narratorRunning"
+          @click="runNarrator"
+          text="Run NPCs"
+          icon="circle-play"
+          :compact="compact"
+        />
+        <ActionButton v-else @click="stopNarrator" text="Stop NPCs" icon="ban" :compact="compact" />
         <ActionButton @click="save" text="Save Book" icon="bookmark" :compact="compact" />
       </div>
     </div>
@@ -169,7 +176,15 @@ const options = useOptionsStore()
 
 const { activeRooms, busyPlayerCharacters, activePlayerID, time, room, availableDestinations } =
   storeToRefs(book)
-const emits = defineEmits(['talk', 'move', 'sleep', 'wake', 'runNarrator', 'save'])
+
+const props = defineProps({
+  narratorRunning: {
+    type: Boolean,
+    required: true,
+  },
+})
+
+const emits = defineEmits(['talk', 'move', 'sleep', 'wake', 'runNarrator', 'stopNarrator', 'save'])
 
 const switchTo = (room) => {
   book.switchTo(room)
@@ -230,6 +245,9 @@ const wake = (char, partner) => {
 // Emit meta commands
 const runNarrator = () => {
   emits('runNarrator')
+}
+const stopNarrator = () => {
+  emits('stopNarrator')
 }
 const save = () => {
   emits('save')
