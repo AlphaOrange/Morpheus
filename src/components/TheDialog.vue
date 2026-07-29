@@ -50,18 +50,13 @@ const dialog = computed(() => {
       room = message.room
       enhancedDialog.push({ type: 'structural', spec: 'room', room: room, undo: false })
     }
-    const removable = message.type === 'error'
-    enhancedDialog.push({ ...message, removable })
+    enhancedDialog.push(message)
   })
-  const lastMessage = enhancedDialog[enhancedDialog.length - 1]
-  if (lastMessage.type === 'talk') {
-    lastMessage.removable = true
-  }
   return enhancedDialog
 })
 
 function removeMessage(message) {
-  protocol.value.remove(message.id)
+  protocol.value.remove({ messageId: message.id })
 }
 
 function answerStopper({ charId, answer }) {

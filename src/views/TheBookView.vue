@@ -26,6 +26,7 @@
           @activity="startNpcTimer"
           @runNarrator="manualNarrator"
           @save="save"
+          @undo="undo"
         />
       </div>
     </template>
@@ -94,6 +95,10 @@ const wake = function ({ fromChar, toChar }) {
 
 const save = () => {
   shelf.saveBook()
+}
+
+const undo = () => {
+  book.protocol.remove({})
 }
 
 // --- running NPC actions on idling

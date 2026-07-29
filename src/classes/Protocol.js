@@ -141,6 +141,19 @@ export default class Protocol {
         dialog.push(filtered[i])
       }
     }
+
+    // add removable tag
+    dialog.map((message) => {
+      const removable = message.type === 'error'
+      return { ...message, removable }
+    })
+    if (dialog.length > 0) {
+      const lastMessage = dialog[dialog.length - 1]
+      if (lastMessage.type === 'talk') {
+        lastMessage.removable = true
+      }
+    }
+
     return dialog
   }
 
@@ -284,8 +297,15 @@ export default class Protocol {
   }
 
   // Remove a message
-  remove(messageId) {
-    this.messages = this.messages.filter((msg) => msg.id != messageId)
+  remove({ messageId = null }) {
+    if (messageId) {
+      this.messages = this.messages.filter((msg) => msg.id != messageId)
+    } else {
+      const lastMessage = this.messages.slice(-1)[0]
+      if (['talk', 'error'].includes(lastMessage.type)) {
+        this.messages.pop()
+      }
+    }
   }
 
   // Who has character charID last spoken to

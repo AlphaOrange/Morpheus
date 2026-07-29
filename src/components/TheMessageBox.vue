@@ -19,7 +19,7 @@ import { ref, watch } from 'vue'
 import { useBookStore } from '@/stores/book'
 import { useOptionsStore } from '@/stores/options'
 
-const emits = defineEmits(['activity', 'runNarrator', 'save'])
+const emits = defineEmits(['activity', 'runNarrator', 'save', 'undo'])
 
 const book = useBookStore()
 const options = useOptionsStore()
@@ -39,6 +39,8 @@ const send = () => {
     emits('runNarrator')
   } else if (lower === 'save') {
     emits('save')
+  } else if (lower === 'undo') {
+    emits('undo')
   } else {
     book.sendMessage(trimmed)
   }
