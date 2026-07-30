@@ -21,6 +21,21 @@
           {{ room.name }}<span class="hint hint-small">{{ room.commandId }}</span>
         </div>
       </div>
+      <div v-if="props.setting.type == 'room'">
+        <template v-if="props.setting.actions.includes('sleep')">
+          <h4>You can <i>sleep</i> here.</h4>
+        </template>
+        <template v-if="props.setting.actions.includes('travel')">
+          <h4>From here you can <i>travel</i> to</h4>
+          <div
+            v-for="destination in book.availableDestinations"
+            :key="destination.id"
+            class="hint-anchor"
+          >
+            {{ destination.name }}<span class="hint hint-small">{{ destination.commandId }}</span>
+          </div>
+        </template>
+      </div>
     </main>
   </div>
 </template>
@@ -28,6 +43,8 @@
 <script setup>
 import { computed, ref } from 'vue'
 import LightboxImage from '@/components/LightboxImage.vue'
+import { useBookStore } from '@/stores/book'
+const book = useBookStore()
 
 const props = defineProps({
   hint: {
