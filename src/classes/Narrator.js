@@ -13,7 +13,7 @@ export default class Narrator {
   // Narrator does not hold any game data and does not need to be saved with the game
 
   running = false
-  abort = false
+  blocked = false
   updateQueue = []
 
   constructor(book, protocol, options) {
@@ -172,39 +172,39 @@ export default class Narrator {
     })
     if (!actorId) return false
 
-    // if state changed or narrator abort: return without action
+    // if state changed or narrator blocked: return without action
     if (state.roomId !== this.book.roomId) return false
-    if (this.abort) return false
+    if (this.blocked) return false
 
     if (action === 'talk') {
       let response = await this.runTalkAction({ actorId })
-      if (this.abort) return false
+      if (this.blocked) return false
       if (state.roomId !== this.book.roomId) return false
       if (response.error) return false
       this.book.executeCommand(response.command)
       action = response.additionalAction
     }
 
-    // return if state changed or narrator abort
+    // return if state changed or narrator blocked
     if (state.roomId !== this.book.roomId) return false
-    if (this.abort) return false
+    if (this.blocked) return false
 
     // run additional action
     if (action === 'move') {
       let response = await this.runMoveAction({ actorId })
-      if (this.abort) return false
+      if (this.blocked) return false
       if (!response || response.error) return false
       this.book.executeCommand(response.command)
     }
     if (action === 'sleep') {
       let response = await this.runSleepAction({ actorId })
-      if (this.abort) return false
+      if (this.blocked) return false
       if (!response || response.error) return false
       this.book.executeCommand(response.command)
     }
     if (action === 'wake') {
       let response = await this.runWakeAction({ actorId })
-      if (this.abort) return false
+      if (this.blocked) return false
       if (!response || response.error) return false
       this.book.executeCommand(response.command)
     }
@@ -215,6 +215,7 @@ export default class Narrator {
   // Start an NPC action period
   async run({ force = false } = {}) {
     if (this.running) return
+    if (this.blocked) return
     if (this.protocol.hasStopper()) return
 
     if (!force) {
@@ -239,18 +240,22 @@ export default class Narrator {
     for (let cycle = 1; cycle <= this.options.multiActionMaxCycles; cycle++) {
       again = false
       again = await this.runNPC({ cycle })
-      if (!again || this.abort) break
+      if (!again || this.blocked) break
       await new Promise((r) => setTimeout(r, this.options.waitBetweenNpcActions * 1000))
     }
 
     this.running = false
-    this.abort = false
     this.options.narratorRunning = false
     this.options.narratorRunningMessage = ''
   }
 
+  // Stop current execution and block further running
   stop() {
-    this.abort = true
+    this.blocked = true
+  }
+  // Unblock, narrator will now run as usual again
+  unblock() {
+    this.blocked = false
   }
 
   // Main Action: update characters for state changes and goals one at a time

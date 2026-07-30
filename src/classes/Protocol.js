@@ -212,6 +212,7 @@ export default class Protocol {
       from: from,
       to: to,
     })
+    this.book.narrator.unblock()
   }
   pushAction({ time, action, room, present, from, to = ':all' }) {
     const scene = this.getScene({ time, room, present })
@@ -226,6 +227,7 @@ export default class Protocol {
       from: from,
       to: to,
     })
+    this.book.narrator.unblock()
   }
   pushHint({ time, text, room, present, to = ':all', subtype = 'default' }) {
     const scene = this.getScene({ time, room, present })

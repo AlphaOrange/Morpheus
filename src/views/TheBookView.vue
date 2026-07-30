@@ -145,7 +145,6 @@ const manualNarrator = () => {
 }
 
 const stopNarrator = () => {
-  clearTimeout(npcTimeout) // prevent subsequent narrator runs
   book.narrator.stop() // stop narrator from executing current action
 }
 

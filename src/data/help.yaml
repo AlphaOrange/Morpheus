@@ -348,6 +348,9 @@ meta:
     `skip`
     Manually trigger NPC actions. This only works if an NPC is present and it only triggers NPC evaluation which does not guarantee an NPC to actually talk or take action. You can use this for example after entering a new location or after an NPC just acted when the game usually waits for you to act first.
 
+    `stop`
+    Stop NPC actions currently running by AI. This only affects active NPC behaviour, it does not stop evaluation of state updates or answering decisions for example.
+
     `switch`
     `switch [number]`
     `switch [room id]`
