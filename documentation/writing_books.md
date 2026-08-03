@@ -743,11 +743,14 @@ Example: The characters are in room "Spices Stand" in the location "Market" and 
 
 - position of "Market": [2, 4]
 - position of "Inn": [1, 0]
-- because the market is very crowded it has a detour of 3.
+- because the market is very crowded it has a detour of 3, the detour for the inn is 0.
 
-Travel distance is now $\sqrt{(2-1)^2+(4-0)^2}+3 \approx 7.1$
+Travel distance is now $\sqrt{(2-1)^2+(4-0)^2}+3+0 \approx 7.1$
 
-_Currently in Morpheus a location distance of 1 is equivalent to 1 minute of moving, a destination distance of 1 is equivalent to 1 hour of moving - we will make this configurable in the future_
+_Usually in Morpheus a location distance of 1 is equivalent to 1 minute of moving, a destination distance of 1 is equivalent to 1 hour of moving - see "Book Settings" on how to change this_
+
+If current place and move target both have position [0, 0], _Morpheus_ will use a travel distance of 1 instead of 0.
+This way if you just omit `location` in location files and destination files and it defaults to [0, 0], moving still takes time - with default settings 1 minute for location change and 1 hour for destination change.s
 
 #### Special Character Actions
 

@@ -93,19 +93,37 @@ function distanceRooms(currentRoom, targetRoom) {
 }
 function distanceLocations(currentLocation, targetLocation) {
   const options = useOptionsStore()
-  const route = Math.sqrt(
-    (currentLocation.position[0] - targetLocation.position[0]) ** 2 +
-      (currentLocation.position[1] - targetLocation.position[1]) ** 2,
-  )
+  let route
+  if (
+    JSON.stringify(currentLocation.position) === '[0,0]' &&
+    JSON.stringify(targetLocation.position) === '[0,0]'
+  ) {
+    // assume book does not use distances
+    route = 1
+  } else {
+    route = Math.sqrt(
+      (currentLocation.position[0] - targetLocation.position[0]) ** 2 +
+        (currentLocation.position[1] - targetLocation.position[1]) ** 2,
+    )
+  }
   const detour = currentLocation.detour + targetLocation.detour
   return Math.round((route + detour) * options.moveDurationLocation)
 }
 function distanceDestinations(currentDestination, targetDestination) {
   const options = useOptionsStore()
-  const route = Math.sqrt(
-    (currentDestination.position[0] - targetDestination.position[0]) ** 2 +
-      (currentDestination.position[1] - targetDestination.position[1]) ** 2,
-  )
+  let route
+  if (
+    JSON.stringify(currentDestination.position) === '[0,0]' &&
+    JSON.stringify(targetDestination.position) === '[0,0]'
+  ) {
+    // assume book does not use distances
+    route = 1
+  } else {
+    route = Math.sqrt(
+      (currentDestination.position[0] - targetDestination.position[0]) ** 2 +
+        (currentDestination.position[1] - targetDestination.position[1]) ** 2,
+    )
+  }
   const detour = currentDestination.detour + targetDestination.detour
   return Math.round((route + detour) * options.moveDurationDestination)
 }
