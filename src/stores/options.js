@@ -82,6 +82,8 @@ export const useOptionsStore = defineStore('options', {
           this['aiApiKey'] = import.meta.env.VITE_GEMINI_API_KEY
         } else if (value === 'OpenAI') {
           this['aiApiKey'] = import.meta.env.VITE_OPENAI_API_KEY
+        } else if (value === 'DeepSeek') {
+          this['aiApiKey'] = import.meta.env.VITE_DEEPSEEK_API_KEY
         }
       }
       if (USER_OPTIONS.includes(option)) {

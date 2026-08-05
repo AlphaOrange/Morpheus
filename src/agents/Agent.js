@@ -143,6 +143,58 @@ ${this.responseExample}`
     }
   }
 
+  // Run on DeepSeek API
+  async query_deepseek(prompt, type = 'json') {
+    const body = {
+      model: this.options.aiModel,
+      messages: [
+        {
+          role: 'system',
+          content: this.systemPrompt + this.options.aiSafetyPromptOpenAi,
+        },
+        {
+          role: 'user',
+          content: prompt,
+        },
+      ],
+    }
+
+    if (type === 'json') {
+      body.response_format = {
+        type: 'json_object',
+      }
+    }
+
+    const response = await fetch('https://api.deepseek.com/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.options.aiApiKey}`,
+      },
+      body: JSON.stringify(body),
+    })
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      throw new Error(`DeepSeek API error: ${errorText}`)
+    }
+
+    const data = await response.json()
+    console.log(data)
+
+    const textContent = data.choices?.[0]?.message?.content
+    if (!textContent) {
+      throw new Error('No text output returned from model')
+    }
+
+    console.log('== RESPONSE ==\n' + textContent)
+
+    return {
+      text: textContent,
+      tokens: data.usage?.total_tokens || 0,
+    }
+  }
+
   // Check if API and model settings work
   async checkApi() {
     const prompt = 'Just answer: Okay'
@@ -152,6 +204,8 @@ ${this.responseExample}`
         response = await this.query_google(prompt, 'text')
       } else if (this.options.aiVendor === 'OpenAI') {
         response = await this.query_openai(prompt, 'text')
+      } else if (this.options.aiVendor === 'DeepSeek') {
+        response = await this.query_deepseek(prompt, 'text')
       } else {
         throw new Error('AI Vendor not supported')
       }
@@ -182,6 +236,8 @@ ${this.responseExample}`
       response = await this.query_google(prompt)
     } else if (this.options.aiVendor === 'OpenAI') {
       response = await this.query_openai(prompt, type)
+    } else if (this.options.aiVendor === 'DeepSeek') {
+      response = await this.query_deepseek(prompt, type)
     } else {
       throw new Error('AI Vendor not supported')
     }

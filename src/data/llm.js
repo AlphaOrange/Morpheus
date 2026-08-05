@@ -1,6 +1,7 @@
 export const models = {
   Google: ['gemini-2.5-flash-lite', 'gemini-2.5-flash'],
   OpenAI: ['gpt-5.4-mini', 'gpt-5.4-nano'],
+  DeepSeek: ['deepseek-v4-flash', 'deepseek-v4-pro'],
 }
 
 export const safetySettings = {
