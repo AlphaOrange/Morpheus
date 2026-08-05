@@ -1,6 +1,13 @@
 export const models = {
-  Google: ['gemini-2.5-flash-lite', 'gemini-2.5-flash'],
-  OpenAI: ['gpt-5.4-mini', 'gpt-5.4-nano'],
+  Google: [
+    'gemini-3.5-flash-lite',
+    'gemini-3.1-flash-lite',
+    'gemini-2.5-flash-lite',
+    'gemini-3.6-flash',
+    'gemini-3.5-flash',
+    'gemini-2.5-flash',
+  ],
+  OpenAI: ['gpt-5.6-luna', 'gpt-5.4-nano', 'gpt-5.6-terra', 'gpt-5.4-mini'],
   DeepSeek: ['deepseek-v4-flash', 'deepseek-v4-pro'],
 }
 
