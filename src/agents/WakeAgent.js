@@ -61,7 +61,9 @@ export default class WakeAgent extends Agent {
       .replace('%room_description%', roomDescription)
 
     try {
-      const answer = await this.query({ prompt, type: 'json' })
+      const result = await this.query({ prompt, type: 'json' })
+      const answer = result.answer
+      this.shelf.log({ agent: 'WakeAgent', character: actor.id, tokens: result.tokens })
       return {
         wake: answer.wake,
         target: answer.character,

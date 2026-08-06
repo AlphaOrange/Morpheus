@@ -26,8 +26,9 @@ export default class SavegameSummaryAgent extends Agent {
     })
     const prompt = TEMPLATES.user.replace('%dialog%', dialog)
     try {
-      const answer = await this.query({ prompt, type: 'text' })
-      return answer
+      const result = await this.query({ prompt, type: 'text' })
+      this.shelf.log({ agent: 'SavegameSummaryAgent', character: 'SYSTEM', tokens: result.tokens })
+      return result.answer
     } catch (err) {
       const errorMessage = err.response?.data?.error?.message || err.message || 'Unknown error'
       console.log(`SAVEGAMEAGENT ERROR: ${errorMessage}`)

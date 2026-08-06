@@ -50,7 +50,13 @@ export default class StopperAgent extends Agent {
       .replace('%room_description%', roomDescription)
 
     try {
-      const answer = await this.query({ prompt, type: 'json' })
+      const result = await this.query({ prompt, type: 'json' })
+      const answer = result.answer
+      this.shelf.log({
+        agent: 'StopperAgent',
+        character: asked.map((c) => c.id).join(', '),
+        tokens: result.tokens,
+      })
       return { replies: answer.replies }
     } catch (err) {
       const errorMessage = err.response?.data?.error?.message || err.message || 'Unknown error'

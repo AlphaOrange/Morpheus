@@ -54,7 +54,9 @@ export default class MoveAgent extends Agent {
       .replace('%room_description%', room.enhancedDescription)
 
     try {
-      const answer = await this.query({ prompt, type: 'json' })
+      const result = await this.query({ prompt, type: 'json' })
+      const answer = result.answer
+      this.shelf.log({ agent: 'MoveAgent', character: actor.id, tokens: result.tokens })
       return {
         move: answer.move,
         targetId: answer.destination,

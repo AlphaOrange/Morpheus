@@ -69,7 +69,9 @@ export default class TalkAgent extends Agent {
       .replace('%room_description%', roomDescription)
 
     try {
-      const answer = await this.query({ prompt, type: 'json' })
+      const result = await this.query({ prompt, type: 'json' })
+      const answer = result.answer
+      this.shelf.log({ agent: 'TalkAgent', character: actor.id, tokens: result.tokens })
       // FOR TESTING PURPOSES:
       // const answer = { text: 'Test', to: 'alice' }
       return {

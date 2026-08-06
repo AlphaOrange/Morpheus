@@ -16,6 +16,7 @@ export const useShelfStore = defineStore('shelf', {
     saveData: saveData,
     protobook: null,
     tokenUsage: 0,
+    agentLog: [],
   }),
 
   getters: {
@@ -81,6 +82,11 @@ export const useShelfStore = defineStore('shelf', {
       const saveData = JSON.parse(saveString)
       this.options.restoreOptions(saveData.options)
       this.book.restoreBook(saveData.book)
+    },
+    log({ agent, character, tokens }) {
+      this.agentLog.push({ agent, character, tokens })
+      console.log(this.agentLog)
+      this.tokenUsage += tokens
     },
   },
 })

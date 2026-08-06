@@ -85,7 +85,9 @@ MAJOR INCREASE: ${state.examples.major_increase}
         .replace('%states_descriptions%', states_descriptions)
         .replace('%room_description%', roomDescription)
 
-      const answer = await this.query({ prompt, type: 'json' })
+      const result = await this.query({ prompt, type: 'json' })
+      const answer = result.answer
+      this.shelf.log({ agent: 'UpdateCharAgent', character: char.id, tokens: result.tokens })
       char.lastUpdate = updateDialog.slice(-1)[0].id
       return {
         stateChanges: answer.condition_changes,

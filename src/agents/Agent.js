@@ -212,7 +212,7 @@ ${this.responseExample}`
     } catch {
       return false
     }
-    this.shelf.tokenUsage = this.shelf.tokenUsage + response.tokens
+    this.shelf.log({ agent: 'ApiCheck', character: 'SYSTEM', tokens: response.tokens })
     if (!response.text) {
       return false
     }
@@ -241,7 +241,6 @@ ${this.responseExample}`
     } else {
       throw new Error('AI Vendor not supported')
     }
-    this.shelf.tokenUsage = this.shelf.tokenUsage + response.tokens
 
     // Return text or JSON
     let responseText = response.text
@@ -257,9 +256,9 @@ ${this.responseExample}`
         }
         parsed = JSON.parse(responseText.substring(start, end + 1))
       }
-      return parsed
+      return { answer: parsed, tokens: response.tokens }
     } else {
-      return responseText
+      return { answer: responseText, tokens: response.tokens }
     }
   }
 }
