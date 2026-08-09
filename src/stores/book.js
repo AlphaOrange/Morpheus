@@ -783,18 +783,16 @@ export const useBookStore = defineStore('book', {
         const infoMessage = `${charMoving} just left ${this.room.name}`
 
         // Send TALK message
-        if (movers.length > 1) {
+        if (command.message !== null) {
           const talkTo = this.concretizeTalkTo(command)
-          if (command.message !== null) {
-            this.protocol.pushTalk({
-              time: this.time,
-              text: command.message,
-              room: this.room.id,
-              present: present,
-              from: command.actor,
-              to: talkTo,
-            })
-          }
+          this.protocol.pushTalk({
+            time: this.time,
+            text: command.message,
+            room: this.room.id,
+            present: present,
+            from: command.actor,
+            to: talkTo,
+          })
         }
 
         // Move actors
