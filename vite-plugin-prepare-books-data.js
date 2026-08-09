@@ -31,9 +31,11 @@ function _prefixImages(json, nesting) {
   if (typeof json === 'string') {
     if (json.match(/^\/.+\.(jpg|jpeg|png)$/i)) {
       // Starts with /: images folder file => image folder prefix
+      json = json.replace(/\.(jpeg|png)$/i, '.jpg')
       return 'images' + json
     } else if (json.match(/.+\.(jpg|jpeg|png)$/i)) {
       // Else: same folder file => nesting path prefix
+      json = json.replace(/\.(jpeg|png)$/i, '.jpg')
       return prefix + json
     }
   }
