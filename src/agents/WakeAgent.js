@@ -20,7 +20,7 @@ export default class WakeAgent extends Agent {
 
   constructor() {
     super()
-    this.systemPrompt = TEMPLATES.system
+    this.systemPrompt = TEMPLATES.system.replace('%style_base%', this.book.style.base)
     this.responseFormat = TEMPLATES.format
     this.responseExamples = TEMPLATES.examples
   }
