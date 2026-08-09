@@ -30,7 +30,7 @@ user: |-
   You, %you%, indicated you want to move somewhere outside the current room, %room%.
   There are several options where to go next, these are either adjacent rooms in your current location or other locations where movement might take a bit longer.
   Based the recent dialog evaluate if any of the options really makes sense and if so decide on which destination to go.
-  If you go somewhere you optionally can say something to the others in the room before you go, e.g. telling where you go if you want someone to follow you. Consider what you just said anyway, rather say nothing than repeat yourself!
+  If you go somewhere you optionally can say something to the others in the room before you go, e.g. telling where you go if you want someone to follow you. Do not repeat yourself, don't repeat or contradict something you said just before. If there is nothing to add, don't say anything.
 format: |-
   {
     "move": (decision of moving, can be false or true),
