@@ -221,7 +221,7 @@ There must be exactly one book file and it must be named `book.yaml`. The book f
     _(optional - default: "")_
   - `dialog`: Instruction on how to write dialog  
     _(optional - default: "No long monologues, we want a lively quick dialogue.")_
-  - `narration`: Instruction on how to you narrative notes in dialog like gesture and facial expressions  
+  - `narration`: Instruction on how to do narrative notes in dialog like gesture and facial expressions  
     _(optional - default: "Use it sparse and concise.")_
 - `settings`: an object with book settings - see "Book Settings"  
   _(completely optional, all settings entries optional - see "Book Settings" for defaults)_
@@ -263,6 +263,14 @@ start:
     %players% arrive at the Electric City in the morning.
     The town is full of lights and buzzing noises, but the streets
     are empty, so they enter the first building, the casino.
+style:
+  base: >-
+    You are specialized in young scifi and adventure and
+    known for quick and unexpected story progression.
+  dialog: >-
+    No long monologues, we want a lively quick dialogue.
+  narration: >-
+    Use it sparse and concise and sprinkle in futuristic lingo from time to time.
 settings:
   minPlayerChars: 1
   maxPlayerChars: 2
@@ -733,6 +741,14 @@ You can tweak the narrative style the AI follows for your book to give it a dist
   Write in the "you" form, directly instructing the _character_.  
   For example you could instruct "You it extensive, the reader shall be able to pick up on every detail."
   _The default value is: "Use it sparse and concise."_
+
+##### Example
+
+```yaml
+  base: You are specialized in young adult drama, romance and known for cheesy dialogue and wild story progression.
+  dialog: No long monologues, we want a lively quick dialogue.
+  narration: Make half of it narration and make that corny (cheesy descriptions) or excited (short and brisk) based on context.
+```
 
 #### Position and Detour
 
