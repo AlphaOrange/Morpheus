@@ -1,6 +1,6 @@
 # Writing Books
 
-_For Morpheus Version 0.9.0_
+_For Morpheus Version 0.10.0_
 
 This documentation contains a detailed specification for book structures and files. Following these specs enables you to write your own _Morpheus_ books that can be played in the _Morpheus_ app for interactive story games.
 
@@ -745,9 +745,9 @@ You can tweak the narrative style the AI follows for your book to give it a dist
 ##### Example
 
 ```yaml
-  base: You are specialized in young adult drama, romance and known for cheesy dialogue and wild story progression.
-  dialog: No long monologues, we want a lively quick dialogue.
-  narration: Make half of it narration and make that corny (cheesy descriptions) or excited (short and brisk) based on context.
+base: You are specialized in young adult drama, romance and known for cheesy dialogue and wild story progression.
+dialog: No long monologues, we want a lively quick dialogue.
+narration: Make half of it narration and make that corny (cheesy descriptions) or excited (short and brisk) based on context.
 ```
 
 #### Position and Detour

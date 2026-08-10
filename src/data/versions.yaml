@@ -3,14 +3,49 @@
 features:
   maps: Move durations depend on distance and terrain
   move: Visit different places
+  travel: Visit distant places
   states: Character states change and influence behaviour
   talk: Have conversations with NPCs
   visual: Has images for characters and/or places
 versions:
+  - version: 0.10.0
+    updates: |-
+      **Options**
+      Books can now define options the user can choose before start, which influence book setup.
+      - Optional Characters
+      - Optional Rooms, Locations and Destinations
+
+      **AI**
+      - Include DeepSeek as new API to use with models: `deepseek-v4-flash`, `deepseek-v4-pro`
+      - Update available models for both Google and OpenAI
+      - Simplified and unified safety settings
+      
+      **UI**
+      - Character profiles can now accessed also while moving
+      - Durational actions all show as specific icons
+      - AI can now stopped instantly when running
+
+      **Commands**
+      - Sleep commands can now be combined with messages
+      - Add short commands for accepting or declining stoppers
+
+      **Books**
+      - Room descriptions for better interactions between characters and environment
+      - Dedicated images folder replaces images in root folder
+
+      **Misc + Bugfixes**
+      - Move times no longer 0 if book does not use positions feature
+      - Some tweaks to prevent repetitions in NPC dialog
+      - Fix `base` style parameter, was not applied as intended in 0.9.0
+      - Multiple bug fixes more
+    features: [maps, move, travel, talk, states]
+    fullSupport: 0.10.0
+    minSupport: 0.10.0
+versions:
   - version: 0.9.0
     updates: |-
       **Stoppers**  
-      Stoppers a new kind of actions that only execute after all involved characters agree.
+      Stoppers are a new kind of actions that only execute after all involved characters agree.
       - New command `move with` allows to move with other characters if they accept
       - AI characters decide on accept or decline
       - New stopper message type to gather decisions for player characters
@@ -24,8 +59,6 @@ versions:
       - New parameter for talk duration calculation: `talkDuration`
       - New parameters for move duration calculation: `moveDurationRoom`, `moveDurationLocation`, `moveDurationDestination`
       - New parameter for switching off player character states: `playerCharsHaveStates`
-
-      **Books**
       - New book parameters for changing style of text generated: `base`, `dialog`, `narration`
       - New character parameter `activity` for making characters more or less active
       - New state parameter `regenerable` used for calculating AI sleep duration
