@@ -70,7 +70,7 @@ import { markRaw } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useBookStore } from '@/stores/book'
 import BookPreview from '@/components/BookPreview.vue'
-import logoImg from '@/assets/images/logo.jpg'
+import logoImg from '@/assets/images/logo_type.png'
 
 const bookStore = useBookStore()
 const { title, coverM, started } = storeToRefs(bookStore)
@@ -110,9 +110,10 @@ hr {
 .logo {
   width: 100%;
   aspect-ratio: 1/1;
-  background-size: 160% 160%;
-  background-position: 50% 15%;
   cursor: pointer;
+  background-size: 90% 90%;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
   transition: all 0.25s ease-out 0.15s;
 }
 .main {
@@ -203,8 +204,6 @@ footer .book-title {
   transition: all 0.4s ease-in-out 0.5s;
 }
 .sidebar:hover .logo {
-  background-size: 100% 100%;
-  background-position: 50% 50%;
   transition: all 0.4s ease-in-out 0.5s;
 }
 .sidebar:hover .bar-label > span {

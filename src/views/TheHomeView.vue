@@ -140,6 +140,9 @@ const runStarter = async () => {
   max-width: 8rem;
   margin: 0 auto;
 }
+h1 {
+  padding-top: 0;
+}
 .showreel {
   min-width: 100%;
   overflow-x: auto;
